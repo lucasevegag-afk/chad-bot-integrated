@@ -869,6 +869,108 @@
     }
     .top-score.long  { background: rgba(0, 245, 212, 0.14); color: var(--teal); }
     .top-score.short { background: rgba(255, 77, 109, 0.14); color: var(--rose); }
+
+    /* ════════════════════════════════════════════════════════════
+       MODAL · para embed de features de la mobile (iframes)
+       ════════════════════════════════════════════════════════════ */
+    .bia-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(2, 7, 17, 0.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      z-index: 9999;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 40px;
+      animation: modal-fade-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .bia-modal-overlay.is-open { display: flex; }
+    @keyframes modal-fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .bia-modal {
+      width: 100%; max-width: 1280px; height: 100%;
+      background: var(--bg-navy);
+      border: 1px solid var(--line-2);
+      border-radius: var(--r-xl);
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.80), 0 0 60px rgba(0, 229, 255, 0.10);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      animation: modal-slide-up 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes modal-slide-up {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .bia-modal-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(0, 229, 255, 0.04), transparent);
+    }
+    .bia-modal-title {
+      flex: 1;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px; font-weight: 700;
+      color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+      letter-spacing: -0.2px;
+    }
+    .bia-modal-title .ico { font-size: 18px; }
+    .bia-modal-badge {
+      padding: 3px 9px;
+      background: rgba(0, 229, 255, 0.10);
+      border: 1px solid rgba(0, 229, 255, 0.30);
+      border-radius: 8px;
+      font-size: 9.5px; color: var(--cyan);
+      font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .bia-modal-close {
+      width: 32px; height: 32px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text-soft);
+      font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--t-fast);
+    }
+    .bia-modal-close:hover {
+      background: rgba(255, 77, 109, 0.10);
+      border-color: rgba(255, 77, 109, 0.40);
+      color: var(--rose);
+      transform: rotate(90deg);
+    }
+    .bia-modal-iframe-wrap {
+      flex: 1; position: relative;
+      background: var(--bg-deep);
+      overflow: hidden;
+    }
+    .bia-modal-iframe {
+      width: 100%; height: 100%;
+      border: none;
+      background: var(--bg-deep);
+    }
+    .bia-modal-loader {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cyan);
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; font-weight: 600;
+      gap: 10px;
+      pointer-events: none;
+      transition: opacity 300ms;
+    }
+    .bia-modal-loader.is-hidden { opacity: 0; }
+    .bia-modal-spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--line);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spinner 800ms linear infinite;
+    }
+    @keyframes spinner { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -882,12 +984,12 @@
       </div>
 
       <nav class="nav">
-        <a href="/home" class="active"><span class="ico">🏠</span> Inicio</a>
-        <a href="/indexbot_3.html"><span class="ico">📡</span> Radar Semanal</a>
-        <a href="/mapa-mercado"><span class="ico">🗺️</span> Mapa de Mercado</a>
-        <a href="/noticias"><span class="ico">📰</span> Noticias &amp; Alertas</a>
-        <a href="/oportunidades"><span class="ico">📈</span> Oportunidades</a>
-        <a href="/watchlist"><span class="ico">⭐</span> Watchlist</a>
+        <a href="/home.html" class="active"><span class="ico">🏠</span> Inicio</a>
+        <a href="#" onclick="openBiaModal('radar', '📡 Radar Semanal', '/radar-semanal'); return false;"><span class="ico">📡</span> Radar Semanal</a>
+        <a href="#" onclick="openBiaModal('mercado', '🗺️ Mapa de Mercado', '/mercado'); return false;"><span class="ico">🗺️</span> Mapa de Mercado</a>
+        <a href="#" onclick="openBiaModal('noticias', '📰 Noticias &amp; Alertas', '/noticias'); return false;"><span class="ico">📰</span> Noticias &amp; Alertas</a>
+        <a href="#" onclick="openBiaModal('oportunidades', '📈 Oportunidades', '/radar-semanal'); return false;"><span class="ico">📈</span> Oportunidades</a>
+        <a href="#" onclick="openBiaModal('bia', '🤖 Chat con BIA', '/bia'); return false;"><span class="ico">💬</span> Chat BIA</a>
         <a href="/sesiones"><span class="ico">📅</span> Calendario</a>
         <a href="/academy"><span class="ico">🎓</span> Academia</a>
         <a href="/configuracion"><span class="ico">⚙️</span> Configuración</a>
@@ -1007,28 +1109,28 @@
       <div>
         <div class="features-title">Explorá todo lo que BIA tiene para vos</div>
         <div class="features-grid">
-          <a href="/mapa-mercado" class="feature-card" style="--card-accent: var(--cyan); --card-accent-faint: rgba(0, 229, 255, 0.12);">
+          <a href="#" onclick="openBiaModal('mercado', '🗺️ Mapa de Mercado', '/mercado'); return false;" class="feature-card" style="--card-accent: var(--cyan); --card-accent-faint: rgba(0, 229, 255, 0.12);">
             <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(0, 229, 255, 0.20), transparent 60%);"></div>
             <div class="feature-icon">🗺️</div>
             <div class="feature-title">Mapa de Mercado</div>
             <div class="feature-desc">Visualizá el mercado en tiempo real por sectores y activos.</div>
             <button class="feature-cta" style="color: var(--cyan); border-color: rgba(0, 229, 255, 0.35); background: rgba(0, 229, 255, 0.06);">Explorar →</button>
           </a>
-          <a href="/indexbot_3.html" class="feature-card" style="--card-accent: var(--teal); --card-accent-faint: rgba(0, 245, 212, 0.12);">
+          <a href="#" onclick="openBiaModal('radar-semanal', '📡 Radar Semanal', '/radar-semanal'); return false;" class="feature-card" style="--card-accent: var(--teal); --card-accent-faint: rgba(0, 245, 212, 0.12);">
             <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(0, 245, 212, 0.20), transparent 60%);"></div>
             <div class="feature-icon">📡</div>
             <div class="feature-title">Radar Semanal</div>
             <div class="feature-desc">5 acciones LONG y 5 SHORT seleccionadas por BIA cada semana.</div>
             <button class="feature-cta" style="color: var(--teal); border-color: rgba(0, 245, 212, 0.35); background: rgba(0, 245, 212, 0.06);">Ver radar →</button>
           </a>
-          <a href="/noticias" class="feature-card" style="--card-accent: var(--gold); --card-accent-faint: rgba(255, 200, 87, 0.12);">
+          <a href="#" onclick="openBiaModal('noticias', '📰 Noticias &amp; Alertas', '/noticias'); return false;" class="feature-card" style="--card-accent: var(--gold); --card-accent-faint: rgba(255, 200, 87, 0.12);">
             <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(255, 200, 87, 0.20), transparent 60%);"></div>
             <div class="feature-icon">🔔<span class="feature-badge">3</span></div>
             <div class="feature-title">Noticias &amp; Alertas</div>
             <div class="feature-desc">Filtradas por impacto, región, activo y sentimiento.</div>
             <button class="feature-cta" style="color: var(--gold); border-color: rgba(255, 200, 87, 0.35); background: rgba(255, 200, 87, 0.06);">Ver noticias →</button>
           </a>
-          <a href="/oportunidades" class="feature-card" style="--card-accent: var(--emerald); --card-accent-faint: rgba(16, 185, 129, 0.12);">
+          <a href="#" onclick="openBiaModal('oportunidades', '📈 Oportunidades', '/radar-semanal'); return false;" class="feature-card" style="--card-accent: var(--emerald); --card-accent-faint: rgba(16, 185, 129, 0.12);">
             <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.20), transparent 60%);"></div>
             <div class="feature-icon">📈</div>
             <div class="feature-title">Oportunidades</div>
@@ -1193,6 +1295,77 @@
       };
       step();
     });
+
+    /* ════════════════════════════════════════════════════════════
+       BIA MODAL · embed de features de la mobile Next.js via iframe
+       Detección automática de entorno (local vs producción)
+       ════════════════════════════════════════════════════════════ */
+    const NEXT_BASE = (() => {
+      const host = window.location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1') {
+        return 'http://localhost:3000';
+      }
+      // En producción apuntar a Vercel
+      return 'https://chad-alerts-mobile.vercel.app';
+    })();
+
+    function openBiaModal(id, title, path) {
+      const overlay = document.getElementById('bia-modal-overlay');
+      const titleEl = document.getElementById('bia-modal-title-text');
+      const iframe  = document.getElementById('bia-modal-iframe');
+      const loader  = document.getElementById('bia-modal-loader');
+
+      titleEl.innerHTML = title;
+      loader.classList.remove('is-hidden');
+
+      const url = NEXT_BASE + path;
+      iframe.onload = () => loader.classList.add('is-hidden');
+      iframe.src = url;
+
+      overlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeBiaModal() {
+      const overlay = document.getElementById('bia-modal-overlay');
+      const iframe  = document.getElementById('bia-modal-iframe');
+      overlay.classList.remove('is-open');
+      document.body.style.overflow = '';
+      // Limpiar iframe para liberar memoria
+      setTimeout(() => { iframe.src = 'about:blank'; }, 250);
+    }
+
+    // Cerrar con ESC
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        const overlay = document.getElementById('bia-modal-overlay');
+        if (overlay.classList.contains('is-open')) closeBiaModal();
+      }
+    });
+
+    // Cerrar al click fuera del modal
+    document.addEventListener('click', e => {
+      const overlay = document.getElementById('bia-modal-overlay');
+      if (e.target === overlay) closeBiaModal();
+    });
   </script>
+
+  <!-- ═══════════ MODAL para embed de Next.js features ═══════════ -->
+  <div id="bia-modal-overlay" class="bia-modal-overlay" role="dialog" aria-modal="true">
+    <div class="bia-modal">
+      <div class="bia-modal-header">
+        <div class="bia-modal-title" id="bia-modal-title-text"></div>
+        <span class="bia-modal-badge">BIA Mobile</span>
+        <button class="bia-modal-close" onclick="closeBiaModal()" title="Cerrar (ESC)">✕</button>
+      </div>
+      <div class="bia-modal-iframe-wrap">
+        <div class="bia-modal-loader" id="bia-modal-loader">
+          <div class="bia-modal-spinner"></div>
+          Cargando…
+        </div>
+        <iframe id="bia-modal-iframe" class="bia-modal-iframe" src="about:blank" allow="clipboard-read; clipboard-write"></iframe>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
