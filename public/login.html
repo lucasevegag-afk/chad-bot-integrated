@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chad Inversor · Acceder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap">
+<style>
+  :root {
+    --bg: #050505;
+    --bg-1: #0a0a0a;
+    --bg-2: #121212;
+    --bg-3: #181818;
+    --line: rgba(212, 160, 23, 0.15);
+    --text: #ececec;
+    --muted: #8a8a8a;
+    --gold-1: #ffe27a;
+    --gold-2: #d4a017;
+    --gold-3: #8b6508;
+    --gold-grad: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  /* ===== LOGO ===== */
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .logo-wrap img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 20px rgba(212,160,23,0.35);
+  }
+  .logo-wrap span {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 700;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== CARD ===== */
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 40px 36px;
+    text-align: center;
+  }
+
+  .card-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,226,122,0.12), rgba(139,101,8,0.06));
+    border: 1px solid rgba(212,160,23,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 28px;
+  }
+
+  .card h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 700;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+
+  .card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  /* ===== INPUT ===== */
+  .input-wrap {
+    margin-bottom: 16px;
+  }
+  .input-wrap input {
+    width: 100%;
+    background: var(--bg-3);
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 15px;
+    padding: 14px 16px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+  }
+  .input-wrap input:focus { border-color: rgba(212,160,23,0.5); }
+  .input-wrap input::placeholder { color: var(--muted); }
+
+  /* ===== BOTÓN ===== */
+  .btn-login {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background: var(--gold-grad);
+    color: #0a0a0a;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s, transform 0.2s;
+    margin-bottom: 12px;
+  }
+  .btn-login:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-login:active { transform: translateY(0); }
+  .btn-login:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ===== ESTADOS ===== */
+  .msg {
+    font-size: 13px;
+    margin-top: 14px;
+    min-height: 20px;
+    transition: all 0.2s;
+  }
+  .msg.error { color: #ff6b6b; }
+  .msg.loading { color: var(--muted); }
+  .msg.success { color: #4ade80; }
+
+  /* ===== SUCCESS ===== */
+  .success-wrap {
+    display: none;
+  }
+  .success-wrap.show {
+    display: block;
+    animation: rise 0.5s ease both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .success-icon { font-size: 52px; margin-bottom: 16px; display: block; }
+  .success-title {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .success-sub { color: var(--muted); font-size: 14px; }
+
+  /* ===== LINK VOLVER ===== */
+  .back-link {
+    text-align: center;
+    margin-top: 24px;
+  }
+  .back-link a {
+    color: var(--muted);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-link a:hover { color: var(--gold-1); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="logo-wrap">
+    <img src="/logo.jpeg" alt="Chad Inversor">
+    <span>Chad Inversor</span>
+  </div>
+
+  <!-- FORM LOGIN -->
+  <div class="card" id="viewLogin">
+    <div class="card-icon">🔑</div>
+    <h1>Acceder</h1>
+    <p>Ingresá el email con el que compraste tu acceso.</p>
+
+    <div class="input-wrap">
+      <input
+        type="email"
+        id="emailInput"
+        placeholder="tu@email.com"
+        onkeydown="if(event.key==='Enter')verificar()"
+        autocomplete="email"
+      >
+    </div>
+
+    <button class="btn-login" onclick="verificar()" id="btnLogin">
+      Verificar acceso
+    </button>
+
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="card success-wrap" id="viewSuccess">
+    <span class="success-icon">✅</span>
+    <div class="success-title">Acceso verificado</div>
+    <div class="success-sub" id="successMsg">Redirigiendo...</div>
+  </div>
+
+  <div class="back-link">
+    <a href="index.html">← Volver al inicio</a>
+  </div>
+
+</div>
+
+<script>
+// =====================================================================
+// CONFIGURACIÓN SUPABASE
+// =====================================================================
+const SUPABASE_URL = 'https://bwtmbphbqwvwlywlbkmb.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dG1icGhicXd2d2x5d2xia21iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNTMwMzcsImV4cCI6MjA5MzcyOTAzN30.tbRcrXC28nEcYpoOXRF8VxLHgpnxDaEDhxKf7L9zitw';
+
+// Mapeo nivel → localStorage key
+const KEY_MAP = {
+  'starter':   'chadInversor.ownsStarter',
+  'investing': 'chadInversor.ownsInvesting',
+  'eagle':     'chadInversor.ownsEagle',
+  'wolf':      'chadInversor.ownsWolf',
+  'runner':    'chadInversor.ownsRunner',
+  'bot':       'chadInversor.ownsBot',
+};
+
+// =====================================================================
+// VERIFICAR EMAIL
+// =====================================================================
+async function verificar() {
+  const email = document.getElementById('emailInput').value.trim().toLowerCase();
+  const btn   = document.getElementById('btnLogin');
+  const msg   = document.getElementById('msg');
+
+  if (!email || !email.includes('@')) {
+    setMsg('Ingresá un email válido.', 'error');
+    return;
+  }
+
+  btn.disabled = true;
+  setMsg('Verificando...', 'loading');
+
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/accesos?email=eq.${encodeURIComponent(email)}&select=nivel`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!res.ok) throw new Error('Error al conectar con el servidor.');
+
+    const rows = await res.json();
+
+    if (!rows || rows.length === 0) {
+      setMsg('No encontramos ninguna compra con ese email. Verificá que sea el mismo email con el que pagaste.', 'error');
+      btn.disabled = false;
+      return;
+    }
+
+    // Guardar sesión
+    const niveles = rows.map(r => r.nivel);
+    localStorage.setItem('chadInversor.session', JSON.stringify({ email, niveles }));
+
+    // Activar accesos en localStorage
+    niveles.forEach(nivel => {
+      const key = KEY_MAP[nivel];
+      if (key) localStorage.setItem(key, 'true');
+    });
+
+    // Mostrar éxito
+    document.getElementById('viewLogin').style.display = 'none';
+    const sv = document.getElementById('viewSuccess');
+    sv.classList.add('show');
+    document.getElementById('successMsg').textContent = `Bienvenido. Niveles activos: ${niveles.join(', ')}`;
+
+    // Redirigir
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect') || 'academy.html';
+    setTimeout(() => { window.location.href = redirect; }, 2000);
+
+  } catch (err) {
+    setMsg('Error de conexión. Intentá de nuevo.', 'error');
+    btn.disabled = false;
+  }
+}
+
+function setMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + type;
+}
+</script>
+
+</body></html>

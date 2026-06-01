@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noticias del Mercado — Chad Inversor</title>
+<meta name="description" content="Los dos sitios de noticias financieras más confiables del mundo: Investing.com y Bloomberg. Actualización en tiempo real.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap">
+<style>
+  :root {
+    --bg: #050505;
+    --bg-1: #0a0a0a;
+    --bg-2: #121212;
+    --bg-3: #181818;
+    --line: rgba(212, 160, 23, 0.15);
+    --line-2: rgba(212, 160, 23, 0.35);
+    --text: #ececec;
+    --muted: #8a8a8a;
+    --gold-1: #ffe27a;
+    --gold-2: #d4a017;
+    --gold-3: #8b6508;
+    --gold-grad: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    --gold-soft: linear-gradient(135deg, rgba(255,226,122,0.14), rgba(139,101,8,0.04));
+    --shadow: 0 24px 60px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-gold: 0 20px 48px rgba(212, 160, 23, 0.18);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient backdrop */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(60% 50% at 10% 0%, rgba(212,160,23,0.10), transparent 60%),
+      radial-gradient(60% 50% at 100% 20%, rgba(212,160,23,0.08), transparent 60%),
+      radial-gradient(40% 40% at 50% 100%, rgba(212,160,23,0.05), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(5, 5, 5, 0.72);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  .brand {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 4px;
+    font-size: 15px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .brand img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--gold-1); }
+  .nav-links a.active { color: var(--gold-1); }
+  @media (max-width: 780px) { .nav-links { display: none; } }
+
+  section {
+    position: relative;
+    padding: 80px 0;
+    z-index: 1;
+  }
+
+  h1, h2, h3 { font-family: 'Cinzel', serif; font-weight: 600; letter-spacing: 0.5px; }
+  .h-gold {
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-head { text-align: center; max-width: 720px; margin: 0 auto 20px; }
+  .section-head h2 {
+    font-size: clamp(32px, 4.5vw, 52px);
+    margin: 16px 0 14px;
+    line-height: 1.15;
+  }
+  .section-head p { color: var(--muted); font-size: 16px; }
+  .divider {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    padding: 8px 16px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    background: var(--gold-soft);
+  }
+
+  /* Back link */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    margin-bottom: 30px;
+    transition: color .2s, border-color .2s, transform .2s;
+  }
+  .back-link:hover {
+    color: var(--gold-1);
+    border-color: var(--line-2);
+    transform: translateX(-3px);
+  }
+  .back-link svg { width: 14px; height: 14px; }
+
+  /* ====== NEWS SECTION ====== */
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 50px;
+  }
+  @media (max-width: 880px) { .news-grid { grid-template-columns: 1fr; } }
+  .news-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 28px;
+    background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    text-decoration: none;
+    color: var(--text);
+    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    overflow: hidden;
+  }
+  .news-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(70% 50% at 0% 0%, rgba(212,160,23,0.08), transparent 60%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .3s ease;
+  }
+  .news-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold-2);
+    box-shadow: var(--shadow-gold);
+  }
+  .news-card:hover::before { opacity: 1; }
+  .news-logo {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+  .news-logo svg { width: 100%; height: 100%; display: block; }
+  .news-body { flex: 1; }
+  .news-kicker {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    margin-bottom: 8px;
+  }
+  .news-card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .news-card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 18px;
+  }
+  .news-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+  .news-tags span {
+    font-size: 11px;
+    padding: 6px 12px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    color: var(--gold-1);
+    letter-spacing: 0.5px;
+  }
+  .news-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: var(--gold-grad);
+    color: #120a00;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 999px;
+    align-self: flex-start;
+    transition: transform .25s ease, box-shadow .3s ease;
+    box-shadow: 0 8px 20px rgba(212,160,23,0.3);
+  }
+  .news-card:hover .news-cta {
+    transform: translateX(4px);
+    box-shadow: 0 12px 28px rgba(212,160,23,0.45);
+  }
+  .news-cta svg { width: 14px; height: 14px; }
+  .news-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 30px;
+    letter-spacing: 1px;
+  }
+
+  footer {
+    padding: 40px 0 60px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--line);
+    margin-top: 40px;
+  }
+
+  /* TradingView Widgets */
+  .tradingview-widget-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  }
+  .tradingview-widget-container__widget {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  /* Heatmaps full-bleed: escape el container para ocupar ~96% del viewport */
+  .heatmap-fullbleed {
+    width: 96vw;
+    max-width: 1600px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  @media (max-width: 780px) {
+    /* En mobile dejamos que respete el container para no romper scroll */
+    .heatmap-fullbleed {
+      width: 100%;
+      left: auto;
+      transform: none;
+      height: 560px !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+
+
+<section>
+  <div class="container">
+    <a href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+      Volver al inicio
+    </a>
+
+    <div class="section-head">
+      <div class="divider">NOTICIAS DEL MERCADO</div>
+      <h2>Mantenete <span class="h-gold">informado</span>.</h2>
+      <p>Los dos sitios de noticias financieras más confiables del mundo. Actualización en tiempo real.</p>
+    </div>
+
+    <div class="news-grid">
+      <a class="news-card" href="https://www.investing.com/" target="_blank" rel="noopener noreferrer">
+        <div class="news-logo investing">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="46" fill="#ff9800"/>
+            <text x="50" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="42" font-weight="900" fill="#fff">i</text>
+          </svg>
+        </div>
+        <div class="news-body">
+          <div class="news-kicker">ANÁLISIS · DATOS · COTIZACIONES</div>
+          <h3>Investing.com</h3>
+          <p>Cotizaciones en tiempo real de acciones, índices, materias primas, cripto y divisas. Calendario económico, análisis técnico y noticias globales.</p>
+          <div class="news-tags">
+            <span>📊 Gráficos en vivo</span>
+            <span>📅 Calendario económico</span>
+            <span>🌎 Multi-mercado</span>
+          </div>
+        </div>
+        <div class="news-cta">
+          Ir a Investing
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </div>
+      </a>
+
+      <a class="news-card" href="https://www.bloomberg.com/" target="_blank" rel="noopener noreferrer">
+        <div class="news-logo bloomberg">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="100" height="100" rx="10" fill="#000"/>
+            <text x="50" y="62" text-anchor="middle" font-family="Georgia, serif" font-size="34" font-weight="900" fill="#fff">B</text>
+          </svg>
+        </div>
+        <div class="news-body">
+          <div class="news-kicker">NOTICIAS · MACROECONOMÍA · MERCADOS</div>
+          <h3>Bloomberg</h3>
+          <p>La fuente de información financiera más reconocida a nivel global. Cobertura de mercados, política monetaria, empresas y análisis macroeconómico profundo.</p>
+          <div class="news-tags">
+            <span>📰 Breaking news</span>
+            <span>🏛️ Fed & bancos centrales</span>
+            <span>📈 Mercados globales</span>
+          </div>
+        </div>
+        <div class="news-cta">
+          Ir a Bloomberg
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </div>
+      </a>
+    </div>
+
+    <p class="news-note">Los links abren el sitio oficial en una pestaña nueva.</p>
+
+    <div style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--line);">
+      <h2 style="font-family: 'Cinzel', serif; font-size: 32px; margin-bottom: 8px;">
+        <span class="h-gold">Mercados en vivo</span>
+      </h2>
+      <p style="color: var(--muted); margin-bottom: 30px; font-size: 16px;">Cotizaciones en tiempo real directamente de TradingView.</p>
+      
+      <!-- TradingView Tickers Widget BEGIN -->
+      <div class="tradingview-widget-container" style="margin-bottom: 40px;">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js"></script>
+        <script type="text/javascript">
+          new TradingView.widget(
+            {
+              "symbols": [
+                {"description":"S&P 500","proName":"FOREXCOM:SPXUSD"},
+                {"description":"NASDAQ 100","proName":"NASDAQ:NDX"},
+                {"description":"BTC/USD","proName":"BITSTAMP:BTCUSD"},
+                {"description":"EUR/USD","proName":"FX_IDC:EURUSD"},
+                {"description":"DÓLAR BLUE","proName":"OANDA:USDARS"},
+                {"description":"Oro","proName":"OANDA:XAUUSD"}
+              ],
+              "showSymbolLogo": true,
+              "isTransparent": true,
+              "displayMode": "adaptive",
+              "colorTheme": "dark",
+              "locale": "es"
+            }
+          );
+        </script>
+      </div>
+      <!-- TradingView Tickers Widget END -->
+
+      <h3 style="font-family: 'Cinzel', serif; font-size: 24px; margin-top: 50px; margin-bottom: 8px; color: var(--text);">
+        Análisis técnico
+      </h3>
+      <p style="color: var(--muted); margin-bottom: 30px; font-size: 16px;">Gráficos interactivos con herramientas profesionales.</p>
+
+      <!-- TradingView Advanced Chart Widget BEGIN -->
+      <div class="tradingview-widget-container" style="height: 560px; margin-bottom: 40px;">
+        <div class="tradingview-widget-container__widget" style="height: calc(100% - 32px); width: 100%;"></div>
+        <div class="tradingview-widget-copyright" style="height: 32px; line-height: 32px; text-align: right; vertical-align: middle; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; color: var(--muted); padding-right: 8px;">
+          <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank" style="color: var(--muted); text-decoration: none;">Gráficos por TradingView</a>
+        </div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+        {
+          "autosize": true,
+          "symbol": "NASDAQ:AAPL",
+          "interval": "D",
+          "timezone": "America/Argentina/Buenos_Aires",
+          "theme": "dark",
+          "style": "1",
+          "locale": "es",
+          "enable_publishing": false,
+          "allow_symbol_change": true,
+          "backgroundColor": "rgba(10, 10, 10, 1)",
+          "gridColor": "rgba(212, 160, 23, 0.06)",
+          "hide_top_toolbar": false,
+          "hide_legend": false,
+          "save_image": false,
+          "studies": [
+            "MASimple@tv-basicstudies",
+            "RSI@tv-basicstudies"
+          ],
+          "support_host": "https://www.tradingview.com"
+        }
+        </script>
+      </div>
+      <!-- TradingView Advanced Chart Widget END -->
+    </div>
+
+    <!-- ====== FINVIZ STOCK SCREENER ====== -->
+    <div style="margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--line);">
+      <div class="divider">STOCK SCREENER</div>
+      <h2 style="font-family: 'Cinzel', serif; font-size: clamp(28px, 4vw, 42px); margin: 16px 0 10px;">
+        Filtrá acciones con <span class="h-gold">Finviz</span>.
+      </h2>
+      <p style="color: var(--muted); margin-bottom: 36px; font-size: 16px; max-width: 680px;">
+        El screener más usado del mundo para filtrar acciones por fundamentales, técnicos, sector, capitalización y señales (top gainers, unusual volume, new high, etc.).
+      </p>
+
+      <!-- Finviz main card (link to full screener) -->
+      <a class="news-card" href="https://finviz.com/screener.ashx" target="_blank" rel="noopener noreferrer" style="margin-bottom: 40px;">
+        <div class="news-logo" style="background: linear-gradient(135deg, #1a3a6e, #0f2347); display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="100" height="100" rx="14" fill="#1a3a6e"/>
+            <text x="50" y="62" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="28" font-weight="900" fill="#fff" letter-spacing="-1">FV</text>
+          </svg>
+        </div>
+        <div class="news-body">
+          <div class="news-kicker">SCREENER · HEATMAP · FUNDAMENTALES</div>
+          <h3>Finviz.com</h3>
+          <p>Filtrá más de 8.000 acciones de EE.UU. con docenas de criterios combinables: P/E, crecimiento de ganancias, RSI, medias móviles, patrones de velas, dividendos y mucho más. Incluye heatmap visual por sector.</p>
+          <div class="news-tags">
+            <span>🔍 +70 filtros</span>
+            <span>🗺️ Heatmap sectorial</span>
+            <span>📊 Gráficos snapshot</span>
+            <span>⚡ Señales preset</span>
+          </div>
+        </div>
+        <div class="news-cta">
+          Abrir screener
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </div>
+      </a>
+
+      <!-- Heatmap del S&P 500 (TradingView — reemplaza el Finviz que Finviz bloquea por X-Frame-Options) -->
+      <h3 style="font-family: 'Cinzel', serif; font-size: 24px; margin-top: 50px; margin-bottom: 8px; color: var(--text);">
+        Mapa del mercado (heatmap)
+      </h3>
+      <p style="color: var(--muted); margin-bottom: 20px; font-size: 14px;">
+        Visualización del S&P 500 por sector. Cada bloque es una acción — tamaño = capitalización, color = variación del día. Click para ver detalles.
+      </p>
+      <div class="tradingview-widget-container heatmap-fullbleed" style="height: 820px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: #0a0a0a;">
+        <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>
+        {
+          "exchanges": [],
+          "dataSource": "SPX500",
+          "grouping": "sector",
+          "blockSize": "market_cap_basic",
+          "blockColor": "change",
+          "locale": "es",
+          "symbolUrl": "",
+          "colorTheme": "dark",
+          "hasTopBar": true,
+          "isDataSetEnabled": false,
+          "isZoomEnabled": true,
+          "hasSymbolTooltip": true,
+          "isMonoSize": false,
+          "width": "100%",
+          "height": "100%"
+        }
+        </script>
+      </div>
+      <p style="color: var(--muted); margin-top: 14px; font-size: 13px; text-align: center; letter-spacing: 0.3px;">
+        📊 Heatmap del S&P 500 por sector — mismos datos que Finviz (tamaño = market cap, color = variación del día).
+      </p>
+
+      <!-- Botón prominente al heatmap de Finviz -->
+      <div style="display: flex; justify-content: center; margin-top: 22px; margin-bottom: 10px;">
+        <a href="https://finviz.com/map.ashx" target="_blank" rel="noopener noreferrer"
+           style="display: inline-flex; align-items: center; gap: 10px; padding: 16px 32px; background: var(--gold-grad); color: #120a00; font-family: 'Inter', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; border-radius: 999px; text-decoration: none; box-shadow: 0 10px 28px rgba(212,160,23,0.35); transition: transform .25s ease, box-shadow .3s ease;"
+           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 14px 34px rgba(212,160,23,0.5)'"
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 28px rgba(212,160,23,0.35)'">
+          🗺️ Ver heatmap en Finviz
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </a>
+      </div>
+
+      <!-- Segundo heatmap: Crypto -->
+      <h3 style="font-family: 'Cinzel', serif; font-size: 24px; margin-top: 50px; margin-bottom: 8px; color: var(--text);">
+        Heatmap cripto
+      </h3>
+      <p style="color: var(--muted); margin-bottom: 20px; font-size: 14px;">
+        Las 100 principales criptomonedas por capitalización de mercado.
+      </p>
+      <div class="tradingview-widget-container heatmap-fullbleed" style="height: 640px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: #0a0a0a;">
+        <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-crypto-coins-heatmap.js" async>
+        {
+          "dataSource": "Crypto",
+          "blockSize": "market_cap_calc",
+          "blockColor": "24h_close_change|5",
+          "locale": "es",
+          "symbolUrl": "",
+          "colorTheme": "dark",
+          "hasTopBar": true,
+          "isDataSetEnabled": false,
+          "isZoomEnabled": true,
+          "hasSymbolTooltip": true,
+          "isMonoSize": false,
+          "width": "100%",
+          "height": "100%"
+        }
+        </script>
+      </div>
+
+      <!-- Finviz static chart snapshots -->
+      <h3 style="font-family: 'Cinzel', serif; font-size: 24px; margin-top: 60px; margin-bottom: 8px; color: var(--text);">
+        Snapshots rápidos
+      </h3>
+      <p style="color: var(--muted); margin-bottom: 30px; font-size: 14px;">
+        Gráficos técnicos de Finviz con indicadores (SMA 20/50/200, volumen). Click para ver ficha completa.
+      </p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+
+        <a href="https://finviz.com/quote.ashx?t=AAPL" target="_blank" rel="noopener noreferrer"
+           style="display:block; padding: 16px; background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95)); border: 1px solid var(--line); border-radius: 16px; text-decoration: none; transition: border-color .3s, transform .3s;"
+           onmouseover="this.style.borderColor='var(--gold-2)'; this.style.transform='translateY(-4px)'"
+           onmouseout="this.style.borderColor='var(--line)'; this.style.transform='translateY(0)'">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+            <strong style="color: var(--gold-1); font-family: 'Cinzel', serif; letter-spacing: 2px;">AAPL</strong>
+            <span style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Apple</span>
+          </div>
+          <img src="https://finviz.com/chart.ashx?t=AAPL&ty=c&ta=1&p=d&s=l" alt="AAPL chart" style="width:100%; border-radius: 8px; display: block;">
+        </a>
+
+        <a href="https://finviz.com/quote.ashx?t=MSFT" target="_blank" rel="noopener noreferrer"
+           style="display:block; padding: 16px; background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95)); border: 1px solid var(--line); border-radius: 16px; text-decoration: none; transition: border-color .3s, transform .3s;"
+           onmouseover="this.style.borderColor='var(--gold-2)'; this.style.transform='translateY(-4px)'"
+           onmouseout="this.style.borderColor='var(--line)'; this.style.transform='translateY(0)'">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+            <strong style="color: var(--gold-1); font-family: 'Cinzel', serif; letter-spacing: 2px;">MSFT</strong>
+            <span style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Microsoft</span>
+          </div>
+          <img src="https://finviz.com/chart.ashx?t=MSFT&ty=c&ta=1&p=d&s=l" alt="MSFT chart" style="width:100%; border-radius: 8px; display: block;">
+        </a>
+
+        <a href="https://finviz.com/quote.ashx?t=NVDA" target="_blank" rel="noopener noreferrer"
+           style="display:block; padding: 16px; background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95)); border: 1px solid var(--line); border-radius: 16px; text-decoration: none; transition: border-color .3s, transform .3s;"
+           onmouseover="this.style.borderColor='var(--gold-2)'; this.style.transform='translateY(-4px)'"
+           onmouseout="this.style.borderColor='var(--line)'; this.style.transform='translateY(0)'">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+            <strong style="color: var(--gold-1); font-family: 'Cinzel', serif; letter-spacing: 2px;">NVDA</strong>
+            <span style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Nvidia</span>
+          </div>
+          <img src="https://finviz.com/chart.ashx?t=NVDA&ty=c&ta=1&p=d&s=l" alt="NVDA chart" style="width:100%; border-radius: 8px; display: block;">
+        </a>
+
+        <a href="https://finviz.com/quote.ashx?t=TSLA" target="_blank" rel="noopener noreferrer"
+           style="display:block; padding: 16px; background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95)); border: 1px solid var(--line); border-radius: 16px; text-decoration: none; transition: border-color .3s, transform .3s;"
+           onmouseover="this.style.borderColor='var(--gold-2)'; this.style.transform='translateY(-4px)'"
+           onmouseout="this.style.borderColor='var(--line)'; this.style.transform='translateY(0)'">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+            <strong style="color: var(--gold-1); font-family: 'Cinzel', serif; letter-spacing: 2px;">TSLA</strong>
+            <span style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Tesla</span>
+          </div>
+          <img src="https://finviz.com/chart.ashx?t=TSLA&ty=c&ta=1&p=d&s=l" alt="TSLA chart" style="width:100%; border-radius: 8px; display: block;">
+        </a>
+
+        <a href="https://finviz.com/quote.ashx?t=SPY" target="_blank" rel="noopener noreferrer"
+           style="display:block; padding: 16px; background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95)); border: 1px solid var(--line); border-radius: 16px; text-decoration: none; transition: border-color .3s, transform .3s;"
+           onmouseover="this.style.borderColor='var(--gold-2)'; this.style.transform='translateY(-4px)'"
+           onmouseout="this.style.borderColor='var(--line)'; this.style.transform='translateY(0)'">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+            <strong style="color: var(--gold-1); font-family: 'Cinzel', serif; letter-spacing: 2px;">SPY</strong>
+            <span style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">S&P 500 ETF</span>
+          </div>
+          <img src="https://finviz.com/chart.ashx?t=SPY&ty=c&ta=1&p=d&s=l" alt="SPY chart" style="width:100%; border-radius: 8px; display: block;">
+        </a>
+
+        <a href="https://finviz.com/quote.ashx?t=QQQ" target="_blank" rel="noopener noreferrer"
+           style="display:block; padding: 16px; background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95)); border: 1px solid var(--line); border-radius: 16px; text-decoration: none; transition: border-color .3s, transform .3s;"
+           onmouseover="this.style.borderColor='var(--gold-2)'; this.style.transform='translateY(-4px)'"
+           onmouseout="this.style.borderColor='var(--line)'; this.style.transform='translateY(0)'">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+            <strong style="color: var(--gold-1); font-family: 'Cinzel', serif; letter-spacing: 2px;">QQQ</strong>
+            <span style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Nasdaq ETF</span>
+          </div>
+          <img src="https://finviz.com/chart.ashx?t=QQQ&ty=c&ta=1&p=d&s=l" alt="QQQ chart" style="width:100%; border-radius: 8px; display: block;">
+        </a>
+
+      </div>
+      <p class="news-note" style="margin-top: 24px;">
+        Datos demorados 15 minutos (cortesía de Finviz.com). Click en cualquier ticker para ver la ficha completa.
+      </p>
+    </div>
+    <!-- ====== END FINVIZ ====== -->
+  </div>
+</section>
+
+<footer>
+  <div class="container" style="display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center;">
+    <div style="font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 4px; font-size: 12px; background: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">
+      CHAD · INVERSOR
+    </div>
+    <div style="font-size: 11px; color: #8a8a8a; letter-spacing: 1px;">
+      © 2026 Chad Inversor · Todos los derechos reservados · Noticias del Mercado
+    </div>
+    <div style="font-size: 10px; color: #6a6a6a; letter-spacing: 0.5px; max-width: 640px; line-height: 1.6; margin-top: 4px;">
+      El contenido de este sitio tiene fines educativos e informativos. No constituye asesoramiento financiero, legal ni fiscal. Invertir y operar en mercados financieros implica riesgos, incluyendo la pérdida total del capital. Hacé siempre tu propio análisis.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

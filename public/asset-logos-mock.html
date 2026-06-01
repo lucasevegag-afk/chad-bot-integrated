@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mock: Logos de Activos · Chad Bot</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0e1117;
+    color: #e6edf3;
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    padding: 32px;
+    min-height: 100vh;
+  }
+  h1 { font-size: 22px; margin-bottom: 8px; }
+  .sub { color: #8b949e; font-size: 13px; margin-bottom: 32px; }
+
+  .columns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; max-width: 1400px; }
+  .col {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .col h2 { font-size: 16px; margin-bottom: 4px; }
+  .col .desc { color: #8b949e; font-size: 12px; margin-bottom: 20px; line-height: 1.4; }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: #0d1117;
+  }
+  .row:hover { background: #1c2128; }
+  .row .name { font-weight: 600; font-size: 14px; }
+  .row .sym  { color: #8b949e; font-size: 11px; margin-left: auto; font-family: ui-monospace, monospace; }
+
+  /* ────── OPCIÓN A: SVG INLINE ────── */
+  .logo-a {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .logo-a.btc  { background: #F7931A; }
+  .logo-a.xau  { background: linear-gradient(135deg, #FFD700, #FFA500); color: #4a3000; }
+  .logo-a.oil  { background: #1F2937; }
+  .logo-a.nas  { background: #1E40AF; font-size: 10px; }
+  .logo-a.eur  {
+    background: linear-gradient(90deg, #003399 50%, #ffcc00 50%);
+    color: #fff;
+    font-size: 10px;
+  }
+  .logo-a.flags {
+    background: transparent;
+    width: 36px;
+    overflow: visible;
+  }
+  .logo-a .flag-half {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid #161b22;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+  }
+  .logo-a .flag-half.eu { background: #003399; color: #ffcc00; margin-right: -6px; z-index: 2; }
+  .logo-a .flag-half.us { background: #b22234; color: #fff; }
+
+  /* ────── OPCIÓN B: TRADINGVIEW CDN ────── */
+  .logo-b { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; background: #fff; padding: 2px; }
+  .logo-b img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+
+  /* ────── OPCIÓN C: BANDERAS + EMOJIS ────── */
+  .logo-c {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    background: #21262d;
+  }
+  .logo-c.flags {
+    font-size: 14px;
+    letter-spacing: -3px;
+  }
+
+  /* ────── TAMAÑOS DE PREVIEW ────── */
+  .sizes {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #30363d;
+    align-items: center;
+  }
+  .sizes .label { font-size: 11px; color: #8b949e; }
+  .size-20 { width: 20px !important; height: 20px !important; font-size: 9px !important; }
+  .size-24 { width: 24px !important; height: 24px !important; font-size: 11px !important; }
+  .size-32 { width: 32px !important; height: 32px !important; }
+  .size-48 { width: 48px !important; height: 48px !important; font-size: 18px !important; }
+</style>
+</head>
+<body>
+
+<h1>🎨 Logos de Activos — 3 opciones</h1>
+<p class="sub">Comparativa visual antes de implementar. Compará y decime cuál te gusta más (o si querés una mezcla).</p>
+
+<div class="columns">
+
+  <!-- ═══════════════ OPCIÓN A ═══════════════ -->
+  <div class="col">
+    <h2>A · SVG inline</h2>
+    <p class="desc">Iconos generados en CSS, sin red. Paleta consistente, escalan perfecto.</p>
+
+    <div class="row">
+      <span class="logo-a btc">₿</span>
+      <span class="name">Bitcoin</span>
+      <span class="sym">BTC/USD</span>
+    </div>
+    <div class="row">
+      <span class="logo-a xau">Au</span>
+      <span class="name">Oro</span>
+      <span class="sym">XAU/USD</span>
+    </div>
+    <div class="row">
+      <span class="logo-a flags">
+        <span class="flag-half eu">★</span>
+        <span class="flag-half us">$</span>
+      </span>
+      <span class="name">Euro/Dólar</span>
+      <span class="sym">EUR/USD</span>
+    </div>
+    <div class="row">
+      <span class="logo-a oil">●</span>
+      <span class="name">Petróleo WTI</span>
+      <span class="sym">USOIL</span>
+    </div>
+    <div class="row">
+      <span class="logo-a nas">NDX</span>
+      <span class="name">Nasdaq 100</span>
+      <span class="sym">NAS100</span>
+    </div>
+
+    <div class="sizes">
+      <span class="label">tamaños:</span>
+      <span class="logo-a btc size-20">₿</span>
+      <span class="logo-a btc size-24">₿</span>
+      <span class="logo-a btc size-32">₿</span>
+      <span class="logo-a btc size-48">₿</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════ OPCIÓN B ═══════════════ -->
+  <div class="col">
+    <h2>B · TradingView CDN</h2>
+    <p class="desc">URLs externas a TradingView. Look idéntico al chart, requiere red.</p>
+
+    <div class="row">
+      <span class="logo-b"><img src="https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC.svg" alt="BTC"></span>
+      <span class="name">Bitcoin</span>
+      <span class="sym">BTC/USD</span>
+    </div>
+    <div class="row">
+      <span class="logo-b"><img src="https://s3-symbol-logo.tradingview.com/metal/gold.svg" alt="Gold"></span>
+      <span class="name">Oro</span>
+      <span class="sym">XAU/USD</span>
+    </div>
+    <div class="row">
+      <span class="logo-b"><img src="https://s3-symbol-logo.tradingview.com/country/EU.svg" alt="EUR"></span>
+      <span class="name">Euro/Dólar</span>
+      <span class="sym">EUR/USD</span>
+    </div>
+    <div class="row">
+      <span class="logo-b"><img src="https://s3-symbol-logo.tradingview.com/commodity/cl.svg" alt="Oil"></span>
+      <span class="name">Petróleo WTI</span>
+      <span class="sym">USOIL</span>
+    </div>
+    <div class="row">
+      <span class="logo-b"><img src="https://s3-symbol-logo.tradingview.com/indices/nasdaq.svg" alt="NDX"></span>
+      <span class="name">Nasdaq 100</span>
+      <span class="sym">NAS100</span>
+    </div>
+
+    <div class="sizes">
+      <span class="label">tamaños:</span>
+      <span class="logo-b size-20"><img src="https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC.svg"></span>
+      <span class="logo-b size-24"><img src="https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC.svg"></span>
+      <span class="logo-b size-32"><img src="https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC.svg"></span>
+      <span class="logo-b size-48"><img src="https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC.svg"></span>
+    </div>
+  </div>
+
+  <!-- ═══════════════ OPCIÓN C ═══════════════ -->
+  <div class="col">
+    <h2>C · Emojis + Banderas</h2>
+    <p class="desc">Emojis Unicode (depende de la fuente del OS). Simple y expresivo.</p>
+
+    <div class="row">
+      <span class="logo-c">₿</span>
+      <span class="name">Bitcoin</span>
+      <span class="sym">BTC/USD</span>
+    </div>
+    <div class="row">
+      <span class="logo-c">🥇</span>
+      <span class="name">Oro</span>
+      <span class="sym">XAU/USD</span>
+    </div>
+    <div class="row">
+      <span class="logo-c flags">🇪🇺🇺🇸</span>
+      <span class="name">Euro/Dólar</span>
+      <span class="sym">EUR/USD</span>
+    </div>
+    <div class="row">
+      <span class="logo-c">🛢️</span>
+      <span class="name">Petróleo WTI</span>
+      <span class="sym">USOIL</span>
+    </div>
+    <div class="row">
+      <span class="logo-c">📈</span>
+      <span class="name">Nasdaq 100</span>
+      <span class="sym">NAS100</span>
+    </div>
+
+    <div class="sizes">
+      <span class="label">tamaños:</span>
+      <span class="logo-c size-20">₿</span>
+      <span class="logo-c size-24">₿</span>
+      <span class="logo-c size-32">₿</span>
+      <span class="logo-c size-48">₿</span>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top: 40px; padding: 16px 20px; background: #161b22; border: 1px solid #30363d; border-radius: 10px; font-size: 13px; color: #8b949e;">
+  💡 <strong style="color: #e6edf3;">Tip:</strong> Pasá el mouse por cada fila para ver el hover. Mirá los tamaños abajo para ver cómo escala cada opción. También podés mezclar: ej. opción A para crypto y commodities, opción C (emojis) para indices.
+</div>
+
+</body>
+</html>

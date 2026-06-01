@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup: Chad Inversor PWA Unificada</title>
+<style>
+  :root {
+    --bg: #0a0e14;
+    --bg-2: #131923;
+    --bg-3: #1c2330;
+    --line: #2a3343;
+    --line-2: #3a4456;
+    --text: #e6edf3;
+    --muted: #8b95a8;
+    --gold: #d4a017;
+    --gold-2: #e6b832;
+    --gold-soft: rgba(212,160,23,0.12);
+    --green: #10b981;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: radial-gradient(circle at 20% 20%, #1a1e2e, #050810);
+    color: var(--text);
+    font-family: -apple-system, "Inter", "Segoe UI", system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 32px 16px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .heading {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .heading h1 {
+    font-family: 'Cinzel', 'Times New Roman', serif;
+    font-size: 26px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .heading p { color: var(--muted); font-size: 13px; }
+
+  /* Phone frame */
+  .phone-wrap {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1400px;
+    width: 100%;
+  }
+  .phone-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .phone-label {
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: var(--bg);
+    border: 8px solid #1a1f2c;
+    border-radius: 44px;
+    box-shadow:
+      0 30px 60px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(212,160,23,0.1),
+      inset 0 0 1px rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  /* iPhone notch */
+  .phone::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 26px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 100;
+  }
+  /* Home indicator */
+  .phone::after {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 2px;
+    z-index: 100;
+  }
+
+  /* App content */
+  .app {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-top: 48px; /* spacing under notch */
+  }
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 18px 14px;
+    flex-shrink: 0;
+  }
+  .app-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .app-logo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #8b6914);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 2px 6px rgba(212,160,23,0.3);
+  }
+  .app-logo-text {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+  }
+  .app-logo-text strong { color: var(--gold); }
+  .app-header-icons { display: flex; gap: 10px; align-items: center; }
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text);
+    position: relative;
+    cursor: pointer;
+  }
+  .icon-btn .badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 16px;
+    height: 16px;
+    background: var(--red);
+    border-radius: 50%;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  /* Scrollable area */
+  .app-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 18px 16px;
+  }
+  .app-body::-webkit-scrollbar { width: 4px; }
+  .app-body::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 2px; }
+
+  /* Bottom tab bar */
+  .tabbar {
+    flex-shrink: 0;
+    display: flex;
+    background: rgba(10,14,20,0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    padding: 8px 0 22px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 0;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color .15s;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .tab .tab-ic { font-size: 18px; }
+  .tab.active { color: var(--gold); }
+  .tab.active .tab-ic { filter: drop-shadow(0 0 8px rgba(212,160,23,0.5)); }
+
+  /* Cards / sections */
+  .section-title {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin: 16px 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-title a { color: var(--gold); text-decoration: none; font-size: 11px; }
+
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .card.gold-border { border-color: rgba(212,160,23,0.3); background: linear-gradient(160deg, rgba(212,160,23,0.06), rgba(0,0,0,0)); }
+
+  /* HOME tab specifics */
+  .home-greeting { font-size: 22px; font-weight: 700; margin: 4px 4px 2px; }
+  .home-greeting strong { color: var(--gold); }
+  .home-sub { color: var(--muted); font-size: 12px; margin: 0 4px 18px; }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(16,185,129,0.15);
+    color: var(--green);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .status-pill .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .summary-card {
+    background: linear-gradient(135deg, rgba(212,160,23,0.08), rgba(212,160,23,0.02));
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(212,160,23,0.1);
+  }
+  .summary-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .summary-row .k { color: var(--muted); font-size: 12px; }
+  .summary-row .v { font-weight: 700; font-size: 13px; }
+  .summary-row .v.up { color: var(--green); }
+  .summary-row .v.down { color: var(--red); }
+
+  /* Bot quick-access card */
+  .bot-quick {
+    background: linear-gradient(135deg, #1a1f2c, #0a0e14);
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+  }
+  .bot-quick-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #5e4708);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .bot-quick-info { flex: 1; }
+  .bot-quick-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .bot-quick-info p { color: var(--muted); font-size: 11px; }
+  .bot-quick .arrow { color: var(--gold); font-size: 18px; }
+
+  /* Alert item */
+  .alert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  .alert-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .alert-icon.high { background: rgba(239,68,68,0.15); color: var(--red); }
+  .alert-icon.medium { background: rgba(212,160,23,0.15); color: var(--gold); }
+  .alert-icon.info { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .alert-icon.signal { background: rgba(16,185,129,0.15); color: var(--green); }
+  .alert-content { flex: 1; min-width: 0; }
+  .alert-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+  .alert-title strong { font-size: 13px; }
+  .alert-title .asset {
+    font-size: 10px;
+    color: var(--gold);
+    background: rgba(212,160,23,0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .alert-body {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .alert-meta {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    align-items: center;
+  }
+  .alert-meta .pill {
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .alert-meta .pill.high { background: rgba(239,68,68,0.2); color: var(--red); }
+  .alert-meta .pill.medium { background: rgba(212,160,23,0.2); color: var(--gold); }
+  .alert-meta .time { color: var(--muted); font-size: 10px; }
+
+  /* Filter chips */
+  .chips {
+    display: flex;
+    gap: 6px;
+    margin: 12px 0 14px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    padding: 6px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .15s;
+  }
+  .chip.active {
+    background: var(--gold);
+    color: var(--bg);
+    border-color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* Search */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin: 8px 0 4px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* Asset row */
+  .asset-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .asset-row:last-child { border-bottom: none; }
+  .asset-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    color: #fff;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .asset-logo.btc { background: linear-gradient(135deg, #F7931A, #C97206); }
+  .asset-logo.eth { background: linear-gradient(135deg, #627eea, #313bf0); }
+  .asset-logo.xau { background: linear-gradient(135deg, #FFD700, #B8860B); color: #4a3000; }
+  .asset-logo.eur { background: linear-gradient(90deg, #003399 50%, #b22234 50%); font-size: 9px; }
+  .asset-logo.oil { background: #0a0a0a; color: #4B5563; }
+  .asset-logo.nas { background: #1E40AF; font-size: 9px; letter-spacing: -0.5px; }
+  .asset-row .ar-info { flex: 1; min-width: 0; }
+  .asset-row .ar-symbol { font-weight: 700; font-size: 13px; }
+  .asset-row .ar-name { color: var(--muted); font-size: 11px; }
+  .asset-row .ar-right { text-align: right; }
+  .asset-row .ar-price { font-weight: 700; font-size: 13px; }
+  .asset-row .ar-change { font-size: 11px; font-weight: 600; }
+  .asset-row .ar-change.up { color: var(--green); }
+  .asset-row .ar-change.down { color: var(--red); }
+  .sparkline {
+    height: 24px;
+    width: 60px;
+    margin-right: 8px;
+  }
+
+  /* BOT tab - chat-like interface */
+  .bot-chat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--bg-2);
+    border-radius: 14px;
+    margin-bottom: 14px;
+  }
+  .bot-chat-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #5e4708);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .bot-chat-info h4 { font-size: 14px; font-weight: 700; }
+  .bot-chat-info p { color: var(--green); font-size: 11px; }
+  .bot-chat-info p::before { content: "● "; }
+
+  .bot-msg {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    padding: 12px 14px;
+    border-radius: 14px;
+    border-top-left-radius: 4px;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 6px;
+    max-width: 85%;
+  }
+  .bot-time {
+    font-size: 10px;
+    color: var(--muted);
+    padding-left: 6px;
+    margin-bottom: 12px;
+  }
+  .bot-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .bot-action {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 13px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .bot-action:hover {
+    border-color: var(--gold);
+    background: var(--bg-3);
+  }
+  .bot-action .ic { font-size: 16px; color: var(--gold); }
+  .bot-action .arrow { margin-left: auto; color: var(--muted); }
+
+  .chat-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 8px 8px 8px 16px;
+    margin-top: 14px;
+  }
+  .chat-input input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+  }
+  .chat-input input::placeholder { color: var(--muted); }
+  .chat-input .send-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  /* PERFIL */
+  .profile-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 22px;
+    background: linear-gradient(160deg, rgba(212,160,23,0.1), rgba(0,0,0,0));
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 16px;
+    margin-bottom: 18px;
+  }
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #5e4708);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  .profile-name { font-size: 17px; font-weight: 700; }
+  .profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 12px;
+    background: linear-gradient(135deg, var(--gold), #8b6914);
+    color: #1a1a1a;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-top: 6px;
+  }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .menu-item .mi-ic {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--bg-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .menu-item .mi-text { flex: 1; font-size: 13px; font-weight: 600; }
+  .menu-item .mi-arrow { color: var(--muted); }
+
+  /* Tab content visibility */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Footer instructions */
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 12px;
+    line-height: 1.6;
+    max-width: 600px;
+  }
+  .footer-note strong { color: var(--gold); }
+
+  @media (max-width: 460px) {
+    .phone { width: 100%; max-width: 390px; }
+    body { padding: 16px 8px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="heading">
+  <h1>🐺 CHAD INVERSOR · PWA UNIFICADA</h1>
+  <p>Mockup interactivo — tappeá las tabs abajo del teléfono para navegar</p>
+</div>
+
+<div class="phone-wrap">
+  <div class="phone-card">
+    <div class="phone-label">App + Bot · Mobile (390×844)</div>
+    <div class="phone">
+      <div class="app">
+
+        <!-- Header siempre visible -->
+        <div class="app-header">
+          <div class="app-logo">
+            <div class="app-logo-icon">🐺</div>
+            <div class="app-logo-text">CHAD <strong>INVERSOR</strong></div>
+          </div>
+          <div class="app-header-icons">
+            <div class="icon-btn">🔔<span class="badge">3</span></div>
+          </div>
+        </div>
+
+        <!-- Body con scroll -->
+        <div class="app-body">
+
+          <!-- ════════ TAB: HOME ════════ -->
+          <div class="tab-content active" data-tab="home">
+            <div class="home-greeting">Buenos días, <strong>Lucas</strong></div>
+            <div class="home-sub">El mercado está activo. Tenés 3 alertas nuevas.</div>
+
+            <span class="status-pill"><span class="dot"></span>MERCADO ACTIVO · 14:32 GMT-3</span>
+
+            <div class="section-title">Resumen del día</div>
+            <div class="summary-card">
+              <div class="summary-row"><span class="k">Bitcoin</span><span class="v up">+1.25%</span></div>
+              <div class="summary-row"><span class="k">Oro (XAU)</span><span class="v up">+0.45%</span></div>
+              <div class="summary-row"><span class="k">Nasdaq 100</span><span class="v down">−0.32%</span></div>
+              <div class="summary-row"><span class="k">EUR/USD</span><span class="v up">+0.08%</span></div>
+              <div class="summary-row"><span class="k">Petróleo</span><span class="v down">−1.10%</span></div>
+            </div>
+
+            <div class="section-title">El bot está atento a <a href="#">ver más →</a></div>
+            <div class="bot-quick">
+              <div class="bot-quick-avatar">🐺</div>
+              <div class="bot-quick-info">
+                <h4>Chad Inversor Bot</h4>
+                <p>Escaneando BTC, XAU · Modo Básico activo</p>
+              </div>
+              <div class="arrow">→</div>
+            </div>
+
+            <div class="section-title">Últimas alertas <a href="#">ver todas →</a></div>
+            <div class="alert-item">
+              <div class="alert-icon high">⚡</div>
+              <div class="alert-content">
+                <div class="alert-title"><strong>Última hora</strong><span class="asset">USOIL</span></div>
+                <div class="alert-body">Powell: la inflación sigue siendo elevada y podría mantener tasas altas por más tiempo.</div>
+                <div class="alert-meta"><span class="pill high">HIGH</span><span class="time">Hace 2 min</span></div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon signal">▲</div>
+              <div class="alert-content">
+                <div class="alert-title"><strong>Señal de compra</strong><span class="asset">BTC/USD</span></div>
+                <div class="alert-body">EMA9 cruzó arriba de EMA21 · RSI 58 · Plan: Entry 66250 / SL 65400 / TP 68000.</div>
+                <div class="alert-meta"><span class="pill medium">SIGNAL</span><span class="time">Hace 5 min</span></div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon info">📰</div>
+              <div class="alert-content">
+                <div class="alert-title"><strong>Noticia relevante</strong><span class="asset">EUR/USD</span></div>
+                <div class="alert-body">EE.UU: Nuevas cifras de empleo mejoran las expectativas del mercado.</div>
+                <div class="alert-meta"><span class="pill medium">MEDIUM</span><span class="time">Hace 15 min</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════ TAB: ALERTAS ════════ -->
+          <div class="tab-content" data-tab="alertas">
+            <div class="home-greeting">Alertas</div>
+            <div class="home-sub">Filtrá por tipo de alerta</div>
+
+            <div class="chips">
+              <div class="chip active">Todas · 18</div>
+              <div class="chip">Noticias · 8</div>
+              <div class="chip">Señales · 6</div>
+              <div class="chip">Macro · 4</div>
+            </div>
+
+            <div class="alert-item">
+              <div class="alert-icon high">⚡</div>
+              <div class="alert-content">
+                <div class="alert-title"><strong>Última hora</strong><span class="asset">USOIL</span></div>
+                <div class="alert-body">Powell: la inflación sigue siendo elevada y podría mantener tasas altas por más tiempo.</div>
+                <div class="alert-meta"><span class="pill high">HIGH</span><span class="time">Hace 2 min</span></div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon signal">▲</div>
+              <div class="alert-content">
+                <div class="alert-title"><strong>Señal de compra</strong><span class="asset">BTC/USD</span></div>
+                <div class="alert-body">EMA9 cruzó arriba de EMA21 · RSI 58 · Plan: Entry 66250 / SL 65400 / TP 68000.</div>
+                <div class="alert-meta"><span class="pill medium">SIGNAL</span><span class="time">Hace 5 min</span></div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon info">📰</div>
+              <div class="alert-content">
+                <div class="alert-title"><strong>Noticia relevante</strong><span class="asset">EUR/USD</span></div>
+                <div class="alert-body">EE.UU: Nuevas cifras de empleo mejoran las expectativas del mercado.</div>
+                <div class="alert-meta"><span class="pill medium">MEDIUM</span><span class="time">Hace 15 min</span></div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon signal" style="background: rgba(239,68,68,0.15); color: var(--red);">▼</div>
+              <div class="alert-content">
+                <div class="alert-title"><strong>Señal de venta</strong><span class="asset">EUR/USD</span></div>
+                <div class="alert-body">EMA9 cruzó abajo de EMA21 · Stoch 22 (sobreventa) · Plan: Entry 1.0845.</div>
+                <div class="alert-meta"><span class="pill medium">SIGNAL</span><span class="time">Hace 7 min</span></div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon high">⏰</div>
+              <div class="alert-content">
+                <div class="alert-title"><strong>En 30 min</strong><span class="asset">XAU/USD</span></div>
+                <div class="alert-body">FOMC · Decisión de tasa de interés. Alta volatilidad esperada en USD y oro.</div>
+                <div class="alert-meta"><span class="pill high">MACRO</span><span class="time">Hace 30 min</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════ TAB: MERCADO ════════ -->
+          <div class="tab-content" data-tab="mercado">
+            <div class="home-greeting">Mercado</div>
+            <div class="home-sub">Activos en tiempo real</div>
+
+            <div class="search-bar">
+              <span>🔍</span><span>Buscar activo…</span>
+            </div>
+
+            <div class="chips">
+              <div class="chip active">Favoritos</div>
+              <div class="chip">Cripto</div>
+              <div class="chip">Forex</div>
+              <div class="chip">Commodities</div>
+              <div class="chip">Indices</div>
+            </div>
+
+            <div class="card">
+              <div class="asset-row">
+                <div class="asset-logo btc">₿</div>
+                <div class="ar-info">
+                  <div class="ar-symbol">BTC/USDT</div>
+                  <div class="ar-name">Bitcoin</div>
+                </div>
+                <svg class="sparkline" viewBox="0 0 60 24"><polyline points="0,20 10,18 20,15 30,12 40,8 50,10 60,5" stroke="#10b981" stroke-width="1.5" fill="none"/></svg>
+                <div class="ar-right">
+                  <div class="ar-price">66,250.50</div>
+                  <div class="ar-change up">+1.25%</div>
+                </div>
+              </div>
+              <div class="asset-row">
+                <div class="asset-logo eth">Ξ</div>
+                <div class="ar-info">
+                  <div class="ar-symbol">ETH/USDT</div>
+                  <div class="ar-name">Ethereum</div>
+                </div>
+                <svg class="sparkline" viewBox="0 0 60 24"><polyline points="0,14 10,16 20,12 30,10 40,11 50,8 60,6" stroke="#10b981" stroke-width="1.5" fill="none"/></svg>
+                <div class="ar-right">
+                  <div class="ar-price">3,245.10</div>
+                  <div class="ar-change up">+2.15%</div>
+                </div>
+              </div>
+              <div class="asset-row">
+                <div class="asset-logo xau">Au</div>
+                <div class="ar-info">
+                  <div class="ar-symbol">XAU/USD</div>
+                  <div class="ar-name">Oro</div>
+                </div>
+                <svg class="sparkline" viewBox="0 0 60 24"><polyline points="0,12 10,11 20,13 30,10 40,9 50,11 60,8" stroke="#10b981" stroke-width="1.5" fill="none"/></svg>
+                <div class="ar-right">
+                  <div class="ar-price">2,345.60</div>
+                  <div class="ar-change up">+0.45%</div>
+                </div>
+              </div>
+              <div class="asset-row">
+                <div class="asset-logo eur">€$</div>
+                <div class="ar-info">
+                  <div class="ar-symbol">EUR/USD</div>
+                  <div class="ar-name">Euro / Dólar</div>
+                </div>
+                <svg class="sparkline" viewBox="0 0 60 24"><polyline points="0,10 10,12 20,11 30,14 40,16 50,14 60,15" stroke="#ef4444" stroke-width="1.5" fill="none"/></svg>
+                <div class="ar-right">
+                  <div class="ar-price">1.0845</div>
+                  <div class="ar-change down">−0.45%</div>
+                </div>
+              </div>
+              <div class="asset-row">
+                <div class="asset-logo nas">NDX</div>
+                <div class="ar-info">
+                  <div class="ar-symbol">NAS100</div>
+                  <div class="ar-name">Nasdaq 100</div>
+                </div>
+                <svg class="sparkline" viewBox="0 0 60 24"><polyline points="0,8 10,10 20,9 30,12 40,11 50,13 60,11" stroke="#10b981" stroke-width="1.5" fill="none"/></svg>
+                <div class="ar-right">
+                  <div class="ar-price">18,860.40</div>
+                  <div class="ar-change up">+0.85%</div>
+                </div>
+              </div>
+              <div class="asset-row">
+                <div class="asset-logo oil">●</div>
+                <div class="ar-info">
+                  <div class="ar-symbol">USOIL</div>
+                  <div class="ar-name">Petróleo WTI</div>
+                </div>
+                <svg class="sparkline" viewBox="0 0 60 24"><polyline points="0,8 10,10 20,12 30,14 40,16 50,18 60,20" stroke="#ef4444" stroke-width="1.5" fill="none"/></svg>
+                <div class="ar-right">
+                  <div class="ar-price">75.20</div>
+                  <div class="ar-change down">−1.10%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════ TAB: BOT ════════ -->
+          <div class="tab-content" data-tab="bot">
+            <div class="bot-chat-header">
+              <div class="bot-chat-avatar">🐺</div>
+              <div class="bot-chat-info">
+                <h4>Chad Inversor Bot</h4>
+                <p>Online · listo para escanear</p>
+              </div>
+            </div>
+
+            <div class="bot-msg">¡Hola, inversor! 👋 Soy Chad Inversor. Estoy aquí para ayudarte a tomar mejores decisiones en el mercado.</div>
+            <div class="bot-time">14:30</div>
+
+            <div class="bot-msg">¿Qué quieres hacer hoy?</div>
+            <div class="bot-time">14:30</div>
+
+            <div class="bot-actions">
+              <div class="bot-action">
+                <span class="ic">✋</span>
+                <span>Operar manual</span>
+                <span class="arrow">→</span>
+              </div>
+              <div class="bot-action">
+                <span class="ic">⚡</span>
+                <span>Modo básico — Señales BUY/SELL</span>
+                <span class="arrow">→</span>
+              </div>
+              <div class="bot-action">
+                <span class="ic">📊</span>
+                <span>Probabilidades — Lectura de tendencia</span>
+                <span class="arrow">→</span>
+              </div>
+              <div class="bot-action">
+                <span class="ic">🎯</span>
+                <span>Estrategias — Análisis completo</span>
+                <span class="arrow">→</span>
+              </div>
+            </div>
+
+            <div class="chat-input">
+              <span style="font-size:18px;color:var(--muted);">😀</span>
+              <input placeholder="Preguntale al bot…" />
+              <span style="font-size:14px;color:var(--muted);">📎</span>
+              <button class="send-btn">🎤</button>
+            </div>
+          </div>
+
+          <!-- ════════ TAB: PERFIL ════════ -->
+          <div class="tab-content" data-tab="perfil">
+            <div class="profile-hero">
+              <div class="profile-avatar">🐺</div>
+              <div class="profile-name">Lucas Vega</div>
+              <div class="profile-badge">⭐ CHAD INVERSOR PREMIUM</div>
+            </div>
+
+            <div class="section-title">Mi cuenta</div>
+            <div class="menu-item">
+              <div class="mi-ic">⚙</div>
+              <div class="mi-text">Mis Preferencias</div>
+              <div class="mi-arrow">›</div>
+            </div>
+            <div class="menu-item">
+              <div class="mi-ic">🔔</div>
+              <div class="mi-text">Gestión de Alertas</div>
+              <div class="mi-arrow">›</div>
+            </div>
+            <div class="menu-item">
+              <div class="mi-ic">⭐</div>
+              <div class="mi-text">Plan Premium</div>
+              <div class="mi-arrow">›</div>
+            </div>
+            <div class="menu-item">
+              <div class="mi-ic">🔒</div>
+              <div class="mi-text">Seguridad</div>
+              <div class="mi-arrow">›</div>
+            </div>
+            <div class="menu-item">
+              <div class="mi-ic">ℹ</div>
+              <div class="mi-text">Acerca de</div>
+              <div class="mi-arrow">›</div>
+            </div>
+
+            <div class="section-title" style="margin-top:24px;">Soporte</div>
+            <div class="menu-item">
+              <div class="mi-ic">💬</div>
+              <div class="mi-text">Contactar soporte</div>
+              <div class="mi-arrow">›</div>
+            </div>
+            <div class="menu-item" style="background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); color: var(--red);">
+              <div class="mi-ic" style="background: rgba(239,68,68,0.15);">↩</div>
+              <div class="mi-text" style="color: var(--red);">Cerrar sesión</div>
+              <div class="mi-arrow"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tab bar abajo -->
+        <div class="tabbar">
+          <div class="tab active" data-target="home">
+            <div class="tab-ic">🏠</div>
+            <div>Inicio</div>
+          </div>
+          <div class="tab" data-target="alertas">
+            <div class="tab-ic">🔔</div>
+            <div>Alertas</div>
+          </div>
+          <div class="tab" data-target="mercado">
+            <div class="tab-ic">📊</div>
+            <div>Mercado</div>
+          </div>
+          <div class="tab" data-target="bot">
+            <div class="tab-ic">🐺</div>
+            <div>Bot</div>
+          </div>
+          <div class="tab" data-target="perfil">
+            <div class="tab-ic">👤</div>
+            <div>Perfil</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-note">
+  <strong>5 tabs · Mobile-first · Branding unificado</strong><br>
+  Logos SVG (BTC/ETH/XAU/EUR/OIL/NDX), paleta dorada Chad, tipografía Cinzel para títulos.<br>
+  El "Bot" tab funciona como chat-asistente que dispara cada uno de los 4 modos del bot actual.<br>
+  Próximo paso: aprobar mockup → migrar a Next.js dentro de chad-alerts-mobile.
+</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.target;
+      // Activate clicked tab
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      // Show target content
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector(`.tab-content[data-tab="${target}"]`).classList.add('active');
+      // Scroll body to top
+      document.querySelector('.app-body').scrollTop = 0;
+    });
+  });
+</script>
+
+</body>
+</html>

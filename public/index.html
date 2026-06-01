@@ -1,0 +1,4878 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chad Inversor — ¿Qué tipo de Chad Inversor sos?</title>
+<meta name="description" content="Descubrí qué tipo de Chad Inversor sos y por qué no estás ganando de forma consistente. Hacé el quiz y subí de nivel.">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap">
+<style>
+  :root {
+    --bg: #050505;
+    --bg-1: #0a0a0a;
+    --bg-2: #121212;
+    --bg-3: #181818;
+    --line: rgba(212, 160, 23, 0.15);
+    --line-2: rgba(212, 160, 23, 0.35);
+    --text: #ececec;
+    --muted: #8a8a8a;
+    --gold-1: #ffe27a;
+    --gold-2: #d4a017;
+    --gold-3: #8b6508;
+    --gold-grad: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    --gold-soft: linear-gradient(135deg, rgba(255,226,122,0.14), rgba(139,101,8,0.04));
+    --shadow: 0 24px 60px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-gold: 0 20px 48px rgba(212, 160, 23, 0.18);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ========= LOADER / INTRO ========= */
+  .page {
+    opacity: 0;
+    transition: opacity .35s ease;
+  }
+  body.loaded .page { opacity: 1; }
+  body:not(.loaded) { overflow: hidden; height: 100vh; }
+  body.loaded { overflow-x: hidden; }
+
+  .loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(60% 60% at 50% 50%, #0d0d0d 0%, #050505 70%);
+    transition: opacity .3s ease;
+    touch-action: none;
+  }
+  body.loaded .loader {
+    opacity: 0;
+    pointer-events: none;
+    touch-action: auto;
+  }
+  .loader-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .loader-logo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 2px rgba(212,160,23,0.25), 0 0 40px rgba(212,160,23,0.30);
+    animation: logoPop .35s cubic-bezier(.2,.85,.25,1.1) both;
+  }
+  @keyframes logoPop {
+    from { opacity: 0; transform: scale(.78); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .loader-brand {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 5px;
+    background: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0;
+    animation: brandFade .3s ease .15s both;
+  }
+  @keyframes brandFade {
+    from { opacity: 0; transform: translateY(5px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .loader-bar-wrap {
+    width: 160px;
+    height: 3px;
+    background: rgba(212,160,23,0.15);
+    border-radius: 999px;
+    overflow: hidden;
+    opacity: 0;
+    animation: brandFade .3s ease .2s both;
+  }
+  .loader-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ffe27a, #d4a017);
+    border-radius: 999px;
+    box-shadow: 0 0 8px rgba(212,160,23,0.5);
+    animation: barFill .45s ease-in-out .2s both;
+  }
+  @keyframes barFill {
+    from { width: 0%; }
+    to   { width: 100%; }
+  }
+
+  /* ambient backdrop */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(60% 50% at 10% 0%, rgba(212,160,23,0.10), transparent 60%),
+      radial-gradient(60% 50% at 100% 20%, rgba(212,160,23,0.08), transparent 60%),
+      radial-gradient(40% 40% at 50% 100%, rgba(212,160,23,0.05), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(5, 5, 5, 0.72);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  .brand {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 4px;
+    font-size: 15px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--gold-1); }
+  @media (max-width: 780px) { .nav-links { display: none; } }
+
+  /* SECTION SHELL */
+  section {
+    position: relative;
+    padding: 110px 0;
+    z-index: 1;
+  }
+  section.tight { padding: 80px 0; }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    padding: 8px 14px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    background: var(--gold-soft);
+    margin-bottom: 22px;
+  }
+  h1, h2, h3 { font-family: 'Cinzel', serif; font-weight: 600; letter-spacing: 0.5px; }
+  .h-gold {
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    padding-top: 60px;
+    padding-bottom: 80px;
+  }
+  .hero-inner { text-align: center; max-width: 880px; margin: 0 auto; }
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 82px);
+    line-height: 1.05;
+    margin: 18px 0 24px;
+  }
+  .hero h1 span.accent { display: block; }
+  .hero p.sub {
+    color: var(--muted);
+    font-size: clamp(16px, 1.8vw, 20px);
+    max-width: 560px;
+    margin: 0 auto 40px;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 34px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 999px;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: transform .25s ease, box-shadow .3s ease, filter .2s, background .3s;
+    position: relative;
+  }
+  .btn-primary {
+    background: var(--gold-grad);
+    color: #120a00;
+    box-shadow: 0 10px 30px rgba(212,160,23,0.35), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(212,160,23,0.45); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--gold-1);
+    border: 1px solid var(--line-2);
+  }
+  .btn-ghost:hover { background: var(--gold-soft); border-color: var(--gold-2); }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* LEVEL BADGES */
+  .level-rail {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 60px;
+    flex-wrap: wrap;
+  }
+  .level-dot {
+    width: 44px; height: 44px;
+    border-radius: 999px;
+    display: grid; place-items: center;
+    font-size: 18px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    color: var(--gold-2);
+    transition: transform .25s ease, border-color .25s ease;
+  }
+  .level-dot.locked { opacity: 0.35; }
+  .level-dot:hover { transform: translateY(-4px); border-color: var(--gold-2); }
+  .level-connector { width: 22px; height: 1px; background: var(--line-2); align-self: center; }
+
+  /* INTRO */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 60px;
+  }
+  .intro-card {
+    padding: 38px 30px;
+    border-radius: var(--radius);
+    background: linear-gradient(160deg, rgba(212,160,23,0.04), rgba(18,18,18,0.8));
+    border: 1px solid var(--line);
+    transition: transform .4s ease, border-color .4s ease;
+  }
+  .intro-card:hover { transform: translateY(-4px); border-color: var(--line-2); }
+  .intro-card p {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 2.1vw, 24px);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.45;
+  }
+  .intro-card .num {
+    font-family: 'Cinzel', serif;
+    color: var(--gold-2);
+    font-size: 14px;
+    letter-spacing: 6px;
+    margin-bottom: 14px;
+    display: block;
+  }
+  @media (max-width: 780px) { .intro-grid { grid-template-columns: 1fr; } }
+
+  /* QUIZ */
+  .quiz-wrap {
+    max-width: 820px;
+    margin: 60px auto 0;
+    background: linear-gradient(180deg, rgba(24,24,24,0.9), rgba(8,8,8,0.9));
+    border: 1px solid var(--line-2);
+    border-radius: 24px;
+    padding: 36px;
+    box-shadow: var(--shadow);
+  }
+  .quiz-progress {
+    height: 6px;
+    background: var(--bg-2);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 28px;
+    border: 1px solid var(--line);
+  }
+  .quiz-progress .bar {
+    height: 100%;
+    width: 10%;
+    background: var(--gold-grad);
+    border-radius: 999px;
+    transition: width .4s ease;
+    box-shadow: 0 0 12px rgba(212,160,23,0.6);
+  }
+  .quiz-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .quiz-meta .dif {
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+  }
+  .quiz-meta .dif.easy { color: #a8d9a7; border-color: rgba(168,217,167,0.25); }
+  .quiz-meta .dif.hard { color: #f0b16a; border-color: rgba(240,177,106,0.30); }
+  .quiz-meta .dif.ultra { color: #ff7a7a; border-color: rgba(255,122,122,0.30); }
+  .quiz-q {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(20px, 2.4vw, 28px);
+    line-height: 1.35;
+    margin: 6px 0 24px;
+    color: var(--text);
+  }
+  .quiz-options { display: grid; gap: 12px; }
+  .opt {
+    text-align: left;
+    width: 100%;
+    padding: 18px 22px;
+    background: var(--bg-2);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .25s ease;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .opt:hover { border-color: var(--gold-2); background: var(--bg-3); transform: translateX(4px); }
+  .opt .bullet {
+    width: 22px; height: 22px;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    font-size: 11px;
+    color: var(--gold-2);
+    font-weight: 600;
+  }
+  .opt.selected {
+    border-color: var(--gold-2);
+    background: var(--gold-soft);
+    box-shadow: 0 0 0 1px rgba(212,160,23,0.3);
+  }
+  .opt.selected .bullet { background: var(--gold-grad); color: #120a00; }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 12px;
+  }
+  .quiz-nav .btn { padding: 14px 26px; font-size: 12px; }
+  .quiz-nav button[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+  /* RESULT */
+  .result {
+    display: none;
+    max-width: 820px;
+    margin: 60px auto 0;
+    text-align: center;
+    padding: 48px 32px;
+    border-radius: 24px;
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(212,160,23,0.20), transparent 60%),
+      linear-gradient(180deg, rgba(18,18,18,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--line-2);
+    box-shadow: var(--shadow-gold);
+  }
+  .result.show { display: block; animation: rise .6s ease both; }
+  .result-img {
+    display: block;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    box-shadow: var(--shadow), 0 0 0 1px var(--line-2), 0 0 80px rgba(212,160,23,0.25);
+    object-fit: cover;
+    background: var(--bg-2);
+  }
+  .result-tag { display: inline-block; margin-bottom: 10px; }
+  .result-title {
+    font-size: clamp(28px, 4vw, 44px);
+    margin: 8px 0 6px;
+  }
+  .result-desc { color: var(--muted); font-size: 18px; margin-bottom: 24px; }
+  .next-level {
+    display: inline-block;
+    padding: 16px 24px;
+    border-radius: 14px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    color: var(--text);
+  }
+  .next-level strong {
+    display: block;
+    color: var(--gold-1);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  /* ====== QUIZ PREMIUM — microcopy, counter, break, analyzing ====== */
+  .quiz-warn {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px 16px;
+    border-left: 2px solid var(--gold-2);
+    background: rgba(212,160,23,0.04);
+    border-radius: 4px;
+  }
+  .quiz-warn em { font-style: italic; }
+
+  #qCount {
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+  #qCount .qnum {
+    font-size: 22px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    letter-spacing: 0;
+    transition: transform .3s ease;
+    display: inline-block;
+  }
+  #qCount .qnum.bump { animation: numBump .5s ease; }
+  #qCount .qsep { opacity: 0.5; margin: 0 4px; }
+  @keyframes numBump {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.25); }
+  }
+
+  .quiz-breakmsg {
+    display: none;
+    margin: 0 0 18px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(212,160,23,0.10), rgba(212,160,23,0.03));
+    border: 1px solid var(--line-2);
+    color: var(--gold-1);
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-align: center;
+    animation: rise .5s ease both;
+  }
+  .quiz-breakmsg.show { display: block; }
+
+  /* ANALYZING LOADER */
+  .quiz-analyzing {
+    display: none;
+    max-width: 820px;
+    margin: 60px auto 0;
+    padding: 80px 32px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(18,18,18,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--line-2);
+    text-align: center;
+  }
+  .quiz-analyzing.show { display: block; animation: rise .5s ease both; }
+  .analyzing-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  .analyzing-ring {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 3px solid rgba(212,160,23,0.15);
+    border-top-color: var(--gold-2);
+    border-right-color: var(--gold-1);
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 28px rgba(212,160,23,0.3);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .analyzing-text {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 3px;
+    font-size: 14px;
+    color: var(--gold-1);
+  }
+  .analyzing-text .dots span {
+    display: inline-block;
+    opacity: 0.2;
+    animation: dotPulse 1.2s infinite;
+  }
+  .analyzing-text .dots span:nth-child(2) { animation-delay: .2s; }
+  .analyzing-text .dots span:nth-child(3) { animation-delay: .4s; }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 0.2; }
+    50%      { opacity: 1; }
+  }
+
+  /* RESULT PREMIUM */
+  .result-headline {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 2.2vw, 22px);
+    color: var(--gold-1);
+    margin: 6px 0 18px;
+    font-weight: 600;
+  }
+  .result-desc {
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 26px;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .result-section {
+    text-align: left;
+    max-width: 560px;
+    margin: 0 auto 26px;
+    padding: 22px 24px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .result-section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    margin-bottom: 12px;
+  }
+  .result-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .result-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .result-list li::before {
+    content: "→";
+    color: var(--gold-1);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .result-truth {
+    max-width: 560px;
+    margin: 0 auto 28px;
+    padding: 22px 24px;
+    background: linear-gradient(135deg, rgba(212,160,23,0.08), rgba(212,160,23,0.02));
+    border-left: 3px solid var(--gold-2);
+    border-radius: 10px;
+    text-align: left;
+  }
+  .result-truth strong {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    margin-bottom: 8px;
+  }
+  .result-truth p {
+    margin: 0;
+    font-style: italic;
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .result-cta {
+    max-width: 600px;
+    margin: 0 auto 24px;
+    padding: 26px 22px;
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(212,160,23,0.15), transparent 60%),
+      linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--gold-2);
+    border-radius: 16px;
+    box-shadow: var(--shadow-gold);
+  }
+  .cta-headline {
+    font-family: 'Cinzel', serif;
+    font-size: 17px;
+    color: var(--text);
+    margin: 0 0 18px;
+    line-height: 1.4;
+  }
+  .cta-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .result-share {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .btn.btn-sm {
+    padding: 10px 20px;
+    font-size: 11px;
+  }
+
+  /* OPTIONS — micro-delay confirmation */
+  .opt.just-selected {
+    animation: optBump .4s ease;
+  }
+  @keyframes optBump {
+    0%, 100% { transform: translateX(4px); }
+    50%      { transform: translateX(8px) scale(1.01); }
+  }
+
+  /* GALLERY — with hover overlay */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 30px;
+  }
+  .gallery .card {
+    position: relative;
+    padding: 8px;
+    border-radius: var(--radius);
+    background: linear-gradient(160deg, rgba(24,24,24,0.85), rgba(6,6,6,0.85));
+    border: 1px solid var(--line);
+    text-align: center;
+    transition: transform .4s ease, border-color .4s ease, box-shadow .4s ease;
+    overflow: hidden;
+  }
+  .gallery .card:hover {
+    transform: translateY(-8px);
+    border-color: var(--line-2);
+    box-shadow: var(--shadow-gold);
+  }
+  .img-frame {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .gallery img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    background: var(--bg-2);
+    display: block;
+    transition: transform .6s ease, filter .4s ease;
+  }
+  .gallery .card:hover img { transform: scale(1.08); filter: brightness(0.55); }
+  .img-info {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    background: linear-gradient(180deg, rgba(5,5,5,0.2), rgba(5,5,5,0.8));
+    color: var(--text);
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity .4s ease, transform .4s ease;
+    pointer-events: none;
+    text-align: center;
+  }
+  .gallery .card:hover .img-info {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .img-info .title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--gold-1);
+    margin-bottom: 4px;
+  }
+  .img-info .desc {
+    font-size: 9px;
+    color: var(--text);
+    line-height: 1.35;
+    max-width: 95%;
+  }
+  .gallery .name {
+    margin-top: 6px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1.5px;
+    font-size: 10px;
+    color: var(--gold-1);
+  }
+  .gallery .card.locked .overlay {
+    position: absolute;
+    inset: 18px;
+    border-radius: 14px;
+    background: rgba(0,0,0,0.55);
+    display: grid; place-items: center;
+    font-size: 28px;
+    color: var(--gold-2);
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+  .gallery .card.locked:hover .overlay { opacity: 0; }
+  @media (max-width: 1200px) { .gallery { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 880px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+
+  /* EAGLE BLOCKED */
+  .eagle-card {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 54px 32px;
+    border-radius: var(--radius);
+    border: 1px dashed var(--gold-2);
+    background:
+      radial-gradient(80% 80% at 50% 0%, rgba(212,160,23,0.14), transparent 60%),
+      linear-gradient(180deg, rgba(12,12,12,0.9), rgba(6,6,6,0.9));
+    text-align: center;
+    position: relative;
+  }
+  .eagle-card img {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    margin-bottom: 22px;
+    filter: grayscale(0.6) brightness(0.85);
+    border: 1px solid var(--line-2);
+    box-shadow: 0 0 80px rgba(212,160,23,0.15);
+    object-fit: cover;
+    transition: filter .5s ease, transform .5s ease;
+  }
+  .eagle-card:hover img { filter: grayscale(0) brightness(1); transform: scale(1.04); }
+  .eagle-card .lock {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(212,160,23,0.10);
+    color: var(--gold-1);
+    font-size: 12px; letter-spacing: 3px;
+    border: 1px solid var(--line-2);
+    margin-bottom: 14px;
+  }
+  .eagle-card h3 { font-size: clamp(28px, 4vw, 38px); margin: 8px 0 8px; }
+  .eagle-card p { color: var(--muted); font-size: 18px; max-width: 520px; margin: 0 auto; }
+
+  /* SPECIALIZATIONS */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 50px;
+  }
+  .spec {
+    position: relative;
+    padding: 28px;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(20,20,20,0.9), rgba(8,8,8,0.9));
+    border: 1px solid var(--line);
+    text-align: center;
+    overflow: hidden;
+    transition: transform .4s ease, box-shadow .4s ease;
+  }
+  .spec:hover { transform: translateY(-8px); box-shadow: var(--shadow-gold); }
+  .spec .spec-img {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 8px auto 16px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .spec .spec-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .6s ease, filter .4s ease;
+  }
+  .spec:hover .spec-img img { transform: scale(1.1); filter: brightness(0.6); }
+  .spec .spec-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 14px;
+    background: rgba(5,5,5,0.65);
+    color: var(--gold-1);
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity .4s ease;
+    text-align: center;
+  }
+  .spec:hover .spec-overlay { opacity: 1; }
+  .spec h4 { font-family: 'Cinzel', serif; font-size: 22px; margin: 0 0 6px; color: var(--gold-1); }
+  .spec p { color: var(--muted); margin: 0; }
+  .spec.featured {
+    border: 1px solid var(--gold-2);
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(212,160,23,0.18), transparent 60%),
+      linear-gradient(180deg, rgba(24,24,24,0.95), rgba(8,8,8,0.95));
+    box-shadow: var(--shadow-gold);
+    transform: translateY(-10px);
+  }
+  .spec.featured:hover { transform: translateY(-16px); }
+  .spec.featured .badge {
+    position: absolute; top: 14px; right: 14px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--gold-grad);
+    color: #120a00;
+    font-weight: 700;
+  }
+  @media (max-width: 880px) { .spec-grid { grid-template-columns: 1fr; } .spec.featured, .spec.featured:hover { transform: none; } }
+
+  /* PRODUCTS */
+  .products {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 56px;
+  }
+  .price {
+    padding: 38px 32px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--line);
+    position: relative;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transition: transform .4s ease, border-color .4s ease;
+  }
+  .price:hover { transform: translateY(-4px); border-color: var(--line-2); }
+  .price::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(60% 40% at 50% 0%, rgba(212,160,23,0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .price.featured { border-color: var(--gold-2); box-shadow: var(--shadow-gold); }
+  .price .kicker {
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold-2); margin-bottom: 10px;
+  }
+  .price h3 { font-size: 28px; margin: 0 0 8px; }
+  .price .tag {
+    font-family: 'Cinzel', serif;
+    font-size: 38px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    margin: 14px 0 4px;
+  }
+  .price .tag small { font-size: 14px; color: var(--muted); letter-spacing: 2px; }
+  .price ul { list-style: none; padding: 0; margin: 20px 0 28px; display: grid; gap: 12px; }
+  .price ul li {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--text);
+    font-size: 15px;
+  }
+  .price ul li::before {
+    content: "✓";
+    width: 22px; height: 22px;
+    border-radius: 999px;
+    background: var(--gold-soft);
+    color: var(--gold-1);
+    display: grid; place-items: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    border: 1px solid var(--line-2);
+  }
+  .price .btn { width: 100%; justify-content: center; margin-top: auto; }
+  @media (max-width: 880px) { .products { grid-template-columns: 1fr; } }
+
+  /* PAYMENT */
+  .pay-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 40px;
+  }
+  .pay {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 26px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+    min-width: 260px;
+    transition: transform .3s ease, border-color .3s ease;
+  }
+  .pay:hover { transform: translateY(-3px); border-color: var(--line-2); }
+  .pay .logo {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    border-radius: 12px;
+    background: var(--gold-soft);
+    color: var(--gold-1);
+    font-weight: 700;
+    font-size: 20px;
+    border: 1px solid var(--line-2);
+  }
+  .pay .name { font-weight: 600; letter-spacing: 1px; }
+  .pay .desc { color: var(--muted); font-size: 12px; }
+  .pay .btn { margin-left: auto; padding: 10px 18px; font-size: 11px; }
+
+  /* SOCIAL */
+  .social-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .social {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 24px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all .3s ease;
+    min-width: 260px;
+  }
+  .social:hover { border-color: var(--gold-2); transform: translateY(-3px); }
+  .social .icon {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    border-radius: 12px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+  }
+  .social .icon svg { width: 22px; height: 22px; color: var(--gold-1); }
+  .social strong { display: block; font-size: 15px; }
+  .social span { font-size: 12px; color: var(--muted); letter-spacing: 1px; }
+  .social .arrow {
+    margin-left: auto;
+    color: var(--gold-2);
+    font-size: 18px;
+    transition: transform .3s ease;
+  }
+  .social:hover .arrow { transform: translateX(4px); }
+
+  /* ====== NEWS SECTION ====== */
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 50px;
+  }
+  @media (max-width: 880px) { .news-grid { grid-template-columns: 1fr; } }
+  .news-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 28px;
+    background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    text-decoration: none;
+    color: var(--text);
+    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    overflow: hidden;
+  }
+  .news-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(70% 50% at 0% 0%, rgba(212,160,23,0.08), transparent 60%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .3s ease;
+  }
+  .news-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold-2);
+    box-shadow: var(--shadow-gold);
+  }
+  .news-card:hover::before { opacity: 1; }
+  .news-logo {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+  .news-logo svg { width: 100%; height: 100%; display: block; }
+  .news-body { flex: 1; }
+  .news-kicker {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    margin-bottom: 8px;
+  }
+  .news-card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .news-card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 18px;
+  }
+  .news-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+  .news-tags span {
+    font-size: 11px;
+    padding: 6px 12px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    color: var(--gold-1);
+    letter-spacing: 0.5px;
+  }
+  .news-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: var(--gold-grad);
+    color: #120a00;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 999px;
+    align-self: flex-start;
+    transition: transform .25s ease, box-shadow .3s ease;
+    box-shadow: 0 8px 20px rgba(212,160,23,0.3);
+  }
+  .news-card:hover .news-cta {
+    transform: translateX(4px);
+    box-shadow: 0 12px 28px rgba(212,160,23,0.45);
+  }
+  .news-cta svg { width: 14px; height: 14px; }
+  .news-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 24px;
+    letter-spacing: 1px;
+  }
+
+  /* FINAL CTA */
+  .final {
+    text-align: center;
+    padding: 120px 0;
+    position: relative;
+  }
+  .final::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(60% 60% at 50% 50%, rgba(212,160,23,0.10), transparent 60%);
+    pointer-events: none;
+  }
+  .final h2 {
+    font-size: clamp(36px, 6vw, 62px);
+    margin: 18px auto 32px;
+    max-width: 900px;
+    line-height: 1.1;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 40px 0 48px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  footer .brand { font-size: 14px; margin-bottom: 8px; justify-content: center; }
+
+  /* section heads */
+  .section-head { text-align: center; max-width: 760px; margin: 0 auto; }
+  .section-head h2 { font-size: clamp(30px, 4.5vw, 52px); margin: 10px 0 14px; line-height: 1.15; }
+  .section-head p { color: var(--muted); font-size: 17px; }
+
+  /* ANIMATIONS */
+  @keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  @keyframes pulse { 0%,100% { opacity: .4 } 50% { opacity: .9 } }
+
+  .reveal {
+    opacity: 1;
+    transform: translateY(28px);
+    transition: opacity .9s cubic-bezier(.22,.61,.36,1), transform .9s cubic-bezier(.22,.61,.36,1);
+    will-change: opacity, transform;
+  }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.delay-1 { transition-delay: .08s; }
+  .reveal.delay-2 { transition-delay: .16s; }
+  .reveal.delay-3 { transition-delay: .24s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+
+  /* divider */
+  .divider {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin: 0 auto 6px;
+    color: var(--gold-2);
+    font-size: 10px; letter-spacing: 4px;
+  }
+  .divider::before, .divider::after {
+    content: ""; width: 40px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line-2), transparent);
+  }
+
+  /* glow accents on hero */
+  .hero-ornament {
+    margin: 30px auto 0;
+    display: flex; gap: 10px; justify-content: center;
+  }
+  .hero-ornament span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold-2);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .hero-ornament span:nth-child(2) { animation-delay: .3s; }
+  .hero-ornament span:nth-child(3) { animation-delay: .6s; }
+
+  /* EAGLE SUBNIVELES */
+  .eagle-sublevels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+  @media (max-width: 780px) { .eagle-sublevels { grid-template-columns: 1fr; } }
+  .sublevel {
+    position: relative;
+    padding: 22px 18px;
+    border-radius: 14px;
+    background: linear-gradient(160deg, rgba(212,160,23,0.05), rgba(12,12,12,0.85));
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+    text-align: center;
+  }
+  .sublevel:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold-2);
+    box-shadow: var(--shadow-gold);
+  }
+  .sublevel .sub-lock {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold-2);
+    margin-bottom: 6px;
+  }
+  .sublevel h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--gold-1);
+    margin: 6px 0 4px;
+  }
+  .sublevel p {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+    letter-spacing: 1px;
+  }
+  .sublevel.premium {
+    border-color: var(--gold-2);
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(212,160,23,0.18), transparent 60%),
+      linear-gradient(160deg, rgba(24,24,24,0.95), rgba(8,8,8,0.95));
+    box-shadow: var(--shadow-gold);
+  }
+  .sublevel .crown {
+    position: absolute;
+    top: -10px;
+    right: 12px;
+    font-size: 20px;
+    filter: drop-shadow(0 2px 4px rgba(212,160,23,0.6));
+  }
+
+  /* SUBLEVEL MODAL */
+  .sub-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  .sub-modal.open { display: flex; animation: rise .3s ease both; }
+  .sub-modal-box {
+    max-width: 520px;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(22,22,22,0.98), rgba(8,8,8,0.98));
+    border: 1px solid var(--gold-2);
+    border-radius: 20px;
+    padding: 36px 28px;
+    box-shadow: var(--shadow-gold);
+    text-align: center;
+    position: relative;
+  }
+  .sub-modal-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: transparent;
+    border: 1px solid var(--line-2);
+    color: var(--gold-1);
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .sub-modal-close:hover { background: var(--gold-soft); }
+  .sub-modal h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    margin: 0 0 6px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .sub-modal .sub-sub {
+    color: var(--gold-2);
+    letter-spacing: 3px;
+    font-size: 11px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .sub-modal p.sub-desc {
+    color: var(--text);
+    font-size: 15px;
+    margin: 0 0 18px;
+  }
+  .sub-modal ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: grid;
+    gap: 10px;
+    text-align: left;
+  }
+  .sub-modal ul li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--text);
+    font-size: 14px;
+  }
+  .sub-modal ul li::before {
+    content: "✓";
+    color: var(--gold-1);
+    font-weight: 700;
+  }
+  .sub-modal .sub-upgrade {
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    color: var(--gold-1);
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  /* ============ CHAD ACADEMY TEASER ============ */
+  .academy-wrap {
+    margin-top: 20px;
+    padding: 20px 24px;
+    border-radius: 24px;
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(212,160,23,0.18), transparent 60%),
+      linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--gold-2);
+    box-shadow: var(--shadow-gold);
+    position: relative;
+    overflow: hidden;
+  }
+  .academy-wrap::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,160,23,0.18), transparent 65%);
+    pointer-events: none;
+  }
+  .academy-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    color: var(--gold-1);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .academy-head {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .academy-head h3 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(20px, 3vw, 28px);
+    margin: 2px 0 6px;
+    line-height: 1.1;
+  }
+  .academy-head p {
+    color: var(--muted);
+    font-size: 13px;
+    max-width: 620px;
+    margin: 0 auto 16px;
+    line-height: 1.4;
+  }
+  .academy-features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 880px) { .academy-features { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .academy-features { grid-template-columns: 1fr; } }
+  .academy-feat {
+    padding: 10px 8px;
+    border-radius: 14px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--line);
+    text-align: center;
+    transition: transform .3s ease, border-color .3s ease;
+  }
+  .academy-feat:hover {
+    transform: translateY(-2px);
+    border-color: var(--gold-2);
+  }
+  .academy-feat .feat-icon {
+    font-size: 22px;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .academy-feat .feat-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--gold-1);
+    margin-bottom: 2px;
+  }
+  .academy-feat .feat-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  .academy-preview {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 640px) { .academy-preview { grid-template-columns: repeat(2, 1fr); } }
+  .academy-pv {
+    position: relative;
+    aspect-ratio: 1/1;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+  }
+  .academy-pv img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease, filter .3s ease;
+  }
+  .academy-pv:hover img { transform: scale(1.08); }
+  .academy-pv .pv-tag {
+    position: absolute;
+    top: 8px; left: 8px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .academy-pv .pv-tag.free {
+    background: rgba(74,222,128,0.25);
+    color: #4ade80;
+    border: 1px solid rgba(74,222,128,0.4);
+  }
+  .academy-pv .pv-tag.premium {
+    background: linear-gradient(135deg, rgba(255,226,122,0.35), rgba(212,160,23,0.18));
+    color: var(--gold-1);
+    border: 1px solid var(--gold-2);
+  }
+  .academy-pv .pv-tag.apex {
+    background: var(--gold-grad);
+    color: #120a00;
+  }
+  .academy-pv .pv-name {
+    position: absolute;
+    bottom: 8px; left: 8px; right: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+  }
+  .academy-pv.locked img { filter: grayscale(0.6) brightness(0.55); }
+  .academy-pv.locked::after {
+    content: "🔒";
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));
+  }
+
+  /* Academy Hero Shot — group photo of all 8 Chads */
+  .academy-heroshot {
+    position: relative;
+    margin: 24px auto 22px;
+    max-width: 680px;
+    aspect-ratio: 21 / 9;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--line-2);
+    box-shadow: 0 18px 44px rgba(0,0,0,0.55), 0 0 0 1px rgba(212,160,23,0.08);
+    background: #050505;
+  }
+  .academy-heroshot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+  }
+  .academy-heroshot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, transparent 55%, rgba(5,5,5,0.7) 100%),
+      radial-gradient(80% 60% at 50% 100%, rgba(212,160,23,0.10), transparent 70%);
+  }
+  .academy-heroshot-caption {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 12px 16px 14px;
+    text-align: center;
+    z-index: 2;
+  }
+  .academy-heroshot-caption .hs-label {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 9.5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-1);
+    padding: 5px 11px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  @media (max-width: 640px) {
+    .academy-heroshot { margin: 20px auto 18px; border-radius: 12px; aspect-ratio: 21 / 10; max-width: 100%; }
+    .academy-heroshot-caption { padding: 10px 12px 12px; }
+    .academy-heroshot-caption .hs-label { font-size: 8.5px; letter-spacing: 2.5px; padding: 4px 9px; }
+  }
+  .academy-cta {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .academy-cta .btn { margin: 0 6px 10px; }
+  .academy-cta .cta-small {
+    display: block;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .academy-cta .cta-small strong { color: var(--gold-1); }
+
+  /* EBOOKS LEVELS */
+  .ebooks-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    margin-top: 50px;
+  }
+  @media (max-width: 1200px) { .ebooks-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 820px)  { .ebooks-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px)  { .ebooks-grid { grid-template-columns: 1fr; } }
+  .ebook {
+    position: relative;
+    padding: 26px 22px;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--line);
+    text-align: center;
+    transition: transform .4s ease, border-color .4s ease, box-shadow .4s ease;
+  }
+  .ebook:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold-2);
+    box-shadow: var(--shadow-gold);
+  }
+  .ebook .ebook-level {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold-2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .ebook h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    margin: 0 0 10px;
+    color: var(--text);
+  }
+  .ebook .ebook-price {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 10px 0 12px;
+  }
+  .ebook p {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .ebook.top {
+    border-color: var(--gold-2);
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(212,160,23,0.18), transparent 60%),
+      linear-gradient(180deg, rgba(24,24,24,0.95), rgba(8,8,8,0.95));
+    box-shadow: var(--shadow-gold);
+  }
+  /* ===== NIVEL 5 · CORRECAMINOS ===== */
+  /* ===== NIVELES 1-5 · EBOOK HERO CARDS (con imagen grande arriba) ===== */
+  .ebook-hero {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .ebook-hero .hero-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #050505;
+  }
+  .ebook-hero .hero-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    /* Estado base: oscura y levemente blurreada → se activa en hover */
+    filter: brightness(0.45) blur(1.5px) saturate(0.8);
+    transform: scale(1.02);
+    transition: filter .5s ease, transform .6s ease;
+  }
+  .ebook-hero:hover .hero-cover img {
+    filter: brightness(1) blur(0) saturate(1.1);
+    transform: scale(1.06);
+  }
+  .ebook-hero .hero-cover::before {
+    /* Tinte base oscuro sobre la imagen — desaparece en hover */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 5, 0.35);
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity .5s ease;
+  }
+  .ebook-hero:hover .hero-cover::before { opacity: 0; }
+  .ebook-hero .hero-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 45%, rgba(6,6,6,0.92) 100%);
+    pointer-events: none;
+  }
+  .ebook-hero .hero-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 999px;
+    font-family: 'Cinzel', serif;
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 2;
+  }
+  .ebook-hero .hero-body { padding: 18px 18px 22px; }
+  .ebook-hero .ebook-level {
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .ebook-hero h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    margin: 0 0 10px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+  }
+  .ebook-hero .ebook-price {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 8px 0 10px;
+  }
+  .ebook-hero p {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Theme: SEED (Nivel 1) — verde vivo */
+  .ebook-hero.theme-seed {
+    border-color: rgba(212, 160, 23, 0.4);
+    background: linear-gradient(180deg, rgba(22, 18, 6, 0.95), rgba(8, 6, 2, 0.95));
+  }
+  .ebook-hero.theme-seed:hover {
+    border-color: #d4a017;
+    box-shadow: 0 20px 48px rgba(212, 160, 23, 0.25), 0 0 0 1px rgba(212, 160, 23, 0.4);
+  }
+  .ebook-hero.theme-seed .hero-badge { border: 1px solid #d4a017; color: #ffe27a; }
+  .ebook-hero.theme-seed .ebook-level { color: #ffd666; }
+  .ebook-hero.theme-seed h4,
+  .ebook-hero.theme-seed .ebook-price {
+    background: var(--gold-grad);
+    -webkit-background-clip: text; background-clip: text;
+  }
+
+  /* Theme: FOX (Nivel 2) — verde lima cromo */
+  .ebook-hero.theme-fox {
+    border-color: rgba(212, 160, 23, 0.4);
+    background: linear-gradient(180deg, rgba(22, 18, 6, 0.95), rgba(8, 6, 2, 0.95));
+  }
+  .ebook-hero.theme-fox:hover {
+    border-color: #d4a017;
+    box-shadow: 0 20px 48px rgba(212, 160, 23, 0.25), 0 0 0 1px rgba(212, 160, 23, 0.4);
+  }
+  .ebook-hero.theme-fox .hero-badge { border: 1px solid #d4a017; color: #ffe27a; }
+  .ebook-hero.theme-fox .ebook-level { color: #ffd666; }
+  .ebook-hero.theme-fox h4,
+  .ebook-hero.theme-fox .ebook-price {
+    background: var(--gold-grad);
+    -webkit-background-clip: text; background-clip: text;
+  }
+
+  /* Theme: EAGLE (Nivel 3) — dorado brillante */
+  .ebook-hero.theme-eagle {
+    border-color: rgba(212, 160, 23, 0.4);
+    background: linear-gradient(180deg, rgba(22, 18, 6, 0.95), rgba(8, 6, 2, 0.95));
+  }
+  .ebook-hero.theme-eagle:hover {
+    border-color: #d4a017;
+    box-shadow: 0 20px 48px rgba(212, 160, 23, 0.25), 0 0 0 1px rgba(212, 160, 23, 0.4);
+  }
+  .ebook-hero.theme-eagle .hero-badge { border: 1px solid #d4a017; color: #ffe27a; }
+  .ebook-hero.theme-eagle .ebook-level { color: #ffd666; }
+  .ebook-hero.theme-eagle h4,
+  .ebook-hero.theme-eagle .ebook-price {
+    background: var(--gold-grad);
+    -webkit-background-clip: text; background-clip: text;
+  }
+
+  /* Theme: WOLF (Nivel 4 · Apex) — dorado oscuro con glow */
+  .ebook-hero.theme-wolf {
+    border-color: rgba(212, 160, 23, 0.55);
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(212,160,23,0.16), transparent 60%),
+      linear-gradient(180deg, rgba(24, 20, 8, 0.95), rgba(8, 6, 2, 0.95));
+    box-shadow: 0 10px 30px rgba(212,160,23,0.15);
+  }
+  .ebook-hero.theme-wolf:hover {
+    border-color: var(--gold-1);
+    box-shadow: 0 24px 56px rgba(212, 160, 23, 0.35), 0 0 0 1px rgba(255,226,122,0.4);
+  }
+  .ebook-hero.theme-wolf .hero-badge { border: 1px solid var(--gold-1); color: var(--gold-1); background: rgba(0,0,0,0.75); }
+  .ebook-hero.theme-wolf .ebook-level { color: var(--gold-1); }
+  .ebook-hero.theme-wolf h4,
+  .ebook-hero.theme-wolf .ebook-price {
+    background: var(--gold-grad);
+    -webkit-background-clip: text; background-clip: text;
+  }
+
+  /* Theme: RUNNER (Nivel 5) — azul eléctrico */
+  .ebook-hero.theme-runner {
+    border-color: rgba(59, 130, 246, 0.45);
+    background: linear-gradient(180deg, rgba(12, 20, 40, 0.95), rgba(6, 10, 22, 0.95));
+  }
+  .ebook-hero.theme-runner:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 20px 48px rgba(59, 130, 246, 0.28), 0 0 0 1px rgba(59, 130, 246, 0.35);
+  }
+  .ebook-hero.theme-runner .hero-badge { border: 1px solid #3b82f6; color: #93c5fd; }
+  .ebook-hero.theme-runner .ebook-level { color: #60a5fa; }
+  .ebook-hero.theme-runner h4,
+  .ebook-hero.theme-runner .ebook-price {
+    background: linear-gradient(135deg, #93c5fd 0%, #3b82f6 50%, #1e40af 100%);
+    -webkit-background-clip: text; background-clip: text;
+  }
+
+  /* Theme: BOT (Nivel 6) — negro + dorado · automatización */
+  .ebook-hero.theme-bot {
+    border-color: rgba(212, 160, 23, 0.45);
+    background: linear-gradient(180deg, rgba(18, 14, 4, 0.95), rgba(8, 6, 2, 0.95));
+  }
+  .ebook-hero.theme-bot:hover {
+    border-color: var(--gold-2);
+    box-shadow: 0 20px 48px rgba(212, 160, 23, 0.28), 0 0 0 1px rgba(212, 160, 23, 0.35);
+  }
+  .ebook-hero.theme-bot .hero-badge { border: 1px solid var(--gold-2); color: var(--gold-1); }
+  .ebook-hero.theme-bot .ebook-level { color: var(--gold-1); }
+  .ebook-hero.theme-bot h4,
+  .ebook-hero.theme-bot .ebook-price {
+    background: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    -webkit-background-clip: text; background-clip: text;
+  }
+  /* Nivel 6 bloqueado pero clickeable: override del cursor */
+  .theme-bot.locked-level5 { cursor: pointer; }
+  /* Nivel 6: encuadre de la imagen — la cabeza del robot está arriba, se desplaza el foco hacia arriba para que no se corte */
+  .ebook-hero.theme-bot .hero-cover img { object-position: center 18%; }
+
+  /* LOCKED LEVEL 5 overlay */
+  .locked-level5 {
+    position: relative;
+    cursor: not-allowed;
+  }
+  .locked-level5 .hero-cover img,
+  .locked-level5 .hero-body {
+    filter: grayscale(0.7) brightness(0.45);
+    transition: filter .3s ease;
+  }
+  .locked-level5:hover .hero-cover img { transform: none; }
+  .level5-lock {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.85) 100%);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 24px;
+    text-align: center;
+    border-radius: inherit;
+  }
+  .locked-level5.is-locked .level5-lock { display: flex; }
+  .locked-level5.is-locked .hero-cover,
+  .locked-level5.is-locked .hero-body {
+    pointer-events: none;
+  }
+  .level5-lock .lock-badge {
+    font-size: 40px;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.8));
+  }
+  .level5-lock .lock-text strong {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--gold-1);
+    margin-bottom: 6px;
+  }
+  .level5-lock .lock-text span {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+  }
+  .level5-lock .lock-text em {
+    color: var(--gold-1);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Theme tweaks for the product modal content */
+  .runner-modal-content.theme-seed { border: 1px solid #4ade80 !important; box-shadow: 0 30px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(74,222,128,0.25) !important; }
+  .runner-modal-content.theme-seed .runner-modal-badge,
+  .runner-modal-content.theme-seed .runner-section h3 { color: #86efac; border-color: #4ade80; }
+  .runner-modal-content.theme-seed .runner-modal-title,
+  .runner-modal-content.theme-seed .runner-price,
+  .runner-modal-content.theme-seed .runner-cta-subline {
+    background: linear-gradient(135deg, #d1fae5 0%, #4ade80 50%, #16a34a 100%) !important;
+    -webkit-background-clip: text !important; background-clip: text !important;
+  }
+  .runner-modal-content.theme-seed .runner-modal-tagline { color: #86efac !important; }
+  .runner-modal-content.theme-seed .runner-list li::before { color: #4ade80; }
+  .runner-modal-content.theme-seed .runner-cta-block {
+    background: linear-gradient(135deg, rgba(74,222,128,0.15) 0%, rgba(22,163,74,0.08) 100%);
+    border-color: rgba(74,222,128,0.35);
+  }
+  .runner-modal-content.theme-seed .product-modal-close { border-color: rgba(74,222,128,0.5); color: #86efac; }
+  .runner-modal-content.theme-seed .runner-intro strong { color: #86efac; }
+
+  .runner-modal-content.theme-fox { border: 1px solid #84cc16 !important; box-shadow: 0 30px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(132,204,22,0.25) !important; }
+  .runner-modal-content.theme-fox .runner-modal-badge,
+  .runner-modal-content.theme-fox .runner-section h3 { color: #bef264; border-color: #84cc16; }
+  .runner-modal-content.theme-fox .runner-modal-title,
+  .runner-modal-content.theme-fox .runner-price,
+  .runner-modal-content.theme-fox .runner-cta-subline {
+    background: linear-gradient(135deg, #ecfccb 0%, #84cc16 50%, #4d7c0f 100%) !important;
+    -webkit-background-clip: text !important; background-clip: text !important;
+  }
+  .runner-modal-content.theme-fox .runner-modal-tagline { color: #bef264 !important; }
+  .runner-modal-content.theme-fox .runner-list li::before { color: #84cc16; }
+  .runner-modal-content.theme-fox .runner-cta-block {
+    background: linear-gradient(135deg, rgba(132,204,22,0.15) 0%, rgba(77,124,15,0.08) 100%);
+    border-color: rgba(132,204,22,0.35);
+  }
+  .runner-modal-content.theme-fox .product-modal-close { border-color: rgba(132,204,22,0.5); color: #bef264; }
+  .runner-modal-content.theme-fox .runner-intro strong { color: #bef264; }
+
+  .runner-modal-content.theme-eagle { border: 1px solid var(--gold-2) !important; box-shadow: 0 30px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(212,160,23,0.25) !important; }
+  .runner-modal-content.theme-eagle .runner-modal-badge,
+  .runner-modal-content.theme-eagle .runner-section h3 { color: var(--gold-1); border-color: var(--gold-2); }
+  .runner-modal-content.theme-eagle .runner-modal-title,
+  .runner-modal-content.theme-eagle .runner-price,
+  .runner-modal-content.theme-eagle .runner-cta-subline {
+    background: var(--gold-grad) !important;
+    -webkit-background-clip: text !important; background-clip: text !important;
+  }
+  .runner-modal-content.theme-eagle .runner-modal-tagline { color: var(--gold-1) !important; }
+  .runner-modal-content.theme-eagle .runner-list li::before { color: var(--gold-2); }
+  .runner-modal-content.theme-eagle .runner-cta-block {
+    background: var(--gold-soft);
+    border-color: var(--line-2);
+  }
+  .runner-modal-content.theme-eagle .product-modal-close { border-color: var(--line-2); color: var(--gold-1); }
+  .runner-modal-content.theme-eagle .runner-intro strong { color: var(--gold-1); }
+
+  .runner-modal-content.theme-wolf { border: 1px solid var(--gold-1) !important; box-shadow: 0 30px 80px rgba(0,0,0,0.75), 0 0 30px rgba(212,160,23,0.35), 0 0 0 1px rgba(255,226,122,0.35) !important; }
+  .runner-modal-content.theme-wolf .runner-modal-badge,
+  .runner-modal-content.theme-wolf .runner-section h3 { color: var(--gold-1); border-color: var(--gold-1); }
+  .runner-modal-content.theme-wolf .runner-modal-title,
+  .runner-modal-content.theme-wolf .runner-price,
+  .runner-modal-content.theme-wolf .runner-cta-subline {
+    background: var(--gold-grad) !important;
+    -webkit-background-clip: text !important; background-clip: text !important;
+  }
+  .runner-modal-content.theme-wolf .runner-modal-tagline { color: var(--gold-1) !important; }
+  .runner-modal-content.theme-wolf .runner-list li::before { color: var(--gold-1); }
+  .runner-modal-content.theme-wolf .runner-cta-block {
+    background: linear-gradient(135deg, rgba(255,226,122,0.15) 0%, rgba(139,101,8,0.08) 100%);
+    border-color: rgba(255,226,122,0.35);
+  }
+  .runner-modal-content.theme-wolf .product-modal-close { border-color: rgba(255,226,122,0.45); color: var(--gold-1); }
+  .runner-modal-content.theme-wolf .runner-intro strong { color: var(--gold-1); }
+
+  /* Legacy aliases: keep .ebook.top and .ebook.runner working if referenced elsewhere */
+  .ebook.top { border-color: var(--gold-2); }
+
+  /* PAY ICON IMAGE */
+  .pay .logo-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 6px;
+  }
+
+  /* PAY COMPACT — fila principal m\u00e1s chica */
+  .pay-row.compact { gap: 10px; margin-top: 28px; }
+  .pay-row.compact .pay {
+    padding: 10px 14px;
+    min-width: 0;
+    gap: 10px;
+    flex: 1 1 180px;
+    max-width: 230px;
+  }
+  .pay-row.compact .pay .logo-img {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    border-radius: 8px;
+  }
+  .pay-row.compact .pay .name {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .pay-row.compact .pay .desc { display: none; }
+  .pay-row.compact .pay .btn {
+    padding: 7px 12px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* PAY SECONDARY GRID */
+  .pay-subtitle {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 14px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pay-secondary {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  @media (max-width: 880px) { .pay-secondary { grid-template-columns: repeat(5, 1fr); } }
+  @media (max-width: 520px) { .pay-secondary { grid-template-columns: repeat(4, 1fr); } }
+  .pay-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 4px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+    cursor: pointer;
+    transition: transform .25s ease, border-color .25s ease;
+    text-align: center;
+  }
+  .pay-mini:hover {
+    transform: translateY(-2px);
+    border-color: var(--line-2);
+  }
+  .pay-mini img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    border-radius: 5px;
+    background: var(--gold-soft);
+    padding: 3px;
+    border: 1px solid var(--line-2);
+  }
+  .pay-mini .mini-name {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* LEVEL MODAL — info detallada de cada chad */
+  .gallery .card { cursor: pointer; }
+  .level-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .level-modal.open { display: flex; animation: rise .3s ease both; }
+  .level-modal-box {
+    max-width: 720px;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(22,22,22,0.98), rgba(8,8,8,0.98));
+    border: 1px solid var(--gold-2);
+    border-radius: 20px;
+    padding: 36px 32px;
+    box-shadow: var(--shadow-gold);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .level-modal-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: transparent;
+    border: 1px solid var(--line-2);
+    color: var(--gold-1);
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 2;
+  }
+  .level-modal-close:hover { background: var(--gold-soft); }
+  .level-modal-head {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .level-modal-head img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--line-2);
+    flex-shrink: 0;
+  }
+  .level-modal-head .head-text { min-width: 0; }
+  .level-modal-head h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    margin: 0 0 4px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .level-modal-head .head-sub {
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin: 0;
+  }
+  .level-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 560px) { .level-stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat-box {
+    padding: 14px 10px;
+    border-radius: 12px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    text-align: center;
+  }
+  .stat-box .stat-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .stat-box .stat-value {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: var(--gold-1);
+    letter-spacing: 1px;
+  }
+  .level-block {
+    margin-bottom: 20px;
+  }
+  .level-block h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    margin: 0 0 10px;
+  }
+  .level-block p {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .level-block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .level-block ul li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .level-block ul li::before {
+    content: "✓";
+    color: var(--gold-1);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .level-block.weak ul li::before {
+    content: "✗";
+    color: #ff7a7a;
+  }
+
+  /* ============ PREMIUM CROWN (Wolf) ============ */
+  .gallery .card.premium {
+    border-color: var(--gold-2);
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(212,160,23,0.18), transparent 60%),
+      linear-gradient(160deg, rgba(24,24,24,0.95), rgba(6,6,6,0.95));
+    box-shadow: 0 0 0 1px rgba(212,160,23,0.35), var(--shadow-gold);
+    animation: premiumGlow 3s ease-in-out infinite;
+  }
+  .gallery .card.premium:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 0 1px rgba(255,226,122,0.6), 0 30px 70px rgba(212,160,23,0.35);
+  }
+  .gallery .card.premium .name {
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .crown-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+    background: radial-gradient(circle at 50% 40%, #ffe27a 0%, #d4a017 60%, #8b6508 100%);
+    border-radius: 50%;
+    border: 2px solid rgba(255,226,122,0.7);
+    box-shadow:
+      0 0 20px rgba(212,160,23,0.8),
+      0 0 40px rgba(212,160,23,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+    animation: crownFloat 2.4s ease-in-out infinite, crownPulse 2.4s ease-in-out infinite;
+    z-index: 3;
+    filter: drop-shadow(0 4px 10px rgba(212,160,23,0.7));
+  }
+  .crown-badge::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,226,122,0.45), transparent 65%);
+    animation: crownHalo 2.4s ease-in-out infinite;
+    z-index: -1;
+  }
+  @keyframes crownFloat {
+    0%, 100% { transform: translateX(-50%) translateY(0) rotate(-3deg); }
+    50%      { transform: translateX(-50%) translateY(-6px) rotate(3deg); }
+  }
+  @keyframes crownPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 20px rgba(212,160,23,0.8),
+        0 0 40px rgba(212,160,23,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+    50% {
+      box-shadow:
+        0 0 30px rgba(255,226,122,1),
+        0 0 60px rgba(212,160,23,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+  }
+  @keyframes crownHalo {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.25); }
+  }
+  @keyframes premiumGlow {
+    0%, 100% { box-shadow: 0 0 0 1px rgba(212,160,23,0.35), 0 20px 48px rgba(212,160,23,0.18); }
+    50%      { box-shadow: 0 0 0 1px rgba(255,226,122,0.55), 0 25px 60px rgba(212,160,23,0.35); }
+  }
+
+  /* Overlay locked mejorado */
+  .gallery .card.locked .overlay {
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    font-size: 36px;
+    text-shadow: 0 0 20px rgba(212,160,23,0.8);
+    animation: lockPulse 2.6s ease-in-out infinite;
+  }
+  @keyframes lockPulse {
+    0%, 100% { text-shadow: 0 0 20px rgba(212,160,23,0.5); }
+    50%      { text-shadow: 0 0 30px rgba(212,160,23,1), 0 0 50px rgba(212,160,23,0.6); }
+  }
+
+  /* ====== PSYCHOLOGY SECTION ====== */
+  .psych-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .psych-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    height: 100%;
+  }
+  .psych-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--gold-2);
+    box-shadow: var(--shadow-gold);
+  }
+  .psych-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(212,160,23,0.08), rgba(139,101,8,0.04));
+  }
+  .psych-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, filter 0.35s ease;
+    filter: brightness(0.95) contrast(1.05);
+  }
+  .psych-card:hover .psych-image {
+    transform: scale(1.1);
+    filter: brightness(1.1) contrast(1.15) saturate(1.2);
+  }
+  .image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,226,122,0.15), rgba(139,101,8,0.08));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 3;
+    mix-blend-mode: screen;
+  }
+  .psych-card:hover .image-overlay {
+    opacity: 1;
+  }
+  .psych-content {
+    padding: 24px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .psych-content h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    margin: 0 0 10px;
+    color: var(--text);
+    transition: color 0.35s ease;
+  }
+  .psych-card:hover h4 {
+    color: var(--gold-1);
+  }
+  .psych-content p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0 0 12px;
+    flex: 1;
+  }
+  .psych-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .psych-tags span {
+    font-size: 9px;
+    padding: 5px 10px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    color: var(--gold-1);
+    letter-spacing: 0.3px;
+  }
+  
+  /* MODALS */
+  .psych-modal, .product-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    z-index: 100;
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+  }
+  .psych-modal.active, .product-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .psych-modal-content, .product-modal-content {
+    background: linear-gradient(180deg, rgba(22,22,22,0.99), rgba(8,8,8,0.99));
+    border: 1px solid var(--line-2);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: var(--shadow-gold);
+  }
+  .psych-modal-close, .product-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: var(--gold-1);
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .psych-modal-close:hover, .product-modal-close:hover {
+    background: var(--gold-1);
+    color: #120a00;
+    transform: rotate(90deg);
+  }
+  .psych-modal-image {
+    width: 100%;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    border: 1px solid var(--line-2);
+    box-shadow: 0 20px 40px rgba(212,160,23,0.2);
+  }
+  .psych-modal-title, .product-modal-content h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    margin: 0 0 16px;
+    color: var(--text);
+  }
+  .psych-modal-text, .product-modal-content p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 768px) {
+    .psych-grid { grid-template-columns: 1fr; }
+    .psych-modal-content, .product-modal-content { padding: 24px; }
+  }
+
+  /* ===== RUNNER MODAL (Chad Correcaminos · Nivel 5) ===== */
+  .runner-modal-content {
+    padding: 0 !important;
+    overflow: hidden;
+    border: 1px solid #3b82f6 !important;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(59,130,246,0.2) !important;
+    max-width: 680px !important;
+  }
+  .runner-modal-content .product-modal-close {
+    top: 14px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: rgba(0,0,0,0.65);
+    border: 1px solid rgba(59,130,246,0.5);
+    color: #93c5fd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    line-height: 1;
+    z-index: 5;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .runner-modal-content .product-modal-close:hover {
+    background: rgba(59,130,246,0.25);
+    border-color: #3b82f6;
+  }
+  .runner-modal-hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #050a14;
+  }
+  .runner-modal-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .runner-modal-hero-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background:
+      linear-gradient(180deg, rgba(5,10,20,0.3) 0%, transparent 40%, rgba(5,10,20,0.92) 100%),
+      linear-gradient(90deg, rgba(5,10,20,0.65) 0%, transparent 60%);
+  }
+  .runner-modal-badge {
+    align-self: flex-start;
+    padding: 5px 12px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid #3b82f6;
+    border-radius: 999px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #93c5fd;
+    text-transform: uppercase;
+    font-weight: 700;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    margin-bottom: 12px;
+  }
+  .runner-modal-title {
+    font-family: 'Cinzel', serif !important;
+    font-size: clamp(26px, 4vw, 36px) !important;
+    margin: 0 0 6px !important;
+    background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 50%, #3b82f6 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    letter-spacing: 1px !important;
+    line-height: 1.1 !important;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+  }
+  .runner-modal-tagline {
+    font-size: 12px !important;
+    letter-spacing: 2.5px !important;
+    text-transform: uppercase !important;
+    color: #93c5fd !important;
+    margin: 0 !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+  }
+  .runner-modal-body {
+    padding: 28px 28px 32px;
+    overflow-y: auto;
+    max-height: calc(90vh - 280px);
+  }
+  .runner-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(59,130,246,0.2);
+    margin-bottom: 22px;
+  }
+  .runner-price {
+    font-family: 'Cinzel', serif;
+    font-size: 38px;
+    background: linear-gradient(135deg, #dbeafe 0%, #3b82f6 50%, #1e40af 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .runner-price-sub {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .runner-intro {
+    color: var(--text) !important;
+    font-size: 14.5px !important;
+    line-height: 1.7 !important;
+    margin: 0 0 24px !important;
+  }
+  .runner-intro strong { color: #93c5fd; }
+  .runner-section { margin-bottom: 22px; }
+  .runner-section h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #93c5fd;
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .runner-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .runner-list li {
+    position: relative;
+    padding: 8px 0 8px 24px;
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.6;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .runner-list li:last-child { border-bottom: none; }
+  .runner-list li::before {
+    content: "▸";
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    color: #3b82f6;
+    font-size: 11px;
+  }
+  .runner-list li strong { color: var(--text); }
+  .runner-paragraph {
+    color: var(--muted) !important;
+    font-size: 13.5px !important;
+    line-height: 1.7 !important;
+    margin: 0 !important;
+  }
+  .runner-paragraph strong { color: #fca5a5; }
+  .runner-cta-block {
+    margin-top: 28px;
+    padding: 22px 20px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(30,64,175,0.08) 100%);
+    border: 1px solid rgba(59,130,246,0.35);
+    border-radius: 14px;
+    text-align: center;
+  }
+  .runner-cta-headline {
+    font-family: 'Cinzel', serif !important;
+    font-size: 17px !important;
+    color: var(--text) !important;
+    margin: 0 0 6px !important;
+    letter-spacing: 1px !important;
+    line-height: 1.3 !important;
+  }
+  .runner-cta-subline {
+    font-family: 'Cinzel', serif !important;
+    font-size: 15px !important;
+    background: linear-gradient(135deg, #93c5fd 0%, #3b82f6 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    margin: 0 !important;
+    letter-spacing: 2px !important;
+    font-weight: 700 !important;
+  }
+  @media (max-width: 600px) {
+    .runner-modal-hero-overlay { padding: 16px 18px; }
+    .runner-modal-body { padding: 22px 20px 26px; max-height: calc(90vh - 220px); }
+    .runner-price { font-size: 32px; }
+  }
+
+
+  /* COMPACT SECTIONS */
+  section#academy { padding: 40px 0 !important; }
+  section#psicologia { padding: 40px 0 !important; }
+  
+  section#academy .section-head { margin-bottom: 30px; }
+  section#psicologia .section-head { margin-bottom: 30px; }
+
+  /* ARQUETIPOS GRID */
+  .archetipos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+  }
+  @media (max-width: 1024px) { .archetipos-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; } }
+  @media (max-width: 768px) { .archetipos-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; } }
+  @media (max-width: 480px) { .archetipos-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+
+  .archetype-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 16px 12px;
+    background: linear-gradient(180deg, rgba(22,22,22,0.6), rgba(8,8,8,0.6));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    transition: all .3s ease;
+  }
+  .archetype-card:hover {
+    border-color: var(--gold-2);
+    background: linear-gradient(180deg, rgba(30,30,30,0.8), rgba(12,12,12,0.8));
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(212,160,23,0.15);
+  }
+
+  .archetype-image {
+    width: 100%;
+    max-width: 100px;
+    height: auto;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .archetype-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .archetype-info { flex: 1; }
+  .archetype-card h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    margin: 0 0 4px;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .arch-level {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  .arch-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .arch-footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 30px;
+    letter-spacing: 0.5px;
+  }
+
+  section#arquetipos { padding: 60px 0 40px !important; }
+  section#arquetipos .section-head { margin-bottom: 20px; }
+
+  /* === BINANCE PAY · botón de pago dentro de los modales de producto === */
+  .binance-pay-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px 16px;
+    margin-top: 4px;
+    background: linear-gradient(135deg, #f3ba2f 0%, #f0b90b 100%);
+    color: #181a20;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    box-shadow: 0 10px 28px rgba(240, 185, 11, 0.28);
+  }
+  .binance-pay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(240, 185, 11, 0.45);
+    filter: brightness(1.05);
+  }
+  .binance-pay-btn svg {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+  }
+  .binance-pay-btn .bp-price {
+    margin-left: auto;
+    font-weight: 800;
+    font-size: 12px;
+    padding: 3px 8px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 5px;
+  }
+
+  /* === MERCADO PAGO · botón de pago dentro de los modales === */
+  .mercadopago-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px 16px;
+    margin-top: 18px;
+    background: linear-gradient(135deg, #00b1ea 0%, #009ee3 100%);
+    color: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    box-shadow: 0 10px 28px rgba(0, 158, 227, 0.28);
+  }
+  .mercadopago-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(0, 158, 227, 0.45);
+    filter: brightness(1.05);
+  }
+  .mercadopago-btn svg {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+  }
+  .mercadopago-btn .mp-price {
+    margin-left: auto;
+    font-weight: 800;
+    font-size: 12px;
+    padding: 3px 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 5px;
+  }
+
+  /* Wrapper del botón PayPal hosted · alinea con Binance Pay y Mercado Pago */
+  .paypal-btn-wrap {
+    margin-top: 4px;
+    width: 100%;
+  }
+  .paypal-btn-wrap > div { width: 100%; }
+
+
+  /* Hide PayPal SDK extras: quantity, item header/description, secondary "Pagar" button, card icons */
+  [id^="paypal-form-fields-container-"] label[for="quantity"],
+  [id^="paypal-form-fields-container-"] .selectContainer,
+  [id^="paypal-container-"] .item-header,
+  [id^="paypal-container-"] .item-description,
+  [id^="paypal-container-"] #checkout-button,
+  [id^="paypal-container-"] img[alt="card icons"] { display: none !important; }
+
+  /* === Botón único "Pagar" en modales · lleva a pagos.html === */
+  .go-pagos-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 20px;
+    margin-top: 4px;
+    background: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    color: #0a0a0a;
+    border: 1px solid rgba(212,160,23,0.5);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    box-shadow: 0 10px 28px rgba(212, 160, 23, 0.32);
+  }
+  .go-pagos-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(212, 160, 23, 0.48);
+    filter: brightness(1.06);
+  }
+  .go-pagos-btn svg {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+  }
+  .go-pagos-btn .gp-price {
+    margin-left: auto;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 4px 10px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 6px;
+    color: #fff8dc;
+  }
+
+  /* === Asegurar scroll dentro del modal para que el botón sea alcanzable === */
+  .product-modal .runner-modal-content {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  /* Anular scroll interno de body para que el sticky del botón funcione
+     contra el scroll del modal-content (un solo contexto de scroll) */
+  .product-modal .runner-modal-body {
+    overflow: visible;
+    max-height: none;
+  }
+
+  /* === Botón sticky al fondo del modal · siempre visible mientras se scrollea === */
+  .runner-modal-body .go-pagos-btn {
+    position: sticky;
+    bottom: 14px;
+    z-index: 5;
+    margin: 18px 0 0 0;
+    padding: 17px 22px;
+    font-size: 16px;
+    box-shadow:
+      0 -10px 30px rgba(5,5,5,0.55),
+      0 14px 38px rgba(0,0,0,0.55),
+      0 8px 24px rgba(212,160,23,0.45),
+      0 0 0 2px rgba(212,160,23,0.35);
+    animation: gp-pulse 2.4s ease-in-out infinite;
+  }
+  .runner-modal-body .go-pagos-btn .gp-price {
+    font-size: 15px;
+  }
+  @keyframes gp-pulse {
+    0%, 100% {
+      box-shadow:
+        0 -10px 30px rgba(5,5,5,0.55),
+        0 14px 38px rgba(0,0,0,0.55),
+        0 8px 24px rgba(212,160,23,0.45),
+        0 0 0 2px rgba(212,160,23,0.35);
+    }
+    50% {
+      box-shadow:
+        0 -10px 30px rgba(5,5,5,0.55),
+        0 16px 44px rgba(0,0,0,0.6),
+        0 10px 30px rgba(212,160,23,0.65),
+        0 0 0 2px rgba(255,226,122,0.5);
+    }
+  }
+
+  .intro-section { padding: 48px 0 !important; }
+  @media (max-width: 780px) {
+    .intro-section { padding: 32px 0 !important; }
+    .intro-grid { grid-template-columns: 1fr !important; }
+    .intro-card { padding: 24px 20px; }
+    .intro-card p { font-size: 17px; }
+  }
+</style>
+<!-- PayPal SDK · hosted buttons (carga única por página) -->
+<script src="https://www.paypal.com/sdk/js?client-id=BAAmSSNhYp1DMIAJwknSayMgL6pr9v7LjfAwxVUt4JtKEb7AO9x64pIpbun6JBFxiIqUUDZbI2oUm1imgw&components=hosted-buttons&disable-funding=venmo&currency=USD" data-uid-auto="uid_zxdpwwdxhtrvpbciswfbzxbloanntp" defer></script>
+
+</head>
+<body>
+
+<!-- LOADER / INTRO -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-inner">
+    <img src="img/l0.jpeg" alt="Chad Inversor" class="loader-logo">
+    <div class="loader-brand">CHAD · INVERSOR</div>
+    <div class="loader-bar-wrap">
+      <div class="loader-bar-fill"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+<nav>
+  <div class="nav-inner">
+    <div class="brand">
+      <img src="img/l0.jpeg" alt="Chad Inversor logo">
+      <span>CHAD · INVERSOR</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html#quiz">Quiz</a>
+      <a href="index.html#ebooks">Productos</a>
+      <a href="sesiones.html">Sesiones</a>
+      <a href="noticias.html">Noticias</a>
+      <a href="academy.html">Academy</a>
+      <a href="psychology.html">Psychology</a>
+      <a href="index.html#redes">Redes</a>
+      <a href="pagos.html">Pagos</a>
+    </div>
+  </div>
+</nav>
+
+<!-- SECTION 1 — HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <span class="eyebrow">Trading · Mentalidad</span>
+    <h1>
+      ¿Qué tipo de
+      <span class="accent h-gold">Inversor</span>
+      sos?
+    </h1>
+    <p class="sub">Descubrí por qué no estás ganando de forma consistente.</p>
+    <a href="index.html#quiz" class="btn btn-primary">
+      Hacer el quiz
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+    </a>
+
+    <div class="level-rail" aria-label="Niveles">
+      <div class="level-dot" title="Sheep">🐑</div>
+      <div class="level-connector"></div>
+      <div class="level-dot" title="Gambler">🎰</div>
+      <div class="level-connector"></div>
+      <div class="level-dot" title="Turtle">🐢</div>
+      <div class="level-connector"></div>
+      <div class="level-dot" title="Fox">🦊</div>
+      <div class="level-connector"></div>
+      <div class="level-dot locked" title="Eagle — bloqueado">🦅</div>
+    </div>
+    <div class="hero-ornament" aria-hidden="true"><span></span><span></span><span></span></div>
+  </div>
+</section>
+
+<!-- SECTION SESIONES moved to sesiones.html -->
+<!-- SECTION 2 — INTRO -->
+<section class="intro-section">
+  <div class="container">
+    <div class="intro-grid">
+      <div class="intro-card">
+        <span class="num">01</span>
+        <p>El mercado no te falla a vos.<br>Te falla el tipo de inversor que sos hoy.</p>
+      </div>
+      <div class="intro-card">
+        <span class="num">02</span>
+        <p>Cada nivel comete errores distintos.<br>Conocerlos es el primer paso para dejar de perder.</p>
+      </div>
+      <div class="intro-card">
+        <span class="num">03</span>
+        <p>Este quiz no es para sentirte bien.<br>Es para mostrarte exactamente dónde estás fallando.</p>
+      </div>
+      <div class="intro-card">
+        <span class="num">04</span>
+        <p>13 preguntas. 4 minutos.<br>Un diagnóstico real de tu mentalidad inversora.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- SECTION 3 — QUIZ -->
+<section id="quiz">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">DIAGNÓSTICO REAL · 13 PREGUNTAS · 4 MINUTOS</span>
+      <h2>Descubrí por qué el mercado <span class="h-gold">te está cobrando</span>.</h2>
+      <p>Este no es un test para sentirte bien. Es para mostrarte —sin filtro— en qué nivel estás operando hoy y qué te está costando plata.</p>
+    </div>
+
+    <div class="quiz-wrap reveal" id="quizWrap">
+      <div class="quiz-progress"><div class="bar" id="bar" style="width: 7.69231%;"></div></div>
+      <div class="quiz-meta">
+        <span id="qCount"><strong class="qnum">1</strong> <span class="qsep">/</span> 13</span>
+        <span class="dif easy" id="qDiff">Fácil</span>
+      </div>
+      <div class="quiz-breakmsg" id="qBreak"></div>
+      <div class="quiz-q" id="qText">Tenés USD 10.000 ahorrados en el banco que no vas a necesitar en 3 años. ¿Qué hacés con ellos?</div>
+      <div class="quiz-options" id="qOptions"><button class="opt"><span class="bullet">A</span><span>Los dejo en el banco o plazo fijo. La prioridad es no perderlos</span></button><button class="opt"><span class="bullet">B</span><span>Arranco con una cartera diversificada: índices, bonos y algo de efectivo</span></button><button class="opt"><span class="bullet">C</span><span>Busco el activo que más esté subiendo este año y meto todo ahí</span></button><button class="opt"><span class="bullet">D</span><span>Le pregunto a mi cuñado que sabe de esto o veo qué recomienda YouTube</span></button></div>
+      <div class="quiz-nav">
+        <button class="btn btn-ghost" id="prevBtn" disabled="">← Anterior</button>
+        <button class="btn btn-primary" id="nextBtn" disabled="">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- ANALYZING LOADER -->
+    <div class="quiz-analyzing" id="quizAnalyzing">
+      <div class="analyzing-inner">
+        <div class="analyzing-ring"></div>
+        <div class="analyzing-text">Analizando tus respuestas<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+      </div>
+    </div>
+
+    <!-- SECTION 4 — RESULT -->
+    <div class="result" id="result">
+      <img id="resultImg" class="result-img" alt="Resultado">
+      <span class="eyebrow result-tag" id="resultTag">Tu nivel</span>
+      <h3 class="result-title h-gold" id="resultTitle">—</h3>
+      <p class="result-headline" id="resultHeadline">—</p>
+      <p class="result-desc" id="resultDesc">—</p>
+
+      <div class="result-section">
+        <div class="result-section-title">Lo que te está pasando</div>
+        <ul class="result-list" id="resultList"></ul>
+      </div>
+
+      <div class="result-truth">
+        <strong>La verdad incómoda</strong>
+        <p id="resultTruth">—</p>
+      </div>
+
+      <div class="result-cta" id="resultCta">
+        <p class="cta-headline" id="ctaHeadline">—</p>
+        <div class="cta-buttons">
+          <a href="index.html#ebooks" class="btn btn-primary" id="ctaPrimary">—</a>
+          <a href="index.html#ebooks" class="btn btn-ghost" id="ctaSecondary">—</a>
+        </div>
+      </div>
+
+      <div class="result-share">
+        <button class="btn btn-ghost btn-sm" onclick="shareResult()">Compartir mi resultado →</button>
+        <button class="btn btn-ghost btn-sm" onclick="restartQuiz()">Reiniciar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5 — IMÁGENES -->
+<!-- SECTION 8 — PRODUCTOS -->
+<section id="productos" style="display:none;"></section>
+
+<!-- SECTION — CHAD ACADEMY TEASER -->
+<section id="academy" class="tight">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="divider">MINI-JUEGOS · ESCENARIOS REALES</div>
+      <h2>Entrená tu nivel en la <span class="h-gold">Academy</span>.</h2>
+      <p>40 escenarios reales de XAU/USD, BTC, NAS100, EUR/USD y FOREX. Ejecutá setups, ganá XP y desbloqueá el siguiente nivel.</p>
+    </div>
+
+    <div class="academy-wrap reveal delay-1">
+      <div class="academy-head">
+        <span class="academy-badge">🎮 CHAD ACADEMY</span>
+        <h3>El mercado no perdona. <span class="h-gold">Entrená primero.</span></h3>
+        <p>Saber trading y hacer trading son dos cosas distintas. La Academy te pone en escenarios reales donde practicás sin arriesgar capital real.</p>
+      </div>
+
+      <div class="academy-features">
+        <div class="academy-feat">
+          <span class="feat-icon">📊</span>
+          <div class="feat-title">8 NIVELES</div>
+          <div class="feat-desc">De Sheep a Wolf. Cada uno con su estilo operativo.</div>
+        </div>
+        <div class="academy-feat">
+          <span class="feat-icon">🎯</span>
+          <div class="feat-title">40 ESCENARIOS</div>
+          <div class="feat-desc">Setups reales con gráficos de velas y contexto.</div>
+        </div>
+        <div class="academy-feat">
+          <span class="feat-icon">⚡</span>
+          <div class="feat-title">SISTEMA XP</div>
+          <div class="feat-desc">Ganá puntos y subí de rango progresivamente.</div>
+        </div>
+        <div class="academy-feat">
+          <span class="feat-icon">🧠</span>
+          <div class="feat-title">FEEDBACK CHAD</div>
+          <div class="feat-desc">Análisis técnico + psicología en cada trade.</div>
+        </div>
+      </div>
+
+      <div class="academy-heroshot">
+        <img src="img/allthechads.jpeg" alt="Los 8 arquetipos de Chad Inversor: Sheep, Gambler, Turtle, Fox, Eagle, Bull, Bear y Wolf">
+        <div class="academy-heroshot-caption">
+          <span class="hs-label">Los 8 arquetipos · Sheep → Wolf</span>
+        </div>
+      </div>
+
+      <div class="academy-cta">
+        <a href="academy.html" class="btn btn-primary">
+          Entrar a la Academy
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+        </a>
+        <a href="index.html#ebooks" class="btn btn-ghost">Ver ebooks →</a>
+        <span class="cta-small">Acceso <strong>GRATIS</strong> a los primeros 4 niveles · Eagle/Bull/Bear incluidos con el ebook <strong>Eagle</strong> · Wolf desbloqueado con el ebook <strong>Wolf</strong></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION — EBOOKS / NIVELES -->
+
+<!-- SECTION 8 — PSICOLOGÍA DEL TRADING -->
+<section id="psicologia" class="tight">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="divider">PSICOLOGÍA DEL TRADING</div>
+      <h2>Domina tu <span class="h-gold">mente</span>.</h2>
+      <p>La diferencia entre traders millonarios y apostadores perdedores.</p>
+    </div>
+
+    <div style="display: flex; justify-content: center; align-items: center; min-height: 300px; flex-direction: column; gap: 22px; text-align: center;">
+      <div style="position: relative; width: 140px; height: 140px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(212,160,23,0.35); box-shadow: 0 10px 28px rgba(0,0,0,0.55), 0 0 32px rgba(212,160,23,0.18); background: #050505;">
+        <img src="img/brainchad1.png" alt="Cerebro con conexiones doradas — psicología del trading" style="display: block; width: 100%; height: 100%; object-fit: cover;">
+        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(60% 60% at 50% 50%, transparent 55%, rgba(5,5,5,0.5) 100%);"></div>
+      </div>
+      <p style="color: var(--muted); font-size: 16px; max-width: 600px;">
+        Descubre 6 módulos clave sobre psicología del trading: <strong>Burnout, Psicotrading, Mindset, Gestión del estrés, Traders legendarios y Gestión emocional.</strong>
+      </p>
+      <a href="psychology.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; background: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%); color: #120a00; font-family: &#39;Inter&#39;, sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; border-radius: 999px; text-decoration: none; transition: transform .25s ease, box-shadow .3s ease; box-shadow: 0 8px 20px rgba(212,160,23,0.3);">
+        Ir a Psychology
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ARQUETIPOS SECTION -->
+<section id="arquetipos" class="tight">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="divider">8 ARQUETIPOS · DEL TRADER</div>
+      <h2>Elige tu <span class="h-gold">arquetipo</span></h2>
+      <p>De Sheep (novato) a Wolf (máximo). Cada arquetipo tiene su estilo operativo y riesgos.</p>
+    </div>
+
+    <div class="gallery reveal delay-1" id="gallery"><div class="card reveal">
+      <div class="img-frame">
+        <img src="img/l6.png" alt="SHEEP Chad" onerror="this.onerror=null; this.src=&#39;img/l6.png&#39;">
+        
+        <div class="img-info">
+          <div class="title">SHEEP</div>
+          <div class="desc">Sigue a la manada. Opera por FOMO.</div>
+        </div>
+
+        
+        
+      </div>
+
+      <div class="name">SHEEP</div>
+    </div><div class="card reveal delay-1">
+      <div class="img-frame">
+        <img src="img/l6.png" alt="GAMBLER Chad" onerror="this.onerror=null; this.src=&#39;img/l6.png&#39;">
+        
+        <div class="img-info">
+          <div class="title">GAMBLER</div>
+          <div class="desc">Apuesta por emoción. Sin plan.</div>
+        </div>
+
+        
+        
+      </div>
+
+      <div class="name">GAMBLER</div>
+    </div><div class="card reveal delay-2">
+      <div class="img-frame">
+        <img src="img/l6.png" alt="TURTLE Chad" onerror="this.onerror=null; this.src=&#39;img/l6.png&#39;">
+        
+        <div class="img-info">
+          <div class="title">TURTLE</div>
+          <div class="desc">Disciplinado, pero paralizado.</div>
+        </div>
+
+        
+        
+      </div>
+
+      <div class="name">TURTLE</div>
+    </div><div class="card reveal delay-3">
+      <div class="img-frame">
+        <img src="img/l6.png" alt="FOX Chad" onerror="this.onerror=null; this.src=&#39;img/l6.png&#39;">
+        
+        <div class="img-info">
+          <div class="title">FOX</div>
+          <div class="desc">Analítico. Le falta ejecución.</div>
+        </div>
+
+        
+        
+      </div>
+
+      <div class="name">FOX</div>
+    </div><div class="card reveal locked">
+      <div class="img-frame">
+        <img src="img/l6.png" alt="EAGLE Chad" onerror="this.onerror=null; this.src=&#39;img/l6.png&#39;">
+        
+        <div class="img-info">
+          <div class="title">EAGLE</div>
+          <div class="desc">Visión total. Nivel bloqueado.</div>
+        </div>
+
+        
+        <div class="overlay">🔒</div>
+      </div>
+
+      <div class="name">EAGLE</div>
+    </div><div class="card reveal locked delay-1">
+      <div class="img-frame">
+        <img src="img/l6.png" alt="BULL Chad" onerror="this.onerror=null; this.src=&#39;img/l6.png&#39;">
+        
+        <div class="img-info">
+          <div class="title">BULL</div>
+          <div class="desc">Fuerza bruta en tendencias alcistas.</div>
+        </div>
+
+        
+        <div class="overlay">🔒</div>
+      </div>
+
+      <div class="name">BULL</div>
+    </div><div class="card reveal locked delay-2">
+      <div class="img-frame">
+        <img src="img/l6.png" alt="BEAR Chad" onerror="this.onerror=null; this.src=&#39;img/l6.png&#39;">
+        
+        <div class="img-info">
+          <div class="title">BEAR</div>
+          <div class="desc">Gana cuando el mercado cae.</div>
+        </div>
+
+        
+        <div class="overlay">🔒</div>
+      </div>
+
+      <div class="name">BEAR</div>
+    </div><div class="card reveal locked premium delay-3">
+      <div class="img-frame">
+        <img src="img/l6.png" alt="WOLF Chad" onerror="this.onerror=null; this.src=&#39;img/l6.png&#39;">
+        
+        <div class="img-info">
+          <div class="title">WOLF</div>
+          <div class="desc">Apex. Caza en cualquier mercado.</div>
+        </div>
+
+        <div class="crown-badge">👑</div>
+        <div class="overlay">🔒</div>
+      </div>
+
+      <div class="name">WOLF</div>
+    </div></div>
+
+    <p class="arch-footer reveal delay-2">Descubre en cuál nivel estás y qué necesitas entrenar para ascender. Accede al quiz gratuito en la sección Academy.</p>
+  </div>
+</section>
+
+<section id="ebooks" class="tight">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="divider">EBOOKS</div>
+      <h2>Elige tu <span class="h-gold">camino</span>.</h2>
+      <p>Cinco niveles. Un camino progresivo — de principiante a scalper profesional.</p>
+    </div>
+    <div class="ebooks-grid">
+      <!-- NIVEL 1 · STARTER / SEED -->
+      <div class="ebook ebook-hero theme-seed reveal" onclick="openProductModal(&#39;starter&#39;)">
+        <div class="hero-cover">
+          <span class="hero-badge">🌱 Iniciante</span>
+          <img src="img/sheepgoldentoken.png" alt="Starter Pack — la semilla del trader">
+        </div>
+        <div class="hero-body">
+          <div class="ebook-level">Nivel 1</div>
+          <h4>Starter Pack</h4>
+          <div class="ebook-price">$9.99</div>
+          <p>El primer paso. Fundamentos para empezar sin cometer los errores clásicos.</p>
+        </div>
+      </div>
+
+      <!-- NIVEL 2 · INVESTING / FOX -->
+      <div class="ebook ebook-hero theme-fox reveal delay-1" onclick="openProductModal(&#39;investing&#39;)">
+        <div class="hero-cover">
+          <span class="hero-badge">🦊 Astuto</span>
+          <img src="img/foxgoldentoken.png" alt="Investing — el zorro del mercado">
+        </div>
+        <div class="hero-body">
+          <div class="ebook-level">Nivel 2</div>
+          <h4>Investing</h4>
+          <div class="ebook-price">$20</div>
+          <p>Bases sólidas de inversión y mentalidad del trader consistente.</p>
+        </div>
+      </div>
+
+      <!-- NIVEL 3 · EAGLE -->
+      <div class="ebook ebook-hero theme-eagle reveal delay-2" onclick="openProductModal(&#39;eagle&#39;)">
+        <div class="hero-cover">
+          <span class="hero-badge">🦅 Visión</span>
+          <img src="img/eaglegoldentoken.png" alt="Eagle — visión completa del mercado">
+        </div>
+        <div class="hero-body">
+          <div class="ebook-level">Nivel 3</div>
+          <h4>Eagle</h4>
+          <div class="ebook-price">$99</div>
+          <p>Ebook, videos y estrategias personalizadas. Análisis, gestión y ejecución profesional.</p>
+        </div>
+      </div>
+
+      <!-- NIVEL 4 · WOLF -->
+      <div class="ebook ebook-hero theme-wolf reveal delay-3" onclick="openProductModal(&#39;wolf&#39;)">
+        <div class="hero-cover">
+          <span class="hero-badge">🐺 Apex</span>
+          <img src="img/goldendoglogo.png" alt="Wolf — el máximo nivel del trader">
+        </div>
+        <div class="hero-body">
+          <div class="ebook-level">Nivel 4 · Apex</div>
+          <h4>Wolf 👑</h4>
+          <div class="ebook-price">$292</div>
+          <p>Nivel avanzado profesional. Estrategias en distintos timeframes, videos y operatoria en vivo.</p>
+        </div>
+      </div>
+
+      <!-- NIVEL 5 · CORRECAMINOS (LOCKED hasta comprar Wolf) -->
+      <div class="ebook ebook-hero theme-runner locked-level5 reveal delay-4 is-locked" id="runnerCard" onclick="openProductModal(&#39;runner&#39;)" data-requires="wolf">
+        <div class="hero-cover">
+          <span class="hero-badge">⚡ Scalper</span>
+          <img src="img/chadcorre.png" alt="Chad Correcaminos — Scalper profesional">
+        </div>
+        <div class="hero-body">
+          <div class="ebook-level">Nivel 5 · Avanzado</div>
+          <h4>Correcaminos</h4>
+          <div class="ebook-price">$149</div>
+          <p>Indicadores TradingView personalizados para entradas. Scalping, velocidad y precisión.</p>
+        </div>
+        <div class="level5-lock" id="level5Lock">
+          <div class="lock-badge">🔒</div>
+          <div class="lock-text">
+            <strong>BLOQUEADO</strong>
+            <span>Requiere haber comprado<br><em>Nivel 4 · Wolf</em> primero</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NIVEL 6 · CHAD BOT -->
+      <div class="ebook ebook-hero theme-bot reveal delay-5" id="botCard" onclick="window.location.href=&#39;bot.html&#39;">
+        <div class="hero-cover">
+          <span class="hero-badge">🤖 Bot</span>
+          <img src="img/chadbot.png" alt="Chad Bot — Automatización inteligente">
+        </div>
+        <div class="hero-body">
+          <div class="ebook-level">Nivel 6 · Automatización</div>
+          <h4>Chad Bot</h4>
+          <div class="ebook-price">Incluido con Nivel 5</div>
+          <p>Bot de trading automatizado con IA. Ejecuta setups en tiempo real sin intervención manual.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 9 — MÉTODOS DE PAGO -->
+<section class="tight">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="divider">MÉTODOS DE PAGO</div>
+      <h2>Elige <span class="h-gold">tu método</span>.</h2>
+      <p>Procesado de forma segura. Acceso inmediato.</p>
+    </div>
+    <div class="pay-row compact">
+      <div class="pay reveal">
+        <img src="img/mercadopago.svg" alt="Mercado Pago" class="logo-img">
+        <div>
+          <div class="name">Mercado Pago</div>
+          <div class="desc">Argentina · pesos · cuotas</div>
+        </div>
+        <button class="btn btn-primary" onclick="openPay(&#39;mp&#39;)">Pagar</button>
+      </div>
+      <div class="pay reveal delay-1">
+        <img src="img/paypal.svg" alt="PayPal" class="logo-img">
+        <div>
+          <div class="name">PayPal</div>
+          <div class="desc">Internacional · USD</div>
+        </div>
+        <button class="btn btn-primary" onclick="openPay(&#39;paypal&#39;)">Pagar</button>
+      </div>
+      <div class="pay reveal delay-2">
+        <img src="img/binance.svg" alt="Binance Pay" class="logo-img">
+        <div>
+          <div class="name">Binance Pay</div>
+          <div class="desc">Cripto · global · USDT</div>
+        </div>
+        <button class="btn btn-primary" onclick="openPay(&#39;binance&#39;)">Pagar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 10 — REDES -->
+<section id="redes" class="tight">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="divider">COMUNIDAD</div>
+      <h2>Sumate a la <span class="h-gold">comunidad</span>.</h2>
+      <p>Contenido diario. Setups. Errores. Subir de nivel no se hace solo.</p>
+    </div>
+    <div class="social-row">
+      <a class="social reveal" href="https://instagram.com/" target="_blank" rel="noopener">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+            <circle cx="12" cy="12" r="4"></circle>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <div>
+          <strong>Instagram</strong>
+          <span>IR A INSTAGRAM</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a class="social reveal delay-1" href="https://tiktok.com/" target="_blank" rel="noopener">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.5 8.2a6.4 6.4 0 0 1-4.1-1.5v8.8a5.6 5.6 0 1 1-5.6-5.6c.3 0 .7 0 1 .1v2.9a2.7 2.7 0 1 0 1.8 2.6V2h2.8a4 4 0 0 0 4.1 3.7z"></path>
+          </svg>
+        </div>
+        <div>
+          <strong>TikTok</strong>
+          <span>IR A TIKTOK</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container" style="display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center;">
+    <div style="font-family: &#39;Cinzel&#39;, serif; font-weight: 700; letter-spacing: 4px; font-size: 12px; background: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">
+      CHAD · INVERSOR
+    </div>
+    <div style="font-size: 11px; color: #8a8a8a; letter-spacing: 1px;">
+      © 2026 Chad Inversor · Todos los derechos reservados · Subí de nivel, no de apuesta.
+    </div>
+    <div style="font-size: 10px; color: #6a6a6a; letter-spacing: 0.5px; max-width: 640px; line-height: 1.6; margin-top: 4px;">
+      El contenido de este sitio tiene fines educativos e informativos. No constituye asesoramiento financiero, legal ni fiscal. Invertir y operar en mercados financieros implica riesgos, incluyendo la pérdida total del capital. Hacé siempre tu propio análisis.
+    </div>
+  </div>
+</footer>
+
+<!-- LEVEL MODAL -->
+<div class="level-modal" id="levelModal" onclick="closeLevel(event)">
+  <div class="level-modal-box" onclick="event.stopPropagation()">
+    <button class="level-modal-close" onclick="closeLevel()">✕</button>
+    <div class="level-modal-head">
+      <img id="lvlImg" alt="">
+      <div class="head-text">
+        <h3 id="lvlTitle">—</h3>
+        <p class="head-sub" id="lvlSubtitle">—</p>
+      </div>
+    </div>
+
+    <div class="level-stats">
+      <div class="stat-box">
+        <div class="stat-label">Win Rate</div>
+        <div class="stat-value" id="lvlWinrate">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">R:R</div>
+        <div class="stat-value" id="lvlRR">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Riesgo</div>
+        <div class="stat-value" id="lvlRisk">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Consistencia</div>
+        <div class="stat-value" id="lvlCons">—</div>
+      </div>
+    </div>
+
+    <div class="level-block">
+      <h4>Enfoque</h4>
+      <p id="lvlFocus">—</p>
+    </div>
+
+    <div class="level-block">
+      <h4>Estrategia típica</h4>
+      <p id="lvlStrategy">—</p>
+    </div>
+
+    <div class="level-block">
+      <h4>Fortalezas</h4>
+      <ul id="lvlStrengths"></ul>
+    </div>
+
+    <div class="level-block weak">
+      <h4>Debilidades</h4>
+      <ul id="lvlWeak"></ul>
+    </div>
+
+    <div class="level-block">
+      <h4>Cómo subir de nivel</h4>
+      <p id="lvlUpgrade">—</p>
+    </div>
+  </div>
+</div>
+
+<!-- SUBLEVEL MODAL -->
+<div class="sub-modal" id="subModal" onclick="closeSublevel(event)">
+  <div class="sub-modal-box" onclick="event.stopPropagation()">
+    <button class="sub-modal-close" onclick="closeSublevel()">✕</button>
+    <div class="sub-sub" id="subModalTag">Preview</div>
+    <h3 id="subModalTitle">—</h3>
+    <p class="sub-desc" id="subModalDesc">—</p>
+    <ul id="subModalList"></ul>
+    <div class="sub-upgrade" id="subModalUpgrade">—</div>
+  </div>
+</div>
+
+</div><!-- /.page -->
+
+<script>
+/* ===========================================================
+   LOADER — intro 500ms: logo + brand + barra de carga
+=========================================================== */
+(function initLoader() {
+  const loader = document.getElementById("loader");
+
+  function finish() {
+    document.body.classList.add("loaded");
+    // FIX MOBILE: display:none después de la transición de fade
+    // elimina overlay fixed invisible que bloquea touch en iOS
+    if (loader) {
+      setTimeout(function() {
+        loader.style.display = "none";
+      }, 350);
+    }
+  }
+
+  if (document.readyState === "complete") {
+    setTimeout(finish, 500);
+  } else {
+    var done = false;
+    function run() { if (!done) { done = true; finish(); } }
+    window.addEventListener("load", function() { setTimeout(run, 500); });
+    setTimeout(run, 900); // safety fallback
+  }
+})();
+
+/* ===========================================================
+   GALLERY — render cards once, with per-image info overlay
+=========================================================== */
+const CHADS = [
+  { key: "sheep",   name: "SHEEP",   img: "img/l1.png",   desc: "Sigue a la manada. Opera por FOMO.", locked: false },
+  { key: "gambler", name: "GAMBLER", img: "img/l2.png", desc: "Apuesta por emoción. Sin plan.",      locked: false },
+  { key: "turtle",  name: "TURTLE",  img: "img/l3.png",  desc: "Disciplinado, pero paralizado.",      locked: false },
+  { key: "fox",     name: "FOX",     img: "img/l4.png",     desc: "Analítico. Le falta ejecución.",      locked: false },
+  { key: "eagle",   name: "EAGLE",   img: "img/l5.png",   desc: "Visión total. Nivel bloqueado.",      locked: true  },
+  { key: "bull",    name: "BULL",    img: "img/l6.png",    desc: "Fuerza bruta en tendencias alcistas.", locked: true },
+  { key: "bear",    name: "BEAR",    img: "img/l7.png",    desc: "Gana cuando el mercado cae.",         locked: true },
+  { key: "wolf",    name: "WOLF",    img: "img/l8.png",    desc: "Apex. Caza en cualquier mercado.",    locked: true, premium: true }
+];
+
+(function renderGallery() {
+  const root = document.getElementById("gallery");
+  if (!root) return;
+
+  const FALLBACK = "img/l6.png"; // imagen segura por si algo falla
+
+  const frag = document.createDocumentFragment();
+
+  CHADS.forEach((c, i) => {
+    const card = document.createElement("div");
+    card.className = "card reveal" + (c.locked ? " locked" : "") + (c.premium ? " premium" : "") + (i % 4 ? " delay-" + (i % 4) : "");
+    card.onclick = () => openLevel(c.key);
+
+    const imgSrc = c.img;
+
+    card.innerHTML = `
+      <div class="img-frame">
+        <img src="${imgSrc}" alt="${c.name} Chad"
+             onerror="this.onerror=null; this.src='${FALLBACK}'">
+        
+        <div class="img-info">
+          <div class="title">${c.name}</div>
+          <div class="desc">${c.desc}</div>
+        </div>
+
+        ${c.premium ? '<div class="crown-badge">👑</div>' : ''}
+        ${c.locked ? '<div class="overlay">🔒</div>' : ''}
+      </div>
+
+      <div class="name">${c.name}</div>
+    `;
+
+    frag.appendChild(card);
+  });
+
+  root.innerHTML = "";
+  root.appendChild(frag);
+})();
+
+/* ===========================================================
+   QUIZ — 10 preguntas · mapea a sheep / gambler / turtle / fox
+=========================================================== */
+const QUESTIONS = [
+  // ============ BLOQUE 0 — INVERSIÓN GENERAL (P1–P3) ============
+  {
+    diff: "easy",
+    q: "Tenés USD 10.000 ahorrados en el banco que no vas a necesitar en 3 años. ¿Qué hacés con ellos?",
+    opts: [
+      { t: "Los dejo en el banco o plazo fijo. La prioridad es no perderlos", v: "turtle" },
+      { t: "Arranco con una cartera diversificada: índices, bonos y algo de efectivo", v: "fox" },
+      { t: "Busco el activo que más esté subiendo este año y meto todo ahí", v: "gambler" },
+      { t: "Le pregunto a mi cuñado que sabe de esto o veo qué recomienda YouTube", v: "sheep" }
+    ]
+  },
+  {
+    diff: "easy",
+    q: "¿Qué significa realmente diversificar?",
+    opts: [
+      { t: "Tener varias acciones diferentes para no depender de una sola", v: "gambler" },
+      { t: "Distribuir capital entre activos que no se muevan juntos frente al mismo riesgo", v: "fox" },
+      { t: "Comprar un poco de todo lo que recomiendan en los medios", v: "sheep" },
+      { t: "Guardar plata en dólares, pesos y algo de oro", v: "turtle" }
+    ]
+  },
+  {
+    diff: "easy",
+    q: "Se viene una caída fuerte del mercado (-25% en pocas semanas). ¿Qué hacés con tu cartera de inversión?",
+    opts: [
+      { t: "Vendo todo para cortar la pérdida antes de que sea peor", v: "gambler" },
+      { t: "Mantengo el plan. Rebalanceo si la asignación quedó desviada", v: "fox" },
+      { t: "Me paralizo y no miro la cartera por unas semanas", v: "turtle" },
+      { t: "Pregunto en grupos qué están haciendo los demás para decidir", v: "sheep" }
+    ]
+  },
+  // ============ BLOQUE 1 — MENTALIDAD DE TRADING (P4–P8) ============
+  {
+    diff: "easy",
+    q: "Vas ganando +18% en una posición. La estructura todavía apunta al alza pero llevás 3 días sin poder dejar de mirar el gráfico. ¿Qué hacés?",
+    opts: [
+      { t: "Cierro el 50% para asegurar, dejo correr el resto con stop en breakeven", v: "fox" },
+      { t: "Cierro todo. En el mercado lo verde de hoy es lo rojo de mañana", v: "turtle" },
+      { t: "Agrego a la posición para aprovechar el momentum", v: "gambler" },
+      { t: "Espero a que mi grupo o los indicadores me den señal de salida", v: "sheep" }
+    ]
+  },
+  {
+    diff: "easy",
+    q: "Describí honestamente cómo tomás la decisión de entrar en una operación.",
+    opts: [
+      { t: "Reviso charts, siento convicción y entro cuando me parece el momento", v: "gambler" },
+      { t: "Espero que mi setup aparezca. Si no aparece, no opero ese día", v: "fox" },
+      { t: "Tengo varios criterios pero a veces entro sin que se cumplan todos", v: "turtle" },
+      { t: "Abro Twitter/Telegram y veo qué están operando los que saben", v: "sheep" }
+    ]
+  },
+  {
+    diff: "hard",
+    q: "Tocaste un drawdown del 15% en la cuenta. ¿Qué ocurre las próximas 72 horas?",
+    opts: [
+      { t: "Reduzco tamaño a la mitad y sigo operando mi sistema normal", v: "fox" },
+      { t: "Paro por completo. Reviso todas las operaciones del mes antes de volver", v: "turtle" },
+      { t: "Busco recuperar rápido con un par de entradas de mayor convicción", v: "gambler" },
+      { t: "Consulto en grupos qué están haciendo los demás con este mercado", v: "sheep" }
+    ]
+  },
+  {
+    diff: "hard",
+    q: "¿Qué significa realmente tener edge en el mercado?",
+    opts: [
+      { t: "Tener un sistema con expectativa positiva, ejecutado de forma repetible", v: "fox" },
+      { t: "Leer bien el mercado y tener buen timing de entrada", v: "gambler" },
+      { t: "Tener paciencia para esperar solo las mejores oportunidades", v: "turtle" },
+      { t: "Operar lo que operan los traders rentables", v: "sheep" }
+    ]
+  },
+  {
+    diff: "hard",
+    q: "¿Cuál de estas frases describe mejor tu mayor problema REAL hoy operando?",
+    opts: [
+      { t: "Veo las cosas pero dudo al ejecutar, y cuando ejecuto ya es tarde", v: "turtle" },
+      { t: "Entro, pero no respeto stops ni salidas como dice el plan", v: "gambler" },
+      { t: "Entiendo el mercado pero mis resultados no lo reflejan", v: "fox" },
+      { t: "Todavía no tengo claro qué es exactamente lo que debería estar haciendo", v: "sheep" }
+    ]
+  },
+  // ============ BLOQUE 2 — TRADING TÉCNICO AVANZADO (P9–P13) ============
+  {
+    diff: "hard",
+    q: "El precio barre un high anterior, mecha larga con volumen alto, y cierra por debajo del nivel. En la siguiente vela tenés un impulso bajista fuerte. ¿Qué acaba de pasar?",
+    opts: [
+      { t: "Un breakout fallido — hay que esperar retest para confirmar", v: "sheep" },
+      { t: "Stop hunt + liquidity grab: barrieron liquidez de buy-stops para activar ventas institucionales", v: "fox" },
+      { t: "Divergencia bajista, el momentum alcista se agotó", v: "turtle" },
+      { t: "Trampa alcista, señal clara de short agresivo inmediato", v: "gambler" }
+    ]
+  },
+  {
+    diff: "ultra",
+    q: "En un rango, el precio marca un HH (higher high) pero el siguiente HL (higher low) rompe la estructura previa hacia abajo. ¿Qué te está diciendo el mercado?",
+    opts: [
+      { t: "Tendencia alcista intacta, oportunidad de compra en soporte", v: "sheep" },
+      { t: "Change of character (ChoCh): la estructura alcista se rompió, el siguiente rally es probablemente distribución", v: "fox" },
+      { t: "Consolidación normal antes de continuación alcista", v: "gambler" },
+      { t: "Posible doble techo, esperar confirmación con volumen", v: "turtle" }
+    ]
+  },
+  {
+    diff: "ultra",
+    q: "Breakout limpio de resistencia, con volumen 3x el promedio. En las siguientes 4 velas el volumen cae al 30% del promedio mientras el precio sigue subiendo. ¿Qué hacés?",
+    opts: [
+      { t: "Entro en pullback, el breakout confirmó con volumen fuerte", v: "gambler" },
+      { t: "Sigo la posición si ya estoy adentro, subo stop a breakeven", v: "turtle" },
+      { t: "Considero tomar ganancias o salir: continuación sin volumen sugiere agotamiento", v: "fox" },
+      { t: "Espero confirmación adicional antes de operar en cualquier dirección", v: "sheep" }
+    ]
+  },
+  {
+    diff: "ultra",
+    q: "Sistema con 45% win rate y R:R 2:1. Llevás 6 pérdidas consecutivas. Estadísticamente, ¿qué deberías hacer?",
+    opts: [
+      { t: "Pausar. 6 pérdidas seguidas indica que algo en el sistema dejó de funcionar", v: "turtle" },
+      { t: "Revisar journal: si las entradas respetaron el plan, seguir operando normalmente", v: "fox" },
+      { t: "Reducir lotaje a la mitad hasta recuperar confianza", v: "sheep" },
+      { t: "Analizar si el régimen de mercado cambió y ajustar el sistema", v: "gambler" }
+    ]
+  },
+  {
+    diff: "ultra",
+    q: "Operación abierta con +2R de ganancia. Stop en breakeven. El precio está pegado a una zona de liquidez alta con confluencia de order block bajista en HTF. Tu sistema dice mantener hasta objetivo en +3R. ¿Qué hacés?",
+    opts: [
+      { t: "Cierro manualmente. La confluencia bajista es demasiado evidente para ignorarla", v: "gambler" },
+      { t: "Mantengo el plan. Desviarme del sistema por una sola operación rompe la estadística", v: "fox" },
+      { t: "Cierro 50%, dejo el resto correr hasta objetivo", v: "turtle" },
+      { t: "Muevo el stop arriba del precio actual para proteger las ganancias", v: "sheep" }
+    ]
+  }
+];
+
+// Mensajes motivadores entre bloques (desactivados)
+const BREAK_MESSAGES = {};
+
+const RESULTS = {
+  sheep: {
+    img: "img/l1.png",
+    title: "🐑 Sheep Chad",
+    headline: "Estás operando a ciegas.",
+    desc: "No tenés un problema de estrategia. Tenés un problema de criterio. Operás con la convicción de otros y cobrás las pérdidas vos solo.",
+    list: [
+      "Entrás tarde, salís tarde",
+      "Tu estrategia es la opinión del último tipo convincente que leíste",
+      "Cada pérdida te hace buscar otra señal, otro indicador, otro gurú",
+      "En el fondo sabés que no entendés qué estás haciendo"
+    ],
+    truth: "El mercado no te está castigando. Simplemente está cobrándote por operar sin entender. Y lo va a seguir haciendo hasta que pares.",
+    ctaHead: "El fundamento primero. Sin eso, no hay estrategia que te salve.",
+    ctaPrim: { text: "EMPEZAR POR LA BASE · USD 9,99", href: "#ebooks" },
+    ctaSec:  { text: "Ver todos los ebooks →",         href: "#ebooks" }
+  },
+  gambler: {
+    img: "img/l2.png",
+    title: "🎰 Gambler Chad",
+    headline: "No estás haciendo trading. Estás apostando.",
+    desc: "Tenés intuición, tomás decisiones rápido, no te paraliza el riesgo. Ese mismo perfil que te hace entrar es el que no te deja salir. Y el mercado lo sabe.",
+    list: [
+      "Sabés que tenés que respetar reglas pero las rompés cuando se ve obvio",
+      "Tus mejores rachas las destruís con una sola operación de revancha",
+      "Confundís adrenalina con edge",
+      "No llevás journal porque ya sabés lo que dice"
+    ],
+    truth: "El día que empieces a tratar el trading como un negocio y no como un escape, vas a ver que siempre tuviste el talento. Lo que te falta no es habilidad. Es estructura.",
+    ctaHead: "El talento lo tenés. Falta el sistema que no te deje autodestruirte.",
+    ctaPrim: { text: "QUIERO EL SISTEMA · USD 20",   href: "#ebooks" },
+    ctaSec:  { text: "O aplicar a mentoría 1-a-1 →", href: "#redes" }
+  },
+  turtle: {
+    img: "img/l3.png",
+    title: "🐢 Turtle Chad",
+    headline: "Hacés todo bien. Y aun así no avanzás.",
+    desc: "Tenés disciplina, leés el mercado, gestionás riesgo. Pero dudás cuando toca ejecutar, cerrás ganadores antes de tiempo, y ves cómo operaciones que identificaste correctamente despegan sin vos adentro.",
+    list: [
+      "Parálisis por análisis: preparaste 10 setups, ejecutaste 2",
+      "Tomás el 30% de la ganancia cuando tu sistema decía esperar el 100%",
+      "Sabés que tu sistema funciona pero no confiás del todo en él",
+      "El problema no es el mercado. Es que te falta aguante operativo"
+    ],
+    truth: "Estás a un ajuste de ser rentable de forma consistente. No necesitás aprender más. Necesitás ejecutar lo que ya sabés.",
+    ctaHead: "No te falta conocimiento. Te falta el último 10% que separa al que sabe del que gana.",
+    ctaPrim: { text: "DESBLOQUEAR NIVEL EAGLE · USD 99", href: "#ebooks" },
+    ctaSec:  { text: "Aplicar a mentoría personalizada →", href: "#redes" }
+  },
+  fox: {
+    img: "img/l4.png",
+    title: "🦊 Fox Chad",
+    headline: "Entendés el juego. Ahora tenés que dominarlo.",
+    desc: "Leés estructura, gestionás riesgo correctamente, sabés lo que es un edge. Tu problema no es conocimiento. Es la distancia entre lo que sabés y lo que ejecutás bajo presión.",
+    list: [
+      "Tus mejores trades son los que seguiste al pie de la letra",
+      "Tus peores trades son los que ajustaste en vivo",
+      "Tenés 3-4 setups rentables pero todavía los mezclás",
+      "Estás a meses, no años, del siguiente nivel"
+    ],
+    truth: "El nivel Wolf no se alcanza estudiando más. Se alcanza eliminando variables hasta quedarte con lo que funciona, y repitiéndolo hasta que sea mecánico.",
+    ctaHead: "Estás más cerca del nivel Wolf de lo que pensás. Pero solo no vas a llegar.",
+    ctaPrim: { text: "VER EBOOK WOLF · USD 292",   href: "#ebooks" },
+    ctaSec:  { text: "", href: "#ebooks" }
+  }
+};
+
+const DIFF_LABEL = { easy: "Fácil", hard: "Difícil", ultra: "Ultra difícil" };
+
+let current = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+const qText    = document.getElementById("qText");
+const qOptions = document.getElementById("qOptions");
+const qCount   = document.getElementById("qCount");
+const qDiff    = document.getElementById("qDiff");
+const bar      = document.getElementById("bar");
+const prevBtn  = document.getElementById("prevBtn");
+const nextBtn  = document.getElementById("nextBtn");
+const quizWrap = document.getElementById("quizWrap");
+const resultEl = document.getElementById("result");
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  qText.textContent = q.q;
+
+  // Contador con número dorado + bump animation
+  const qnumBefore = qCount.querySelector('.qnum')?.textContent;
+  qCount.innerHTML = `<strong class="qnum">${current + 1}</strong> <span class="qsep">/</span> ${QUESTIONS.length}`;
+  if (qnumBefore && String(current + 1) !== qnumBefore) {
+    const qnum = qCount.querySelector('.qnum');
+    qnum.classList.add('bump');
+    setTimeout(() => qnum.classList.remove('bump'), 500);
+  }
+
+  qDiff.className = `dif ${q.diff}`;
+  qDiff.textContent = DIFF_LABEL[q.diff];
+  bar.style.width = `${((current + 1) / QUESTIONS.length) * 100}%`;
+
+  // Break message entre bloques
+  const breakEl = document.getElementById("qBreak");
+  if (BREAK_MESSAGES[current]) {
+    breakEl.textContent = BREAK_MESSAGES[current];
+    breakEl.classList.add("show");
+  } else {
+    breakEl.classList.remove("show");
+  }
+
+  qOptions.innerHTML = "";
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt" + (answers[current] === i ? " selected" : "");
+    btn.innerHTML = `<span class="bullet">${String.fromCharCode(65 + i)}</span><span>${opt.t}</span>`;
+    btn.addEventListener("click", () => {
+      answers[current] = i;
+      // Micro-delay de 400ms antes de habilitar "Siguiente"
+      nextBtn.disabled = true;
+      btn.classList.add("just-selected");
+      setTimeout(() => {
+        renderQuestion();
+      }, 180);
+    });
+    qOptions.appendChild(btn);
+  });
+
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = answers[current] === null;
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? "Ver resultado" : "Siguiente →";
+}
+
+prevBtn.addEventListener("click", () => { if (current > 0) { current--; renderQuestion(); } });
+nextBtn.addEventListener("click", () => {
+  if (answers[current] === null) return;
+  if (current < QUESTIONS.length - 1) { current++; renderQuestion(); }
+  else showResult();
+});
+
+function showResult() {
+  const scores = { sheep: 0, gambler: 0, turtle: 0, fox: 0 };
+  answers.forEach((ansIdx, qIdx) => {
+    if (ansIdx === null) return;
+    const v = QUESTIONS[qIdx].opts[ansIdx].v;
+    if (scores[v] !== undefined) scores[v]++;
+  });
+  const top = Object.keys(scores).reduce((a, b) => scores[a] >= scores[b] ? a : b);
+  const r = RESULTS[top];
+  window._lastResultTop = top;
+  
+  // Guardar el nivel del usuario en localStorage
+  localStorage.setItem('chadUserLevel', top);
+
+  // 1) Ocultar quiz
+  quizWrap.style.display = "none";
+
+  // 2) Mostrar loader "Analizando tus respuestas…"
+  const analyzing = document.getElementById("quizAnalyzing");
+  analyzing.classList.add("show");
+  analyzing.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  // 3) Tras 2.4s, revelar resultado con los datos
+  setTimeout(() => {
+    const img = document.getElementById("resultImg");
+    img.src = r.img;
+    img.alt = r.title;
+    document.getElementById("resultTitle").textContent    = r.title;
+    document.getElementById("resultHeadline").textContent = r.headline;
+    document.getElementById("resultDesc").textContent     = r.desc;
+    document.getElementById("resultTruth").textContent    = r.truth;
+    document.getElementById("ctaHeadline").textContent    = r.ctaHead;
+
+    const ctaP = document.getElementById("ctaPrimary");
+    ctaP.textContent = r.ctaPrim.text;
+    ctaP.href        = r.ctaPrim.href;
+
+    const ctaS = document.getElementById("ctaSecondary");
+    ctaS.textContent = r.ctaSec.text;
+    ctaS.href        = r.ctaSec.href;
+    ctaS.style.display = "none";
+
+    const ul = document.getElementById("resultList");
+    ul.innerHTML = "";
+    r.list.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      ul.appendChild(li);
+    });
+
+    analyzing.classList.remove("show");
+    resultEl.classList.add("show");
+    resultEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 2400);
+}
+
+function restartQuiz() {
+  current = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  resultEl.classList.remove("show");
+  document.getElementById("quizAnalyzing").classList.remove("show");
+  quizWrap.style.display = "";
+  renderQuestion();
+  quizWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function shareResult() {
+  const top = window._lastResultTop;
+  if (!top) return;
+  const r = RESULTS[top];
+  const text = `Me salió ${r.title} en el test de Chad Inversor. Medí tu nivel: ${location.href.split('#')[0]}`;
+  if (navigator.share) {
+    navigator.share({ title: "Chad Inversor", text }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Link copiado. Compartilo donde quieras.");
+    });
+  }
+}
+
+renderQuestion();
+
+/* ===========================================================
+   PAYMENT STUB
+=========================================================== */
+function openPay(which) {
+  const map = {
+    ebook:      "Redirigiendo a checkout del ebook…",
+    mentoria:   "Redirigiendo a checkout de mentoría…",
+    mp:         "Abriendo Mercado Pago…",
+    visa:       "Abriendo pago con Visa…",
+    mastercard: "Abriendo pago con Mastercard…",
+    amex:       "Abriendo pago con American Express…",
+    paypal:     "Abriendo PayPal…",
+    stripe:     "Abriendo Stripe…",
+    binance:    "Abriendo Binance Pay…",
+    skrill:     "Abriendo Skrill…",
+    applepay:   "Abriendo Apple Pay…",
+    googlepay:  "Abriendo Google Pay…",
+    payway:     "Abriendo Payway…",
+    pagofacil:  "Abriendo PagoFácil…",
+    rapipago:   "Abriendo Rapipago…",
+    uala:       "Abriendo Ualá…",
+    nave:       "Abriendo Nave…"
+  };
+  document.getElementById("ebooks")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* ===========================================================
+   REVEAL ON SCROLL — observes everything with .reveal
+=========================================================== */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add("in");
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+/* ===========================================================
+   SUBLEVEL MODALS — Wolf / Bear / Bull (preview)
+=========================================================== */
+const SUBLEVELS = {
+  wolf: {
+    tag: "👑 Nivel premium",
+    title: "Wolf Chad",
+    desc: "El máximo nivel. Domina todos los mercados: alcistas, bajistas y laterales.",
+    list: [
+      "Estrategia multi-mercado",
+      "Gestión de portafolio avanzada",
+      "Psicología del trader de élite",
+      "Comunidad privada Wolf"
+    ],
+    upgrade: "Desbloqueable sólo por invitación o tras completar nivel Eagle."
+  },
+  bear: {
+    tag: "🔒 Acceso limitado",
+    title: "Bear Chad",
+    desc: "Domina los mercados bajistas. Gana cuando la mayoría pierde.",
+    list: [
+      "Detección de distribución",
+      "Short selling profesional",
+      "Cobertura en crisis",
+      "Lectura de flujos institucionales"
+    ],
+    upgrade: "Requiere completar el nivel Fox para desbloquear acceso total."
+  },
+  bull: {
+    tag: "🔒 Acceso limitado",
+    title: "Bull Chad",
+    desc: "Domina los mercados alcistas. Fuerza, convicción y ejecución.",
+    list: [
+      "Breakouts y continuaciones",
+      "Momentum institucional",
+      "Pirámides de entrada",
+      "Gestión de ganadores"
+    ],
+    upgrade: "Requiere completar el nivel Fox para desbloquear acceso total."
+  }
+};
+function openSublevel(key) {
+  const s = SUBLEVELS[key];
+  if (!s) return;
+  document.getElementById("subModalTag").textContent     = s.tag;
+  document.getElementById("subModalTitle").textContent   = s.title;
+  document.getElementById("subModalDesc").textContent    = s.desc;
+  document.getElementById("subModalUpgrade").textContent = s.upgrade;
+  const ul2 = document.getElementById("subModalList");
+  ul2.innerHTML = "";
+  s.list.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    ul2.appendChild(li);
+  });
+  document.getElementById("subModal").classList.add("open");
+}
+function closeSublevel(e) {
+  if (e && e.target.id !== "subModal" && e.type === "click") return;
+  document.getElementById("subModal").classList.remove("open");
+}
+
+/* ===========================================================
+   LEVEL MODALS — data detallada de cada chad (winrate, estrategia, etc.)
+=========================================================== */
+const LEVELS = {
+  sheep: {
+    img: "img/l1.png",
+    title: "🐑 Sheep Chad",
+    subtitle: "Sigue a la manada · Opera por FOMO",
+    winrate: "~30%",
+    rr: "1:1",
+    risk: "Alto",
+    cons: "Baja",
+    focus: "Imitar lo que hacen otros. Entra por tips de grupos, influencers o tendencias virales sin entender qué está haciendo.",
+    strategy: "Compra cuando sube (FOMO), vende cuando baja (pánico). Sin plan escrito, sin criterios de entrada ni salida definidos.",
+    strengths: [
+      "Reconoce cuando no sabe algo",
+      "Está dispuesto a aprender",
+      "Identifica tendencias populares"
+    ],
+    weak: [
+      "Entra tarde, sale tarde",
+      "Sin gestión de riesgo",
+      "Depende emocionalmente de otros",
+      "Compra caro y vende barato"
+    ],
+    upgrade: "Estudiar las bases. Dejar de copiar operaciones ajenas y empezar a construir un criterio propio con un sistema escrito."
+  },
+  gambler: {
+    img: "img/l2.png",
+    title: "🎰 Gambler Chad",
+    subtitle: "Apuesta por emoción · Sin plan",
+    winrate: "~35%",
+    rr: "0.8:1",
+    risk: "Muy alto",
+    cons: "Nula",
+    focus: "Adrenalina y recuperar pérdidas. Busca el 'one shot' que lo compense todo. Confunde trading con casino.",
+    strategy: "Tamaño variable según emoción. Sube el lotaje cuando pierde para recuperar (martingala emocional). Opera sin stop loss definido.",
+    strengths: [
+      "Tolera bien el riesgo",
+      "Toma decisiones rápido",
+      "No se paraliza en la ejecución"
+    ],
+    weak: [
+      "Revenge trading tras pérdidas",
+      "Rompe sus propias reglas constantemente",
+      "Overtrading (opera demasiado)",
+      "No lleva registro ni journal"
+    ],
+    upgrade: "Imponer reglas estrictas: riesgo fijo por operación, límite diario de trades, tope de pérdida diaria. Sin disciplina no hay rentabilidad."
+  },
+  turtle: {
+    img: "img/l3.png",
+    title: "🐢 Turtle Chad",
+    subtitle: "Disciplinado · Pero paralizado",
+    winrate: "~45%",
+    rr: "1.5:1",
+    risk: "Bajo",
+    cons: "Media",
+    focus: "Proteger el capital por encima de todo. Analiza mucho, espera la operación 'perfecta' que muchas veces no ejecuta.",
+    strategy: "Entra sólo en setups de altísima confluencia. Usa lotaje mínimo, stops ajustados. Pierde oportunidades por exceso de análisis.",
+    strengths: [
+      "Excelente gestión de riesgo",
+      "No comete errores por impulso",
+      "Tiene plan escrito y lo respeta",
+      "Sobrevive drawdowns sin romperse"
+    ],
+    weak: [
+      "Parálisis por análisis",
+      "Duda al ejecutar",
+      "Deja pasar operaciones válidas",
+      "Toma ganancias demasiado temprano"
+    ],
+    upgrade: "Confiar más en el sistema que tiene. Ejecutar sin dudar cuando el setup cumple criterios. Dejar correr ganadores."
+  },
+  fox: {
+    img: "img/l4.png",
+    title: "🦊 Fox Chad",
+    subtitle: "Analítico · Le falta ejecución",
+    winrate: "~52%",
+    rr: "2:1",
+    risk: "Medido",
+    cons: "Media-alta",
+    focus: "Entiende el mercado, lee estructura, identifica zonas de liquidez. Tiene edge pero falla en la ejecución consistente.",
+    strategy: "Price action + estructura de mercado + gestión del 1-2% por trade. Mezcla análisis técnico con fundamental. Detecta confluencias.",
+    strengths: [
+      "Excelente análisis técnico",
+      "Sabe identificar el edge",
+      "Comprende probabilidades",
+      "Gestiona riesgo correctamente"
+    ],
+    weak: [
+      "Inconsistencia entre plan y ejecución",
+      "A veces modifica stops en vivo",
+      "No registra todas las operaciones",
+      "Se frustra en rachas negativas"
+    ],
+    upgrade: "Llevar journal riguroso. Medir resultados reales vs esperados. Reducir variables y perfeccionar 1-2 setups hasta dominarlos."
+  },
+  eagle: {
+    img: "img/l5.png",
+    title: "🦅 Eagle Chad",
+    subtitle: "Visión total · Nivel bloqueado",
+    winrate: "~60%",
+    rr: "3:1",
+    risk: "Profesional",
+    cons: "Alta",
+    focus: "Ve el mercado desde arriba. Combina macro, flujos institucionales, estructura y gestión de portafolio. Pensamiento de largo plazo.",
+    strategy: "Multi-temporalidad, confluencia macro + técnica. Opera pocos trades de alta calidad. Risk 1% máximo por operación.",
+    strengths: [
+      "Lectura institucional del mercado",
+      "Disciplina absoluta",
+      "Controla emociones bajo presión",
+      "Ejecución sin dudas",
+      "Probabilidad > ego"
+    ],
+    weak: [
+      "A veces demasiado selectivo",
+      "Puede subestimar mercados laterales",
+      "Requiere mucho tiempo de análisis"
+    ],
+    upgrade: "Este nivel no se alcanza con un test — se construye con años de práctica, journal y corrección constante."
+  },
+  bull: {
+    img: "img/l6.png",
+    title: "🐂 Bull Chad",
+    subtitle: "Especialización · Mercados alcistas",
+    winrate: "~58%",
+    rr: "3:1",
+    risk: "Controlado",
+    cons: "Alta (en tendencia)",
+    focus: "Especialista en tendencias alcistas. Detecta acumulación, breakouts válidos y momentum. Compra en fuerza.",
+    strategy: "Breakouts con volumen, pullbacks a medias móviles, continuaciones. Pirámide posiciones ganadoras. Stops dinámicos.",
+    strengths: [
+      "Domina patrones alcistas",
+      "Sabe dejar correr ganadores",
+      "Entra en momentum real",
+      "Gestiona ganancias con trailing"
+    ],
+    weak: [
+      "Rendimiento bajo en mercados bajistas",
+      "Puede quedarse atrapado en techos",
+      "Sesgo alcista constante"
+    ],
+    upgrade: "Aprender a detectar distribución y techos. Saber quedarse afuera cuando el mercado cambia de régimen."
+  },
+  bear: {
+    img: "img/l7.png",
+    title: "🐻 Bear Chad",
+    subtitle: "Especialización · Mercados bajistas",
+    winrate: "~55%",
+    rr: "3:1",
+    risk: "Controlado",
+    cons: "Alta (en crisis)",
+    focus: "Prospera cuando todos pierden. Identifica distribución, roturas de soporte y capitulaciones. Short selling profesional.",
+    strategy: "Short en rupturas de estructura, pullbacks a resistencias perdidas, cobertura de cartera. R:R mínimo 1:3.",
+    strengths: [
+      "Frío bajo pánico de mercado",
+      "Detecta distribución temprano",
+      "Sabe cubrir portafolio",
+      "Rentable en crisis"
+    ],
+    weak: [
+      "Puede quedarse bajista demasiado tiempo",
+      "Riesgo de short squeezes",
+      "Rendimiento bajo en bull markets"
+    ],
+    upgrade: "Reconocer cambios de régimen. Un mercado alcista no se pelea — se acompaña o se observa."
+  },
+  wolf: {
+    img: "img/l8.png",
+    title: "🐺 Wolf Chad",
+    subtitle: "Apex · Caza en todos los mercados",
+    winrate: "~62%",
+    rr: "3:1+",
+    risk: "Institucional",
+    cons: "Muy alta",
+    focus: "Todoterreno. Adapta la estrategia al régimen del mercado: alcista, bajista o lateral. Protege capital, multiplica cuando toca.",
+    strategy: "Multi-estrategia según contexto. Tendencia + reversión + rangos. Gestión de portafolio activa. Control emocional total.",
+    strengths: [
+      "Adaptación total al mercado",
+      "Mentalidad de élite",
+      "Disciplina + paciencia + constancia",
+      "Liderazgo y legado",
+      "Protege capital, multiplica cuando corresponde"
+    ],
+    weak: [
+      "Requiere años de experiencia",
+      "Solo accesible para pocos"
+    ],
+    upgrade: "No hay siguiente nivel. Desde acá se construye legado: mentoría, comunidad, transferencia de conocimiento."
+  }
+};
+
+function openLevel(key) {
+  const d = LEVELS[key];
+  if (!d) return;
+  document.getElementById("lvlImg").src          = d.img;
+  document.getElementById("lvlImg").alt          = d.title;
+  document.getElementById("lvlTitle").textContent    = d.title;
+  document.getElementById("lvlSubtitle").textContent = d.subtitle;
+  document.getElementById("lvlWinrate").textContent  = d.winrate;
+  document.getElementById("lvlRR").textContent       = d.rr;
+  document.getElementById("lvlRisk").textContent     = d.risk;
+  document.getElementById("lvlCons").textContent     = d.cons;
+  document.getElementById("lvlFocus").textContent    = d.focus;
+  document.getElementById("lvlStrategy").textContent = d.strategy;
+  document.getElementById("lvlUpgrade").textContent  = d.upgrade;
+
+  const ulS = document.getElementById("lvlStrengths");
+  ulS.innerHTML = "";
+  d.strengths.forEach(s => {
+    const li = document.createElement("li");
+    li.textContent = s;
+    ulS.appendChild(li);
+  });
+
+  const ulW = document.getElementById("lvlWeak");
+  ulW.innerHTML = "";
+  d.weak.forEach(w => {
+    const li = document.createElement("li");
+    li.textContent = w;
+    ulW.appendChild(li);
+  });
+
+  const box = document.querySelector(".level-modal-box");
+  if (box) box.scrollTop = 0;
+  document.getElementById("levelModal").classList.add("open");
+}
+
+function closeLevel(e) {
+  if (e && e.target.id !== "levelModal" && e.type === "click") return;
+  document.getElementById("levelModal").classList.remove("open");
+}
+</script>
+
+
+<!-- PSYCHOLOGY MODALS -->
+<div id="psych-modal-burnout" class="psych-modal">
+  <div class="psych-modal-content">
+    <span class="psych-modal-close" onclick="closePsychModal(&#39;burnout&#39;)">×</span>
+    <img src="img/burnout.png" alt="Burnout" class="psych-modal-image">
+    <h2 class="psych-modal-title">🔴 Burnout en Trading</h2>
+    <p class="psych-modal-text"><strong>5 CAUSAS DEL BURNOUT:</strong><br>1. Sobrecarga de información • 2. Operar sin plan • 3. Perfeccionismo • 4. Pérdidas no aceptadas • 5. Falta de descanso</p>
+    <p class="psych-modal-text"><strong>RUTA DE RECUPERACIÓN:</strong><br>❤️ DETENTE • 🔌 DESCONECTA • 🧘 RECARGA • 📋 RESTRUCTURA • 🎯 REENFOCA • 📈 CRECE</p>
+  </div>
+</div>
+
+<div id="psych-modal-mapa" class="psych-modal">
+  <div class="psych-modal-content">
+    <span class="psych-modal-close" onclick="closePsychModal(&#39;mapa&#39;)">×</span>
+    <img src="img/mapa.png" alt="Mapa" class="psych-modal-image">
+    <h2 class="psych-modal-title">🗺️ Tu Mapa en el Trading</h2>
+    <p class="psych-modal-text"><strong>8 ARQUETIPOS:</strong><br>1. 🐑 SHEEP • 2. 🎰 GAMBLER • 3. 🐢 TURTLE • 4. 🦊 FOX • 5. 🦅 EAGLE • 6. 🐂 BULL • 7. 🐻 BEAR • 8. 🐺 WOLF (MÁXIMO)</p>
+  </div>
+</div>
+
+<div id="psych-modal-psicotrading" class="psych-modal">
+  <div class="psych-modal-content">
+    <span class="psych-modal-close" onclick="closePsychModal(&#39;psicotrading&#39;)">×</span>
+    <img src="img/psicotrading.png" alt="Psicotrading" class="psych-modal-image">
+    <h2 class="psych-modal-title">🧬 Psicotrading Academy</h2>
+    <p class="psych-modal-text"><strong>12 MÓDULOS:</strong><br>1. Introducción • 2. Neuroeconomía • 3. Sesgos cognitivos • 4. Gestión emocional • 5. Disciplina • 6. Psicología de pérdidas • 7. Confianza • 8. Traders legendarios • 9. Psicología del dinero • 10. Regulación emocional • 11. Burnout • 12. Ejercicios prácticos</p>
+  </div>
+</div>
+
+<div id="psych-modal-starterpack" class="psych-modal">
+  <div class="psych-modal-content">
+    <span class="psych-modal-close" onclick="closePsychModal(&#39;starterpack&#39;)">×</span>
+    <img src="img/starterpack.png" alt="Starter Pack" class="psych-modal-image">
+    <h2 class="psych-modal-title">⚡ Starter Pack Trading</h2>
+    <p class="psych-modal-text"><strong>6 PASOS:</strong><br>1. Selecciona broker • 2. Gráficos (TradingView) • 3. Noticias (Investing) • 4. Análisis fundamental • 5. Análisis técnico • 6. Ejecución (MetaTrader 5)</p>
+  </div>
+</div>
+
+<div id="psych-modal-tradinginstitucional" class="psych-modal">
+  <div class="psych-modal-content">
+    <span class="psych-modal-close" onclick="closePsychModal(&#39;tradinginstitucional&#39;)">×</span>
+    <img src="img/tradinginstitucional.png" alt="Trading Institucional" class="psych-modal-image">
+    <h2 class="psych-modal-title">🏛️ Trading Institucional</h2>
+    <p class="psych-modal-text"><strong>CÓMO OPERAN LOS GRANDES:</strong><br>Acumulación/Distribución • Smart Money Concepts • Algoritmos • Stop Hunting • Fake Breakouts • Order Blocks • Gestión de riesgo avanzada</p>
+  </div>
+</div>
+
+<!-- PRODUCT MODALS -->
+<div id="product-modal-starter" class="product-modal">
+  <div class="product-modal-content runner-modal-content theme-seed">
+    <span class="product-modal-close" onclick="closeProductModal(&#39;starter&#39;)">×</span>
+
+    <div class="runner-modal-hero">
+      <img src="img/sheepgoldentoken.png" alt="Starter Pack — la semilla del trader">
+      <div class="runner-modal-hero-overlay">
+        <span class="runner-modal-badge">🌱 NIVEL 1 · INICIANTE</span>
+        <h2 class="runner-modal-title">Starter Pack</h2>
+        <p class="runner-modal-tagline">La semilla · Fundamentos · Empezá con base sólida</p>
+      </div>
+    </div>
+
+    <div class="runner-modal-body">
+      <div class="runner-price-row">
+        <div class="runner-price">$9.99</div>
+        <div class="runner-price-sub">Acceso completo de por vida</div>
+      </div>
+
+      <p class="runner-intro">
+        Todo trader exitoso empezó con <strong>una semilla</strong>: los fundamentos bien plantados. El Starter Pack es el primer paso — lo que nadie te enseñó, pero que te ahorra meses de pérdidas por errores evitables.
+      </p>
+
+      <div class="runner-section">
+        <h3>📚 Lo que vas a aprender</h3>
+        <ul class="runner-list">
+          <li><strong>Fundamentos de análisis técnico</strong> — soportes, resistencias, tendencias y cómo leer un gráfico sin ruido.</li>
+          <li><strong>Gestión de riesgo básica</strong> — el concepto que separa a traders de apostadores.</li>
+          <li><strong>Selección de broker</strong> — cómo elegir sin caer en scams ni spreads abusivos.</li>
+          <li><strong>Primeros setups profesionales</strong> — 5 entradas simples pero de alta probabilidad.</li>
+        </ul>
+      </div>
+
+      <div class="runner-section">
+        <h3>🎯 Para quién es</h3>
+        <p class="runner-paragraph">
+          Para quien nunca operó o recién arranca y no quiere quemar su primera cuenta. Sin conocimiento previo requerido — si sabés prender una PC, podés empezar acá.
+        </p>
+      </div>
+
+      <div class="runner-cta-block">
+        <p class="runner-cta-headline">Cada gigante empezó siendo semilla.</p>
+        <p class="runner-cta-subline">Plantá bien las raíces.</p>
+      </div>
+
+      <a href="pagos.html#nivel-1" class="go-pagos-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"></path><polyline points="21 3 21 9 15 9"></polyline></svg>
+        <span>Pagar ahora</span>
+        <span class="gp-price">USD 10</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="product-modal-investing" class="product-modal">
+  <div class="product-modal-content runner-modal-content theme-fox">
+    <span class="product-modal-close" onclick="closeProductModal(&#39;investing&#39;)">×</span>
+
+    <div class="runner-modal-hero">
+      <img src="img/foxgoldentoken.png" alt="Investing — el zorro del mercado">
+      <div class="runner-modal-hero-overlay">
+        <span class="runner-modal-badge">🦊 NIVEL 2 · ASTUTO</span>
+        <h2 class="runner-modal-title">Investing</h2>
+        <p class="runner-modal-tagline">Inversión · Disciplina · Mentalidad consistente</p>
+      </div>
+    </div>
+
+    <div class="runner-modal-body">
+      <div class="runner-price-row">
+        <div class="runner-price">$20</div>
+        <div class="runner-price-sub">Acceso completo de por vida</div>
+      </div>
+
+      <p class="runner-intro">
+        El zorro no gana por fuerza, gana por <strong>astucia</strong>. Este nivel te enseña a invertir y operar con la mentalidad que separa al trader consistente del emocional.
+      </p>
+
+      <div class="runner-section">
+        <h3>📈 Lo que vas a aprender</h3>
+        <ul class="runner-list">
+          <li><strong>Psicología del dinero</strong> — tu relación con el dinero es la base de todo. Primero curás eso.</li>
+          <li><strong>Construcción de hábitos</strong> — rutinas de análisis, journal, revisión de métricas.</li>
+          <li><strong>Análisis técnico avanzado</strong> — estructura de mercado, order blocks, liquidez.</li>
+          <li><strong>Estrategias probadas</strong> — sistemas con edge real, no setups de Instagram.</li>
+        </ul>
+      </div>
+
+      <div class="runner-section">
+        <h3>🎯 Para quién es</h3>
+        <p class="runner-paragraph">
+          Para quien ya entiende los fundamentos (o pasó por Starter) y quiere construir un sistema de trading/inversión serio y repetible a largo plazo.
+        </p>
+      </div>
+
+      <div class="runner-cta-block">
+        <p class="runner-cta-headline">No ganás por fuerza.</p>
+        <p class="runner-cta-subline">Ganás por astucia.</p>
+      </div>
+
+      <a href="pagos.html#nivel-2" class="go-pagos-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"></path><polyline points="21 3 21 9 15 9"></polyline></svg>
+        <span>Pagar ahora</span>
+        <span class="gp-price">USD 20</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="product-modal-eagle" class="product-modal">
+  <div class="product-modal-content runner-modal-content theme-eagle">
+    <span class="product-modal-close" onclick="closeProductModal(&#39;eagle&#39;)">×</span>
+
+    <div class="runner-modal-hero">
+      <img src="img/eaglegoldentoken.png" alt="Eagle — visión completa del mercado">
+      <div class="runner-modal-hero-overlay">
+        <span class="runner-modal-badge">🦅 NIVEL 3 · VISIÓN</span>
+        <h2 class="runner-modal-title">Eagle</h2>
+        <p class="runner-modal-tagline">Ebook · Videos · Estrategias personalizadas</p>
+      </div>
+    </div>
+
+    <div class="runner-modal-body">
+      <div class="runner-price-row">
+        <div class="runner-price">$99</div>
+        <div class="runner-price-sub">Acceso completo de por vida</div>
+      </div>
+
+      <p class="runner-intro">
+        El águila ve desde arriba y ataca con precisión. Este nivel te da <strong>visión completa del mercado</strong> y te enseña a ejecutar como un profesional, no como un retail más.
+      </p>
+
+      <div class="runner-section">
+        <h3>🎬 Qué incluye</h3>
+        <ul class="runner-list">
+          <li><strong>Ebook Eagle completo</strong> — guía profesional sobre análisis, gestión y ejecución multi-activo.</li>
+          <li><strong>Biblioteca de videos</strong> — cada concepto explicado en video con casos reales del mercado.</li>
+          <li><strong>Estrategias personalizadas</strong> — setups adaptados a tu perfil, timezone y mercado favorito.</li>
+          <li><strong>+50 setups profesionales</strong> — entradas documentadas con reglas claras de entrada, stop y target.</li>
+          <li><strong>Multi-timeframe mastery</strong> — leer el mercado desde el mensual al 5 minutos sin perder contexto.</li>
+        </ul>
+      </div>
+
+      <div class="runner-section">
+        <h3>📊 Lo que vas a dominar</h3>
+        <ul class="runner-list">
+          <li><strong>Análisis técnico y fundamental</strong> combinados en un solo framework.</li>
+          <li><strong>Gestión avanzada de capital</strong> — position sizing, correlación, diversificación.</li>
+          <li><strong>Ejecución profesional</strong> — cómo entrar, cómo gestionar y cuándo salir.</li>
+        </ul>
+      </div>
+
+      <div class="runner-section">
+        <h3>🎯 Para quién es</h3>
+        <p class="runner-paragraph">
+          Para traders con base sólida que quieren <strong>dar el salto a nivel profesional</strong>. Asume que ya dominás estructura básica y gestión de riesgo.
+        </p>
+      </div>
+
+      <div class="runner-cta-block">
+        <p class="runner-cta-headline">Ve el mercado desde arriba.</p>
+        <p class="runner-cta-subline">Atacá con precisión.</p>
+      </div>
+
+      <a href="pagos.html#nivel-3" class="go-pagos-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"></path><polyline points="21 3 21 9 15 9"></polyline></svg>
+        <span>Pagar ahora</span>
+        <span class="gp-price">USD 99</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="product-modal-wolf" class="product-modal">
+  <div class="product-modal-content runner-modal-content theme-wolf">
+    <span class="product-modal-close" onclick="closeProductModal(&#39;wolf&#39;)">×</span>
+
+    <div class="runner-modal-hero">
+      <img src="img/goldendoglogo.png" alt="Wolf — el máximo nivel del trader">
+      <div class="runner-modal-hero-overlay">
+        <span class="runner-modal-badge">🐺 NIVEL 4 · APEX</span>
+        <h2 class="runner-modal-title">Wolf 👑</h2>
+        <p class="runner-modal-tagline">Avanzado profesional · Todos los timeframes · Operatoria en vivo</p>
+      </div>
+    </div>
+
+    <div class="runner-modal-body">
+      <div class="runner-price-row">
+        <div class="runner-price">$292</div>
+        <div class="runner-price-sub">Acceso completo de por vida · Incluye comunidad VIP</div>
+      </div>
+
+      <p class="runner-intro">
+        El lobo caza en solitario pero domina el territorio. Este es el <strong>nivel avanzado profesional</strong> — operatoria real, en vivo, con estrategias que se adaptan a cualquier timeframe.
+      </p>
+
+      <div class="runner-section">
+        <h3>🎯 Qué lo hace único</h3>
+        <ul class="runner-list">
+          <li><strong>Nivel avanzado profesional</strong> — pensado para traders que ya ejecutan consistentemente y buscan escalar.</li>
+          <li><strong>Estrategias en distintos timeframes</strong> — desde swing (diario/4H) hasta intradía (15m/1H) adaptables a tu vida.</li>
+          <li><strong>Videos y operatoria en vivo</strong> — mirá cómo se toman decisiones reales en sesiones grabadas con el mercado abierto.</li>
+          <li><strong>Smart money concepts</strong> — leer cómo operan las instituciones y posicionarte con ellas.</li>
+          <li><strong>Algoritmos y órdenes ocultas</strong> — entender la mecánica del flujo real del mercado.</li>
+        </ul>
+      </div>
+
+      <div class="runner-section">
+        <h3>👥 Comunidad VIP</h3>
+        <p class="runner-paragraph">
+          Acceso a comunidad exclusiva de traders del nivel Wolf. Señales, análisis colaborativos y feedback directo. Networking con gente que opera en serio — no con principiantes que vienen a preguntar si NFA va a subir.
+        </p>
+      </div>
+
+      <div class="runner-section">
+        <h3>🔓 Desbloquea el Nivel 5</h3>
+        <p class="runner-paragraph">
+          Al comprar Wolf, desbloqueás automáticamente el acceso al <strong>Nivel 5 · Correcaminos</strong> (scalper profesional, especialización con indicadores TradingView personalizados).
+        </p>
+      </div>
+
+      <div class="runner-cta-block">
+        <p class="runner-cta-headline">Cazá en solitario.</p>
+        <p class="runner-cta-subline">Domina el territorio.</p>
+      </div>
+
+      <a href="pagos.html#nivel-4" class="go-pagos-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"></path><polyline points="21 3 21 9 15 9"></polyline></svg>
+        <span>Pagar ahora</span>
+        <span class="gp-price">USD 292</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="product-modal-runner" class="product-modal">
+  <div class="product-modal-content runner-modal-content">
+    <span class="product-modal-close" onclick="closeProductModal(&#39;runner&#39;)">×</span>
+
+    <div class="runner-modal-hero">
+      <img src="img/chadcorre.png" alt="Chad Correcaminos — Scalper profesional">
+      <div class="runner-modal-hero-overlay">
+        <span class="runner-modal-badge">⚡ NIVEL 5 · AVANZADO</span>
+        <h2 class="runner-modal-title">Chad Correcaminos</h2>
+        <p class="runner-modal-tagline">Scalper Profesional · Velocidad · Precisión · Resultados</p>
+      </div>
+    </div>
+
+    <div class="runner-modal-body">
+      <div class="runner-price-row">
+        <div class="runner-price">$149</div>
+        <div class="runner-price-sub">Acceso completo de por vida</div>
+      </div>
+
+      <p class="runner-intro">
+        El mercado no espera. Tú tampoco. <strong>Sé el Correcaminos.</strong> Este nivel avanzado está diseñado para traders que ya dominan los fundamentos y quieren especializarse en <strong>scalping profesional</strong> — operaciones rápidas, de alta probabilidad y gran precisión.
+      </p>
+
+      <div class="runner-section">
+        <h3>🎯 Lo que vas a aprender</h3>
+        <ul class="runner-list">
+          <li><strong>Señales de alta probabilidad</strong> — identificá setups precisos en segundos, con reglas claras de entrada y salida.</li>
+          <li><strong>Scalping ultrarrápido</strong> — técnicas para operar movimientos de 5 a 30 minutos sin dudar.</li>
+          <li><strong>Multi timeframe inteligente</strong> — leer el contexto macro mientras ejecutás en micro.</li>
+          <li><strong>Disciplina, control y gestión</strong> — el scalping exige nervios de acero; acá aprendés a mantenerlos.</li>
+        </ul>
+      </div>
+
+      <div class="runner-section">
+        <h3>🎬 Qué incluye</h3>
+        <ul class="runner-list">
+          <li><strong>Indicadores TradingView personalizados</strong> — set propio de indicadores exclusivos para detectar entradas de alta probabilidad en segundos.</li>
+          <li><strong>Biblioteca de videos</strong> — cada estrategia explicada paso a paso en video, con ejemplos reales del mercado.</li>
+          <li><strong>Estrategias en 5 minutos</strong> — setups diseñados específicamente para timeframes de 1m, 3m y 5m.</li>
+          <li><strong>Checklists de ejecución</strong> — preflight antes de cada entrada para no tradear por impulso.</li>
+          <li><strong>Plan de gestión de riesgo</strong> — position sizing, stop loss dinámico, trailing, partial profits.</li>
+          <li><strong>Actualizaciones continuas</strong> — nuevas estrategias agregadas mes a mes.</li>
+        </ul>
+      </div>
+
+      <div class="runner-section">
+        <h3>🔒 Acceso restringido</h3>
+        <p class="runner-paragraph">
+          El Nivel 5 Correcaminos está <strong>reservado únicamente para quienes ya cuentan con el Nivel 4 Wolf</strong>. La razón es técnica: los indicadores TradingView personalizados y el sistema de scalping asumen los conceptos cubiertos en Wolf. Sin esa base, no vas a sacarle provecho.
+        </p>
+      </div>
+
+      <div class="runner-section">
+        <h3>⚡ Para quién es</h3>
+        <p class="runner-paragraph">
+          Este nivel asume que ya pasaste por Wolf o que tenés experiencia equivalente en trading profesional. <strong>No es para principiantes</strong>: el scalping demanda foco, rapidez y gestión emocional. Si dudás con entradas o te paralizás al ver el ticker moverse, primero fortalecé tus fundamentos.
+        </p>
+      </div>
+
+      <div class="runner-cta-block">
+        <p class="runner-cta-headline">El mercado no espera. Tú tampoco.</p>
+        <p class="runner-cta-subline">Sé el Correcaminos.</p>
+      </div>
+
+      <a href="pagos.html#nivel-5" class="go-pagos-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"></path><polyline points="21 3 21 9 15 9"></polyline></svg>
+        <span>Pagar ahora</span>
+        <span class="gp-price">USD 149</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== PSYCHOLOGY MODAL FUNCTIONS =====
+function openPsychModal(modalName) {
+  const modal = document.getElementById(`psych-modal-${modalName}`);
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closePsychModal(modalName) {
+  const modal = document.getElementById(`psych-modal-${modalName}`);
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+}
+
+// ===== PRODUCT MODAL FUNCTIONS =====
+
+// ⚙️ TOGGLE DEL CANDADO NIVEL 5
+// Cambia este valor a true si querés que el Correcaminos arranque BLOQUEADO
+// (solo accesible después de comprar Wolf). Default: false = siempre visible.
+const LEVEL5_REQUIRES_WOLF = true;
+
+// Helpers para manejar el candado del Nivel 5 (Correcaminos)
+// El acceso se desbloquea cuando el usuario compra Wolf.
+// Clave en localStorage: "chadInversor.ownsWolf" = "true"
+function ownsWolf() {
+  if (!LEVEL5_REQUIRES_WOLF) return true; // desbloqueado globalmente
+  try { return localStorage.getItem('chadInversor.ownsWolf') === 'true'; }
+  catch (e) { return false; }
+}
+function markWolfPurchased() {
+  try { localStorage.setItem('chadInversor.ownsWolf', 'true'); }
+  catch (e) {}
+  updateRunnerLockUI();
+}
+function resetWolfPurchase() {
+  try { localStorage.removeItem('chadInversor.ownsWolf'); }
+  catch (e) {}
+  updateRunnerLockUI();
+}
+// Expongo estas funciones en window así son accesibles desde consola (para el dueño del sitio)
+window.markWolfPurchased = markWolfPurchased;
+window.resetWolfPurchase = resetWolfPurchase;
+
+function updateRunnerLockUI() {
+  const card = document.getElementById('runnerCard');
+  if (!card) return;
+  if (ownsWolf()) {
+    card.classList.remove('is-locked');
+  } else {
+    card.classList.add('is-locked');
+  }
+}
+
+function openProductModal(productName) {
+  // Nivel 5 (runner) requiere haber comprado Wolf primero
+  if (productName === 'runner' && !ownsWolf()) {
+    // Abrir el modal de Wolf en su lugar como invitación al paso previo
+    const wolfModal = document.getElementById('product-modal-wolf');
+    if (wolfModal) {
+      wolfModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      // Scroll interno al tope
+      const content = wolfModal.querySelector('.runner-modal-content');
+      if (content) content.scrollTop = 0;
+    }
+    return;
+  }
+
+  const modal = document.getElementById(`product-modal-${productName}`);
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    const content = modal.querySelector('.runner-modal-content, .product-modal-content');
+    if (content) content.scrollTop = 0;
+  }
+}
+
+function closeProductModal(productName) {
+  const modal = document.getElementById(`product-modal-${productName}`);
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+}
+
+// Inicializar UI del candado al cargar
+document.addEventListener('DOMContentLoaded', updateRunnerLockUI);
+
+// Close modal on outside click
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('psych-modal')) {
+    const modalName = e.target.id.replace('psych-modal-', '');
+    closePsychModal(modalName);
+  }
+  if (e.target.classList.contains('product-modal')) {
+    const productName = e.target.id.replace('product-modal-', '');
+    closeProductModal(productName);
+  }
+});
+
+// Close on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.psych-modal.active').forEach(modal => {
+      const modalName = modal.id.replace('psych-modal-', '');
+      closePsychModal(modalName);
+    });
+    document.querySelectorAll('.product-modal.active').forEach(modal => {
+      const productName = modal.id.replace('product-modal-', '');
+      closeProductModal(productName);
+    });
+  }
+});
+</script>
+
+
+<script>
+// Asegurar que los anchor links funcionen sin redireccionamientos
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    // Solo permitir anchor links (que comiencen con #)
+    if (href.startsWith('#')) {
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+});
+</script>
+
+
+
+</body></html>

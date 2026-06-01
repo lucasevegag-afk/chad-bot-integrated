@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psicología del Trading — Chad Inversor</title>
+<meta name="description" content="Domina la psicología del trading. Aprende sobre burnout, arquetipos, sesgos cognitivos y gestión emocional.">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap">
+<style>
+  :root {
+    --bg: #050505;
+    --bg-1: #0a0a0a;
+    --bg-2: #121212;
+    --bg-3: #181818;
+    --line: rgba(212, 160, 23, 0.15);
+    --line-2: rgba(212, 160, 23, 0.35);
+    --text: #ececec;
+    --muted: #8a8a8a;
+    --gold-1: #ffe27a;
+    --gold-2: #d4a017;
+    --gold-3: #8b6508;
+    --gold-grad: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    --gold-soft: linear-gradient(135deg, rgba(255,226,122,0.14), rgba(139,101,8,0.04));
+    --shadow: 0 24px 60px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-gold: 0 20px 48px rgba(212, 160, 23, 0.18);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient backdrop */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(60% 50% at 10% 0%, rgba(212,160,23,0.10), transparent 60%),
+      radial-gradient(60% 50% at 100% 20%, rgba(212,160,23,0.08), transparent 60%),
+      radial-gradient(40% 40% at 50% 100%, rgba(212,160,23,0.05), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section {
+    position: relative;
+    padding: 80px 0;
+    z-index: 1;
+  }
+
+  h1, h2, h3, h4 { font-family: 'Cinzel', serif; font-weight: 600; letter-spacing: 0.5px; }
+  .h-gold {
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-head { text-align: center; max-width: 720px; margin: 0 auto 20px; }
+  .section-head h2 {
+    font-size: clamp(32px, 4.5vw, 52px);
+    margin: 16px 0 14px;
+    line-height: 1.15;
+  }
+  .section-head p { color: var(--muted); font-size: 16px; }
+  .divider {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    padding: 8px 16px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    background: var(--gold-soft);
+  }
+
+  /* Back link */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    margin-bottom: 30px;
+    transition: color .2s, border-color .2s, transform .2s;
+  }
+  .back-link:hover {
+    color: var(--gold-1);
+    border-color: var(--line-2);
+    transform: translateX(-3px);
+  }
+  .back-link svg { width: 14px; height: 14px; }
+
+  /* PSYCHOLOGY GRID */
+  .psych-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 50px;
+  }
+  @media (max-width: 880px) { .psych-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); } }
+  @media (max-width: 640px) { .psych-grid { grid-template-columns: 1fr; } }
+
+  .psych-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: linear-gradient(180deg, rgba(22,22,22,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    text-decoration: none;
+    color: var(--text);
+    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .psych-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(70% 50% at 0% 0%, rgba(212,160,23,0.08), transparent 60%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .3s ease;
+    z-index: 2;
+  }
+  .psych-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold-2);
+    box-shadow: var(--shadow-gold);
+  }
+  .psych-card:hover::before { opacity: 1; }
+
+  .psych-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: var(--bg-2);
+  }
+  .psych-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(212,160,23,0.1), rgba(139,101,8,0.05));
+    pointer-events: none;
+  }
+
+  .psych-content {
+    padding: 24px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .psych-content h4 {
+    font-size: 18px;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+  .psych-content p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+    flex: 1;
+  }
+
+  .psych-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .psych-tags span {
+    font-size: 11px;
+    padding: 6px 12px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    color: var(--gold-1);
+    letter-spacing: 0.5px;
+  }
+
+  .psych-intro {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 40px;
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+  }
+
+  footer {
+    padding: 40px 0 60px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--line);
+    margin-top: 40px;
+  }
+
+  section#psicologia { padding: 60px 0 40px !important; }
+  section#psicologia .section-head { margin-bottom: 20px; }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .reveal {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+
+  /* GALLERY */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 50px;
+  }
+  .gallery .card {
+    position: relative;
+    padding: 18px;
+    border-radius: var(--radius);
+    background: linear-gradient(160deg, rgba(24,24,24,0.85), rgba(6,6,6,0.85));
+    border: 1px solid var(--line);
+    text-align: center;
+    transition: transform .4s ease, border-color .4s ease, box-shadow .4s ease;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .gallery .card:hover {
+    transform: translateY(-8px);
+    border-color: var(--line-2);
+    box-shadow: 0 20px 48px rgba(212, 160, 23, 0.18);
+  }
+  .img-frame {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .gallery img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.4);
+    background: var(--bg-2);
+    display: block;
+    transition: transform .6s ease, filter .4s ease;
+  }
+  .gallery .card:hover img { transform: scale(1.08); filter: brightness(0.55); }
+  .img-info {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(5,5,5,0.2), rgba(5,5,5,0.8));
+    color: var(--text);
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity .4s ease, transform .4s ease;
+    pointer-events: none;
+    text-align: center;
+  }
+  .gallery .card:hover .img-info {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .img-info .title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: var(--gold-1);
+    margin-bottom: 8px;
+  }
+  .img-info .desc {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    max-width: 90%;
+  }
+  .gallery .name {
+    margin-top: 12px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 2px;
+    font-size: 13px;
+    color: var(--gold-1);
+  }
+  @media (max-width: 880px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+
+  /* PSYCH MODAL */
+  .psych-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,0.7);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s, visibility .3s;
+  }
+  .psych-modal.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .psych-modal-box {
+    position: relative;
+    max-width: 600px;
+    max-height: 80vh;
+    padding: 40px;
+    background: linear-gradient(135deg, rgba(24,24,24,0.95), rgba(8,8,8,0.95));
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+    overflow-y: auto;
+  }
+  .psych-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color .2s;
+  }
+  .psych-modal-close:hover {
+    color: var(--gold-1);
+  }
+  .psych-modal-content {
+    text-align: center;
+  }
+  .psych-modal-image {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 24px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .psych-modal-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .psych-modal-box h2 {
+    font-size: 24px;
+    margin: 0 0 16px;
+    color: var(--text);
+  }
+  .psych-modal-box p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* BOOKS SECTION */
+  .books-section {
+    margin-top: 80px;
+    padding-top: 60px;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  .books-lock-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(5,5,5,0.95);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+  }
+  .books-lock-overlay.unlocked {
+    display: none;
+  }
+  .books-lock-content {
+    text-align: center;
+    max-width: 400px;
+  }
+  .lock-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+  }
+  .books-lock-overlay h3 {
+    font-size: 24px;
+    color: var(--gold-1);
+    margin: 0 0 12px;
+  }
+  .books-lock-overlay p {
+    color: var(--text);
+    font-size: 14px;
+    margin: 8px 0;
+    line-height: 1.6;
+  }
+  .lock-subtitle {
+    color: var(--muted);
+    font-size: 13px !important;
+    margin-top: 16px !important;
+  }
+  .books-lock-overlay .btn {
+    margin-top: 20px;
+  }
+  .books-section .section-head {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 50px;
+  }
+  .books-section h3 {
+    font-size: clamp(32px, 4.5vw, 48px);
+    margin: 16px 0 12px;
+  }
+  .books-section .section-head p {
+    color: var(--muted);
+    font-size: 16px;
+  }
+  .books-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 50px;
+  }
+  .book-card {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    background: linear-gradient(160deg, rgba(24,24,24,0.85), rgba(6,6,6,0.85));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+    align-items: flex-start;
+    cursor: pointer;
+  }
+  .book-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold-2);
+    box-shadow: var(--shadow-gold);
+  }
+  .book-cover {
+    width: 120px;
+    min-width: 120px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .book-info {
+    flex: 1;
+  }
+  .book-header {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .book-card h4 {
+    font-size: 16px;
+    margin: 0 0 10px;
+    color: var(--gold-1);
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.5px;
+  }
+  .book-quote {
+    font-size: 14px;
+    color: var(--gold-2);
+    font-style: italic;
+    margin: 10px 0;
+    padding: 10px 12px;
+    border-left: 3px solid var(--gold-2);
+    line-height: 1.6;
+  }
+  .book-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+    margin: 12px 0 0;
+  }
+  .books-conclusion {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    text-align: center;
+  }
+  .books-conclusion p {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  /* PDF SECTION */
+  .pdf-section {
+    margin-top: 80px;
+    padding-top: 60px;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  .pdf-lock-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(5,5,5,0.95);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+  }
+  .pdf-lock-overlay.unlocked {
+    display: none;
+  }
+  .pdf-lock-content {
+    text-align: center;
+    max-width: 400px;
+  }
+  .pdf-lock-overlay h3 {
+    font-size: 24px;
+    color: var(--gold-1);
+    margin: 0 0 12px;
+  }
+  .pdf-lock-overlay p {
+    color: var(--text);
+    font-size: 14px;
+    margin: 8px 0;
+    line-height: 1.6;
+  }
+  .pdf-section .section-head {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 50px;
+  }
+  .pdf-section h3 {
+    font-size: clamp(32px, 4.5vw, 48px);
+    margin: 16px 0 12px;
+  }
+  .pdf-section .section-head p {
+    color: var(--muted);
+    font-size: 16px;
+  }
+  .pdf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .pdf-card {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    transition: transform .3s ease, border-color .3s ease;
+    cursor: pointer;
+  }
+  .pdf-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--line-2);
+  }
+  .pdf-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: filter .3s ease;
+  }
+  .pdf-card:hover .pdf-image {
+    filter: brightness(0.6);
+  }
+  .pdf-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.9) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 20px;
+    text-align: center;
+  }
+  .pdf-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: var(--gold-1);
+    margin: 0 0 12px;
+    letter-spacing: 0.5px;
+  }
+  .pdf-download {
+    display: inline-block;
+    padding: 8px 18px;
+    background: var(--gold-grad);
+    color: #120a00;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .2s ease;
+  }
+  .pdf-download:hover {
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 880px) {
+    .book-card {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .book-cover {
+      width: 140px;
+      height: 210px;
+    }
+    .book-quote {
+      border-left: none;
+      padding: 10px 0;
+    }
+    .pdf-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 520px) {
+    .book-card {
+      gap: 16px;
+      padding: 16px;
+    }
+    .book-cover {
+      width: 100px;
+      height: 150px;
+    }
+    .book-card h4 {
+      font-size: 14px;
+    }
+    .book-quote {
+      font-size: 12px;
+    }
+    .book-desc {
+      font-size: 12px;
+    }
+    .pdf-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* MODAL PARA EXPANDIR IMÁGENES */
+  .image-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .image-modal.active {
+    display: flex;
+    opacity: 1;
+  }
+  .modal-image {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 12px;
+    animation: zoomIn 0.3s ease;
+  }
+  @keyframes zoomIn {
+    from {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  .modal-close {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    font-size: 48px;
+    color: var(--gold-1);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    z-index: 101;
+  }
+  .modal-close:hover {
+    color: #fff;
+  }
+  .pdf-card {
+    cursor: pointer;
+  }
+  .pdf-click {
+    font-size: 12px;
+    color: var(--gold-2);
+    margin: 8px 0 0;
+    font-style: italic;
+  }
+  .book-synopsis-btn {
+    font-size: 12px;
+    color: var(--gold-2);
+    margin: 12px 0 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    font-style: italic;
+  }
+  .book-synopsis-btn:hover {
+    color: var(--gold-1);
+  }
+  /* MODAL PARA SINOPSIS DE LIBROS — upgraded, match animal-card modal */
+  .synopsis-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    overflow-y: auto;
+  }
+  .synopsis-modal.active {
+    display: flex;
+    opacity: 1;
+  }
+  .synopsis-content {
+    background: linear-gradient(180deg, rgba(22,22,22,0.98), rgba(8,8,8,0.98));
+    border: 1px solid var(--gold-2);
+    border-radius: 20px;
+    padding: 40px 38px 34px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.35s ease;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(212,160,23,0.08);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  .synopsis-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 36px; height: 36px;
+    background: transparent;
+    border: 1px solid var(--line-2);
+    color: var(--gold-1);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+    z-index: 3;
+  }
+  .synopsis-close:hover { background: var(--gold-soft); border-color: var(--gold-2); }
+  .synopsis-head {
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+    margin-top: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .synopsis-kicker {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    padding: 4px 12px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .synopsis-title {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    margin: 0 0 4px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+    line-height: 1.25;
+  }
+  .synopsis-author {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+    font-weight: 600;
+  }
+  .synopsis-body {
+    color: var(--text);
+    font-size: 14.5px;
+    line-height: 1.75;
+  }
+  .synopsis-body p {
+    margin: 0 0 14px;
+    color: var(--muted);
+  }
+  .synopsis-body p strong { color: var(--text); font-weight: 600; }
+  .synopsis-body .syn-sub {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    margin: 18px 0 8px;
+    font-weight: 600;
+  }
+  .synopsis-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+  }
+  .synopsis-body ul li {
+    position: relative;
+    padding: 4px 0 4px 22px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .synopsis-body ul li::before {
+    content: "◈";
+    position: absolute;
+    left: 0;
+    color: var(--gold-2);
+    font-size: 10px;
+    top: 8px;
+  }
+  .synopsis-body .syn-key {
+    margin: 22px 0 0;
+    padding: 18px 20px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.65;
+    position: relative;
+  }
+  .synopsis-body .syn-key::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold-grad);
+    border-radius: 14px 0 0 14px;
+  }
+  .synopsis-body .syn-key strong { color: var(--gold-1); }
+  @media (max-width: 640px) {
+    .synopsis-content { padding: 32px 24px 26px; border-radius: 16px; }
+    .synopsis-title { font-size: 20px; }
+    .synopsis-body { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<section>
+  <div class="container">
+    <a href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"></path></svg>
+      Volver al inicio
+    </a>
+
+    <div id="psicologia" style="scroll-margin-top: 80px;">
+      <div class="section-head reveal">
+        <div class="divider">PSICOLOGÍA DEL TRADING</div>
+        <h2>Domina tu <span class="h-gold">mente</span>.</h2>
+        <p>La diferencia entre traders millonarios y apostadores.</p>
+      </div>
+      <div class="gallery reveal delay-1" id="gallery"><div class="card reveal">
+        <div class="img-frame">
+          <img src="img/mapa.png" alt="BURNOUT EN TRADING" onerror="this.onerror=null; this.src=&#39;img/mapa.png&#39;">
+          
+          <div class="img-info">
+            <div class="title">BURNOUT EN TRADING</div>
+            <div class="desc">Reconoce las causas del agotamiento mental: sobrecarga de información, operación sin plan, y falta de descanso.</div>
+          </div>
+        </div>
+
+        <div class="name">BURNOUT EN TRADING</div>
+      </div><div class="card reveal delay-1">
+        <div class="img-frame">
+          <img src="img/mapa.png" alt="TU MAPA DE TRADING" onerror="this.onerror=null; this.src=&#39;img/mapa.png&#39;">
+          
+          <div class="img-info">
+            <div class="title">TU MAPA DE TRADING</div>
+            <div class="desc">8 arquetipos de traders: desde Sheep (nivel 1) hasta Wolf (nivel máximo).</div>
+          </div>
+        </div>
+
+        <div class="name">TU MAPA DE TRADING</div>
+      </div></div>
+
+      <div class="psych-intro reveal delay-4">
+        <p><strong>El factor mental es lo que separa a los ganadores de los perdedores.</strong><br>
+        Cada card contiene contenido profundo sobre un aspecto clave de la psicología del trading. Dominá tu mente y dominarás el mercado.</p>
+      </div>
+
+      <!-- LIBROS PSICOLOGÍA DEL TRADING -->
+      <div class="books-section reveal delay-2">
+        <div class="books-lock-overlay unlocked" id="booksLockOverlay">
+          <div class="books-lock-content">
+            <div class="lock-icon">🔒</div>
+            <h3>Contenido Premium</h3>
+            <p>La Biblia de la Psicología en Trading está reservada para Eagle y Wolf.</p>
+            <p class="lock-subtitle">Sube de nivel en el quiz y accede a estos 10 libros esenciales.</p>
+            <a href="index.html#academy" class="btn btn-primary">IR AL QUIZ →</a>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <h3 class="h-gold">📚 Biblia de la Psicología en Trading</h3>
+          <p>10 libros esenciales que transformarán tu mentalidad como trader.</p>
+        </div>
+        
+        <div class="books-grid">
+          <div class="book-card reveal" onclick="showBookDetails(event)" data-book-id="1">
+            <img src="psychoimgypdf/marketwizards.jpg" alt="Market Wizards" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 1</div>
+              <h4>"Market Wizards" · Jack Schwager</h4>
+              <p class="book-quote">"Los mejores traders piensan diferente. No siguen la multitud."</p>
+              <p class="book-desc">Entrevistas a traders legendarios (Soros, Douglas, Steinhardt). Cómo piensan, operan y manejan pérdidas.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+
+          <div class="book-card reveal delay-1" onclick="showBookDetails(event)" data-book-id="2">
+            <img src="psychoimgypdf/tradinginthezone.jpg" alt="Trading in the Zone" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 2</div>
+              <h4>"Trading in the Zone" · Mark Douglas</h4>
+              <p class="book-quote">"La disciplina es hacer lo correcto aunque no sientas ganas."</p>
+              <p class="book-desc">La psicología del trading al máximo. Cómo neutralizar el ego y ejecutar sin miedo.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+
+          <div class="book-card reveal delay-2" onclick="showBookDetails(event)" data-book-id="3">
+            <img src="psychoimgypdf/arandomwalk.jpg" alt="A Random Walk Down Wall Street" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 3</div>
+              <h4>"A Random Walk Down Wall Street" · Burton Malkiel</h4>
+              <p class="book-quote">"Si el mercado fuera predecible, no habría pobres."</p>
+              <p class="book-desc">Cómo la aleatoriedad domina los mercados y por qué la mayoría fracasa.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+
+          <div class="book-card reveal delay-3" onclick="showBookDetails(event)" data-book-id="4">
+            <img src="psychoimgypdf/theintelligentinvestor.jpg" alt="The Intelligent Investor" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 4</div>
+              <h4>"The Intelligent Investor" · Benjamin Graham</h4>
+              <p class="book-quote">"La inversión es perspectiva. El trading es emociones."</p>
+              <p class="book-desc">Mentalidad de largo plazo vs especulación. Cómo pensar como institucional.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+
+          <div class="book-card reveal delay-4" onclick="showBookDetails(event)" data-book-id="5">
+            <img src="psychoimgypdf/fooledbyrandomness.jpg" alt="Fooled by Randomness" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 5</div>
+              <h4>"Fooled by Randomness" · Nassim Taleb</h4>
+              <p class="book-quote">"La suerte se parece mucho al skill. Necesitas años para distinguir."</p>
+              <p class="book-desc">Por qué creemos que ganamos cuando solo tuvimos suerte. La estadística detrás del autoengaño.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+
+          <div class="book-card reveal delay-5" onclick="showBookDetails(event)" data-book-id="6">
+            <img src="psychoimgypdf/thinkingfast.jpg" alt="Thinking, Fast and Slow" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 6</div>
+              <h4>"Thinking, Fast and Slow" · Daniel Kahneman</h4>
+              <p class="book-quote">"Tu mente te engaña. Tiene sesgos predecibles. Conocerlos es el primer paso."</p>
+              <p class="book-desc">Neuroeconomía aplicada al trading. System 1 vs System 2.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+
+          <div class="book-card reveal delay-6" onclick="showBookDetails(event)" data-book-id="7">
+            <img src="psychoimgypdf/amanforallmarkets.jpg" alt="A Man For All Markets" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 7</div>
+              <h4>"A Man For All Markets" · Edward Thorp</h4>
+              <p class="book-quote">"La ventaja viene del análisis, no del coraje. Data + Matemática = Ventaja."</p>
+              <p class="book-desc">Cómo un físico beat a los mercados y casinos con ciencia pura.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+
+          <div class="book-card reveal delay-7" onclick="showBookDetails(event)" data-book-id="8">
+            <img src="psychoimgypdf/peakperformance.jpg" alt="Peak Performance" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 8</div>
+              <h4>"Peak Performance" · Brad Stulberg &amp; Steve Magness</h4>
+              <p class="book-quote">"Peak performance no es trabajar más. Es recuperarse mejor. Descansa o colapsarás."</p>
+              <p class="book-desc">Cómo mantener el foco bajo presión. Resiliencia mental para traders.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+
+          <div class="book-card reveal delay-8" onclick="showBookDetails(event)" data-book-id="9">
+            <img src="psychoimgypdf/theupsideof.jpg" alt="The Upside of Stress" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 9</div>
+              <h4>"The Upside of Stress" · Kelly McGonigal</h4>
+              <p class="book-quote">"El estrés es tu cuerpo preparándose. Aprende a aprovecharlo."</p>
+              <p class="book-desc">Neurociencia del estrés aplicada al trading. Cómo convertir presión en combustible.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+
+          <div class="book-card reveal delay-9" onclick="showBookDetails(event)" data-book-id="10">
+            <img src="psychoimgypdf/thepsychofrisk.jpg" alt="The Psychology of Risk" class="book-cover">
+            <div class="book-info">
+              <div class="book-header">📖 10</div>
+              <h4>"The Psychology of Risk" · Glynis Breakwell</h4>
+              <p class="book-quote">"Cuando todos están dentro, estás solo. Cuando todos están fuera, estás acompañado."</p>
+              <p class="book-desc">Psicología de masas vs contrarianism. Por qué ir contra la corriente es rentable.</p>
+              <p class="book-synopsis-btn">📖 Leer sinopsis completa</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="books-conclusion reveal delay-9">
+          <p><strong>La psicología es el 80% del trading.</strong> Estos libros son tu mapa mental. Léelos una vez, estudia los que resonaron contigo tres veces. Tu competidor está jugando a ganar dinero. Vos estás jugando a ser invencible.</p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN PDF - CONTENIDO PREMIUM -->
+      <div class="pdf-section reveal delay-3">
+        <div class="pdf-lock-overlay unlocked" id="pdfLockOverlay">
+          <div class="pdf-lock-content">
+            <div class="lock-icon">🔐</div>
+            <h3>PDFs Premium - Eagle &amp; Wolf</h3>
+            <p>Contenido exclusivo: Guías de trading, análisis de mercado, y sistemas probados.</p>
+            <p class="lock-subtitle">Solo disponible para traders Eagle y Wolf. Alcanzá estos niveles en Academy.</p>
+            <a href="index.html#academy" class="btn btn-primary">IR AL QUIZ →</a>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <h3 class="h-gold">📄 PDFs Exclusivos</h3>
+          <p>Contenido premium para traders avanzados.</p>
+        </div>
+
+        <div class="pdf-grid">
+          <div class="pdf-card reveal" onclick="expandImage(this)">
+            <img src="psychoimgypdf/wolfpsico.png" alt="Wolf Psico - Portada" class="pdf-image" data-pdf="psychoimgypdf/pdf24_converted.pdf">
+            <div class="pdf-overlay">
+              <div class="pdf-title">Wolf Psico · Portada</div>
+              <p class="pdf-click">Clickea para abrir PDF</p>
+            </div>
+          </div>
+
+          <div class="pdf-card reveal delay-1" onclick="expandImage(this)">
+            <img src="psychoimgypdf/wolfpsico.png" alt="Wolf Psico - Parte 2" class="pdf-image" data-pdf="psychoimgypdf/pdf24_converted.pdf">
+            <div class="pdf-overlay">
+              <div class="pdf-title">Wolf Psico · Parte 2</div>
+              <p class="pdf-click">Clickea para abrir PDF</p>
+            </div>
+          </div>
+
+          <div class="pdf-card reveal delay-2" onclick="expandImage(this)">
+            <img src="psychoimgypdf/wolfpsico.png" alt="Wolf Psico - Parte 3" class="pdf-image" data-pdf="psychoimgypdf/pdf24_converted.pdf">
+            <div class="pdf-overlay">
+              <div class="pdf-title">Wolf Psico · Parte 3</div>
+              <p class="pdf-click">Clickea para abrir PDF</p>
+            </div>
+          </div>
+
+          <div class="pdf-card reveal delay-3" onclick="expandImage(this)">
+            <img src="psychoimgypdf/wolfpsico.png" alt="Wolf Psico - Parte 4" class="pdf-image" data-pdf="psychoimgypdf/pdf24_converted.pdf">
+            <div class="pdf-overlay">
+              <div class="pdf-title">Wolf Psico · Parte 4</div>
+              <p class="pdf-click">Clickea para abrir PDF</p>
+            </div>
+          </div>
+
+          <div class="pdf-card reveal delay-4" onclick="expandImage(this)">
+            <img src="psychoimgypdf/wolfpsico.png" alt="Wolf Psico - Infografía" class="pdf-image" data-pdf="psychoimgypdf/psycho1.pdf">
+            <div class="pdf-overlay">
+              <div class="pdf-title">Wolf Psico · Infografía</div>
+              <p class="pdf-click">Clickea para abrir PDF</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL PARA EXPANDIR IMÁGENES -->
+        <div class="image-modal" id="imageModal" onclick="closeModal(event)">
+          <span class="modal-close">×</span>
+          <img class="modal-image" id="modalImage" src="psychology_9.html" alt="">
+        </div>        </div>
+      </div>
+    </div>
+  
+</section>
+
+<footer>
+  <div class="container" style="display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center;">
+    <div style="font-family: &#39;Cinzel&#39;, serif; font-weight: 700; letter-spacing: 4px; font-size: 12px; background: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">
+      CHAD · INVERSOR
+    </div>
+    <div style="font-size: 11px; color: #8a8a8a; letter-spacing: 1px;">
+      © 2026 Chad Inversor · Todos los derechos reservados · Psicología del Trading
+    </div>
+    <div style="font-size: 10px; color: #6a6a6a; letter-spacing: 0.5px; max-width: 640px; line-height: 1.6; margin-top: 4px;">
+      El contenido de este sitio tiene fines educativos e informativos. No constituye asesoramiento financiero, legal ni fiscal. Invertir y operar en mercados financieros implica riesgos, incluyendo la pérdida total del capital. Hacé siempre tu propio análisis.
+    </div>
+  </div>
+</footer>
+
+<div class="psych-modal" id="psychModal" onclick="closePsychModal(event)">
+  <div class="psych-modal-box" onclick="event.stopPropagation()">
+    <button class="psych-modal-close" onclick="closePsychModal()">✕</button>
+    <div class="psych-modal-content">
+      <div class="psych-modal-image">
+        <img id="psychImg" src="psychology_9.html" alt="">
+      </div>
+      <h2 id="psychTitle"></h2>
+      <p id="psychDesc"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // PSYCH CARDS DATA
+  const PSYCH_CARDS = [
+    {
+      key: "burnout",
+      name: "BURNOUT EN TRADING",
+      img: "img/burnout2.png",
+      pdf: "psychoimgypdf/burnout2.pdf",
+      desc: "Reconoce las causas del agotamiento mental: sobrecarga de información, operación sin plan, y falta de descanso.",
+      tags: ["🧠 Salud Mental", "⚠️ Prevención"]
+    },
+    {
+      key: "mapa",
+      name: "TU MAPA DE TRADING",
+      img: "img/mapa.png",
+      pdf: "psychoimgypdf/mapa.pdf",
+      desc: "8 arquetipos de traders: desde Sheep (nivel 1) hasta Wolf (nivel máximo).",
+      tags: ["🎯 Arquetipos", "📈 Progresión"]
+    }
+  ];
+
+  // Render gallery
+  (function renderPsychGallery() {
+    const root = document.getElementById("gallery");
+    if (!root) return;
+
+    const FALLBACK = "img/mapa.png";
+    const frag = document.createDocumentFragment();
+
+    PSYCH_CARDS.forEach((c, i) => {
+      const card = document.createElement("div");
+      card.className = "card reveal" + (i % 4 ? " delay-" + (i % 4) : "");
+      card.onclick = () => openPsychModal(c.key);
+
+      card.innerHTML = `
+        <div class="img-frame">
+          <img src="${c.img}" alt="${c.name}"
+               onerror="this.onerror=null; this.src='${FALLBACK}'">
+          
+          <div class="img-info">
+            <div class="title">${c.name}</div>
+            <div class="desc">${c.desc}</div>
+          </div>
+        </div>
+
+        <div class="name">${c.name}</div>
+      `;
+
+      frag.appendChild(card);
+    });
+
+    root.innerHTML = "";
+    root.appendChild(frag);
+  })();
+
+  // Open/Close Modal
+  function openPsychModal(key) {
+    const card = PSYCH_CARDS.find(c => c.key === key);
+    if (!card) return;
+
+    // Si tiene PDF, abrirlo en nueva ventana
+    if (card.pdf) {
+      window.open(card.pdf, '_blank');
+      return;
+    }
+
+    // Si no, mostrar modal normal
+    document.getElementById("psychImg").src = card.img;
+    document.getElementById("psychTitle").textContent = card.name;
+    document.getElementById("psychDesc").textContent = card.desc;
+    document.getElementById("psychModal").classList.add("open");
+  }
+
+  function closePsychModal(e) {
+    if (e && e.target.id !== "psychModal" && e.type === "click") return;
+    document.getElementById("psychModal").classList.remove("open");
+  }
+
+  // Trigger animations on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.classList.add('loaded');
+    
+    // Check if user is Eagle or Wolf (premium)
+    checkBooksLock();
+    checkPdfLock();
+  });
+
+  // Funciones para modal de imágenes expandibles
+  function expandImage(cardElement) {
+    const img = cardElement.querySelector('.pdf-image');
+    if (!img) return;
+    
+    // Si tiene PDF asociado, abrirlo
+    const pdfUrl = img.getAttribute('data-pdf');
+    if (pdfUrl) {
+      window.open(pdfUrl, '_blank');
+      return;
+    }
+    
+    // Si no, mostrar imagen en modal
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    
+    modalImage.src = img.src;
+    modalImage.alt = img.alt;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(event) {
+    if (event.target.id === 'imageModal' || event.target.classList.contains('modal-close')) {
+      const modal = document.getElementById('imageModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  }
+
+  // Cerrar modal con tecla Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('imageModal');
+      if (modal.classList.contains('active')) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+      const synopsisModal = document.getElementById('synopsisModal');
+      if (synopsisModal.classList.contains('active')) {
+        synopsisModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    }
+  });
+
+  // Sinopsis completas de los 10 libros — cada una con párrafos, listas y callout "👉 Clave"
+  const BOOK_SYNOPSES = {
+    1: {
+      title: "Market Wizards",
+      author: "Jack Schwager",
+      body: `
+        <p>Este libro es una colección de entrevistas a algunos de los mejores traders del mundo, donde no se habla de indicadores mágicos, sino de <strong>mentalidad, gestión del riesgo y toma de decisiones</strong>.</p>
+        <p>Schwager demuestra que no existe una única estrategia ganadora: cada trader exitoso tiene un enfoque distinto, pero todos comparten principios clave como la disciplina, el control emocional y la capacidad de adaptarse al mercado.</p>
+        <p>El gran aprendizaje es que el éxito no viene de predecir el mercado, sino de <strong>gestionar correctamente la incertidumbre</strong>. Los mejores traders no evitan las pérdidas, las controlan.</p>
+        <div class="syn-key">👉 Este libro te cambia la forma de ver el trading: deja de ser técnica, pasa a ser <strong>mentalidad profesional</strong>.</div>
+      `
+    },
+    2: {
+      title: "Trading in the Zone",
+      author: "Mark Douglas",
+      body: `
+        <p>Este libro es <strong>la base de la psicología del trading</strong>. Explica por qué incluso teniendo un buen sistema, la mayoría de los traders pierde dinero.</p>
+        <p>Douglas introduce la idea de pensar en probabilidades y aceptar que cada trade es incierto. El problema no es el mercado, es la reacción emocional del trader: miedo, euforia, duda.</p>
+        <div class="syn-sub">El objetivo es desarrollar una mentalidad donde:</div>
+        <ul>
+          <li>no tengas apego al resultado</li>
+          <li>ejecutes sin miedo</li>
+          <li>confíes en tu sistema</li>
+        </ul>
+        <div class="syn-key">👉 <strong>La clave:</strong> no se trata de ganar trades, se trata de ejecutar correctamente una ventaja estadística.</div>
+      `
+    },
+    3: {
+      title: "A Random Walk Down Wall Street",
+      author: "Burton Malkiel",
+      body: `
+        <p>Este libro plantea que los mercados son <strong>altamente eficientes</strong> y que los movimientos de precios tienen un fuerte componente aleatorio.</p>
+        <p>Malkiel argumenta que intentar predecir el mercado de forma consistente es extremadamente difícil, y que la mayoría de los traders pierden precisamente por creer que pueden hacerlo.</p>
+        <div class="syn-sub">Introduce conceptos como:</div>
+        <ul>
+          <li>eficiencia de mercado</li>
+          <li>burbujas</li>
+          <li>comportamiento colectivo</li>
+        </ul>
+        <div class="syn-key">👉 <strong>El golpe de realidad:</strong> mucho de lo que creés que es skill… puede ser suerte.</div>
+      `
+    },
+    4: {
+      title: "The Intelligent Investor",
+      author: "Benjamin Graham",
+      body: `
+        <p>El clásico de la inversión. Graham enseña a <strong>diferenciar entre invertir y especular</strong>, algo que la mayoría confunde.</p>
+        <div class="syn-sub">Introduce conceptos clave como:</div>
+        <ul>
+          <li>margen de seguridad</li>
+          <li>valor intrínseco</li>
+          <li>disciplina a largo plazo</li>
+        </ul>
+        <p>El foco no está en predecir precios, sino en <strong>comprar activos por debajo de su valor real</strong>.</p>
+        <div class="syn-key">👉 Aunque es más inversión que trading, te enseña algo clave: <strong>pensar como institucional, no como impulsivo</strong>.</div>
+      `
+    },
+    5: {
+      title: "Fooled by Randomness",
+      author: "Nassim Taleb",
+      body: `
+        <p>Taleb explica cómo los humanos <strong>confundimos suerte con habilidad</strong>, especialmente en entornos como el trading.</p>
+        <p>Muchos traders ganan dinero por casualidad y creen que son expertos, hasta que el mercado cambia y pierden todo.</p>
+        <div class="syn-sub">El libro profundiza en:</div>
+        <ul>
+          <li>sesgos cognitivos</li>
+          <li>percepción errónea del riesgo</li>
+          <li>eventos improbables</li>
+        </ul>
+        <div class="syn-key">👉 <strong>La enseñanza clave:</strong> sobrevivir en el mercado es más importante que ganar rápido.</div>
+      `
+    },
+    6: {
+      title: "Thinking, Fast and Slow",
+      author: "Daniel Kahneman",
+      body: `
+        <p>Kahneman explica cómo funciona la mente humana a través de <strong>dos sistemas</strong>:</p>
+        <ul>
+          <li><strong>Sistema 1</strong> → rápido, emocional, impulsivo</li>
+          <li><strong>Sistema 2</strong> → lento, lógico, analítico</li>
+        </ul>
+        <p>En trading, la mayoría opera con el Sistema 1, lo que genera <strong>errores constantes</strong>.</p>
+        <div class="syn-sub">El libro muestra los sesgos más comunes:</div>
+        <ul>
+          <li>exceso de confianza</li>
+          <li>aversión a la pérdida</li>
+          <li>confirmación</li>
+        </ul>
+        <div class="syn-key">👉 Entender esto te da ventaja: no contra el mercado, sino <strong>contra vos mismo</strong>.</div>
+      `
+    },
+    7: {
+      title: "A Man for All Markets",
+      author: "Edward Thorp",
+      body: `
+        <p>La historia de un matemático que venció tanto a los casinos como a los mercados utilizando <strong>modelos cuantitativos</strong>.</p>
+        <p>Thorp demuestra que con análisis, datos y disciplina se puede construir una ventaja real.</p>
+        <div class="syn-sub">No se basa en intuición, sino en:</div>
+        <ul>
+          <li>probabilidad</li>
+          <li>estadística</li>
+          <li>edge matemático</li>
+        </ul>
+        <div class="syn-key">👉 <strong>Mensaje clave:</strong> el trading rentable no es emoción, es ventaja cuantificable.</div>
+      `
+    },
+    8: {
+      title: "Peak Performance",
+      author: "Stulberg & Magness",
+      body: `
+        <p>Este libro rompe el mito de que <strong>trabajar más es igual a rendir mejor</strong>.</p>
+        <p>Explica que el alto rendimiento viene de ciclos:</p>
+        <ul>
+          <li>esfuerzo</li>
+          <li>recuperación</li>
+        </ul>
+        <p>En trading esto es clave, porque el <strong>desgaste mental destruye la toma de decisiones</strong>.</p>
+        <div class="syn-sub">Aprendés a:</div>
+        <ul>
+          <li>mantener foco bajo presión</li>
+          <li>evitar burnout</li>
+          <li>sostener consistencia</li>
+        </ul>
+        <div class="syn-key">👉 <strong>Clave:</strong> sin energía mental, no hay ejecución.</div>
+      `
+    },
+    9: {
+      title: "The Upside of Stress",
+      author: "Kelly McGonigal",
+      body: `
+        <p>Este libro redefine el estrés. No es algo negativo, es <strong>una respuesta natural del cuerpo para rendir mejor</strong>.</p>
+        <p>El problema no es el estrés, es cómo lo interpretás.</p>
+        <div class="syn-sub">Aplicado al trading:</div>
+        <ul>
+          <li>el estrés puede mejorar tu enfoque</li>
+          <li>o destruir tu ejecución</li>
+        </ul>
+        <p>La diferencia está en tu mentalidad.</p>
+        <div class="syn-key">👉 <strong>Clave:</strong> el estrés no se elimina, se utiliza.</div>
+      `
+    },
+    10: {
+      title: "The Psychology of Risk",
+      author: "Glynis Breakwell",
+      body: `
+        <p>Este libro analiza <strong>cómo las personas perciben y toman decisiones bajo riesgo</strong>.</p>
+        <p>Explica por qué muchas veces actuamos de forma irracional incluso sabiendo lo que deberíamos hacer.</p>
+        <div class="syn-sub">En trading esto se traduce en:</div>
+        <ul>
+          <li>cerrar ganancias antes de tiempo</li>
+          <li>dejar correr pérdidas</li>
+          <li>evitar tomar setups válidos</li>
+        </ul>
+        <div class="syn-key">👉 <strong>Insight clave:</strong> no operás el mercado, operás <strong>tu percepción del riesgo</strong>.</div>
+      `
+    }
+  };
+
+  // Funciones para sinopsis de libros
+  function showBookDetails(event) {
+    if (event && event.stopPropagation) event.stopPropagation();
+
+    // Buscar el card de varias formas (defensivo): currentTarget, luego target.closest, luego target mismo
+    let card = (event && event.currentTarget) || null;
+    if (!card || !card.getAttribute || !card.getAttribute('data-book-id')) {
+      card = event && event.target && event.target.closest ? event.target.closest('.book-card') : null;
+    }
+    if (!card) {
+      console.warn('showBookDetails: no se encontró la card');
+      return;
+    }
+
+    const bookId = card.getAttribute('data-book-id');
+    const data = BOOK_SYNOPSES[bookId];
+
+    if (!data) {
+      console.warn('showBookDetails: sin sinopsis para ID', bookId);
+      return;
+    }
+
+    document.getElementById('synopsisKicker').textContent = '📖 SINOPSIS · LIBRO ' + bookId;
+    document.getElementById('synopsisTitle').textContent = data.title;
+    document.getElementById('synopsisAuthor').textContent = data.author;
+    document.getElementById('synopsisBody').innerHTML = data.body;
+
+    const modal = document.getElementById('synopsisModal');
+    modal.classList.add('active');
+    modal.scrollTop = 0;
+    const content = modal.querySelector('.synopsis-content');
+    if (content) content.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSynopsisModal(event) {
+    if (!event || event.target.id === 'synopsisModal' || event.target.classList.contains('synopsis-close')) {
+      const modal = document.getElementById('synopsisModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  }
+
+  function checkBooksLock() {
+    const lockOverlay = document.getElementById('booksLockOverlay');
+    
+    if (!lockOverlay) return;
+    
+    // Desbloquear para todos (temporalmente para ver el contenido)
+    lockOverlay.classList.add('unlocked');
+  }
+
+  function checkPdfLock() {
+    const lockOverlay = document.getElementById('pdfLockOverlay');
+    
+    if (!lockOverlay) return;
+    
+    // Desbloquear para todos (temporalmente para ver las imágenes)
+    lockOverlay.classList.add('unlocked');
+  }
+
+  // Escuchar cambios en localStorage (si el usuario sube de nivel en otra pestaña)
+  window.addEventListener('storage', function() {
+    checkBooksLock();
+    checkPdfLock();
+  });
+
+</script>
+
+
+<!-- MODAL PARA SINOPSIS DE LIBROS — fuera de cualquier ancestor con transform -->
+<!-- MODAL PARA SINOPSIS DE LIBROS -->
+        <div class="synopsis-modal" id="synopsisModal" onclick="closeSynopsisModal(event)">
+          <div class="synopsis-content">
+            <button class="synopsis-close" onclick="closeSynopsisModal()" aria-label="Cerrar">✕</button>
+            <div class="synopsis-head">
+              <span class="synopsis-kicker" id="synopsisKicker">📖 SINOPSIS</span>
+              <h3 class="synopsis-title" id="synopsisTitle"></h3>
+              <p class="synopsis-author" id="synopsisAuthor"></p>
+            </div>
+            <div class="synopsis-body" id="synopsisBody"></div>
+          </div>
+
+
+
+</div></body></html>

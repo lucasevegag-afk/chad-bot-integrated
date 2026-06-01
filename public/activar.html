@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chad Inversor · Activar Acceso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap">
+<style>
+  :root {
+    --bg: #050505;
+    --bg-1: #0a0a0a;
+    --bg-2: #121212;
+    --bg-3: #181818;
+    --line: rgba(212, 160, 23, 0.15);
+    --text: #ececec;
+    --muted: #8a8a8a;
+    --gold-1: #ffe27a;
+    --gold-2: #d4a017;
+    --gold-3: #8b6508;
+    --gold-grad: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  /* ===== LOGO ===== */
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .logo-wrap img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 20px rgba(212,160,23,0.35);
+  }
+  .logo-wrap span {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 700;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== CARD ===== */
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 40px 36px;
+    text-align: center;
+  }
+
+  .card-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,226,122,0.12), rgba(139,101,8,0.06));
+    border: 1px solid rgba(212,160,23,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 28px;
+  }
+
+  .card h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 700;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+
+  .card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  /* ===== NIVEL BADGE ===== */
+  .nivel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(255,226,122,0.1), rgba(139,101,8,0.05));
+    border: 1px solid rgba(212,160,23,0.4);
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin-bottom: 28px;
+  }
+  .nivel-badge .badge-emoji { font-size: 20px; }
+  .nivel-badge .badge-text {
+    font-size: 15px;
+    font-weight: 600;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== BOTÓN ACTIVAR ===== */
+  .btn-activate {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background: var(--gold-grad);
+    color: #0a0a0a;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s, transform 0.2s;
+    margin-bottom: 12px;
+  }
+  .btn-activate:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-activate:active { transform: translateY(0); }
+
+  /* ===== SUCCESS ===== */
+  .success-wrap {
+    display: none;
+  }
+  .success-wrap.show {
+    display: block;
+    animation: rise 0.5s ease both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .success-icon {
+    font-size: 52px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .success-title {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .success-sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .btn-go {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 10px;
+    background: var(--gold-grad);
+    color: #0a0a0a;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .btn-go:hover { opacity: 0.9; }
+
+  /* ===== ERROR ===== */
+  .error-wrap {
+    display: none;
+  }
+  .error-wrap.show {
+    display: block;
+    animation: rise 0.5s ease both;
+  }
+  .error-icon { font-size: 48px; margin-bottom: 14px; display: block; }
+  .error-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ff6b6b;
+    margin-bottom: 8px;
+  }
+  .error-sub { color: var(--muted); font-size: 14px; }
+
+  /* ===== ADMIN PANEL ===== */
+  .admin-toggle {
+    text-align: center;
+    margin-top: 32px;
+  }
+  .admin-toggle button {
+    background: none;
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .admin-toggle button:hover {
+    border-color: rgba(212,160,23,0.5);
+    color: var(--gold-1);
+  }
+
+  .admin-panel {
+    display: none;
+    margin-top: 20px;
+    background: var(--bg-2);
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+  .admin-panel.show { display: block; animation: rise 0.3s ease both; }
+  .admin-panel h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--gold-2);
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .pin-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .pin-row input {
+    flex: 1;
+    background: var(--bg-3);
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    padding: 10px 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .pin-row input:focus { border-color: rgba(212,160,23,0.5); }
+  .pin-row input::placeholder { color: var(--muted); }
+  .pin-row button {
+    background: var(--gold-grad);
+    border: none;
+    border-radius: 8px;
+    color: #0a0a0a;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+  }
+
+  .admin-levels {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .admin-levels.show { display: flex; }
+
+  .admin-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-3);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .admin-row-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .admin-row-label .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #333;
+  }
+  .admin-row-label .dot.active { background: #4ade80; }
+
+  .admin-row-btns {
+    display: flex;
+    gap: 6px;
+  }
+  .admin-row-btns button {
+    border: none;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.2s;
+  }
+  .admin-row-btns button:hover { opacity: 0.8; }
+  .btn-unlock { background: var(--gold-grad); color: #0a0a0a; }
+  .btn-lock { background: rgba(255,255,255,0.08); color: var(--muted); }
+
+  .admin-msg {
+    font-size: 12px;
+    color: #4ade80;
+    margin-top: 12px;
+    min-height: 16px;
+    text-align: center;
+  }
+
+  .copy-link-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  .copy-link-section p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .copy-link-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .copy-link-row button {
+    background: var(--bg-3);
+    border: 1px solid rgba(212,160,23,0.25);
+    border-radius: 6px;
+    color: var(--gold-2);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.2s;
+  }
+  .copy-link-row button:hover { background: rgba(212,160,23,0.1); }
+
+  .link-copied {
+    font-size: 11px;
+    color: #4ade80;
+    margin-top: 6px;
+    min-height: 14px;
+  }
+
+  /* ===== INVALID TOKEN ===== */
+  .back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--gold-1); }
+
+  @media (max-width: 480px) {
+    .card { padding: 28px 20px; }
+    .admin-panel { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- LOGO -->
+  <div class="logo-wrap">
+    <img src="logo.jpeg" alt="Chad Inversor">
+    <span>Chad Inversor</span>
+  </div>
+
+  <!-- CARD PRINCIPAL -->
+  <div class="card" id="mainCard">
+
+    <!-- Estado: cargando / revisando token -->
+    <div id="viewLoading" style="display: none;">
+      <div class="card-icon">⏳</div>
+      <h1>Verificando acceso…</h1>
+      <p>Validando tu activación, un momento.</p>
+    </div>
+
+    <!-- Estado: éxito -->
+    <div class="success-wrap" id="viewSuccess" style="display: none;">
+      <span class="success-icon">🏆</span>
+      <div class="success-title">¡Acceso Activado!</div>
+      <p class="success-sub" id="successMsg">Tu nivel fue desbloqueado correctamente.</p>
+      <div id="nivelesActivados" style="margin-bottom: 20px;"></div>
+      <a href="academy.html" class="btn-go">→ Ir a Chad Academy</a>
+    </div>
+
+    <!-- Estado: error token inválido -->
+    <div class="error-wrap" id="viewError" style="display: none;">
+      <span class="error-icon">❌</span>
+      <div class="error-title">Link inválido</div>
+      <p class="error-sub" id="errorMsg">Este link de activación no es válido o ya fue usado.</p>
+      <br>
+      <a href="index.html" class="back-link">← Volver al inicio</a>
+    </div>
+
+    <!-- Estado: sin parámetros (página directa sin link) -->
+    <div class="error-wrap show" id="viewDirect" style="display: block;">
+      <span class="error-icon">🔒</span>
+      <div class="error-title">Acceso directo</div>
+      <p class="error-sub">Esta página se accede a través de un link de activación.<br>Si ya compraste tu nivel, revisá tu email o WhatsApp para encontrar tu link.</p>
+      <br>
+      <a href="index.html" class="back-link">← Volver al inicio</a>
+    </div>
+
+  </div>
+
+  <!-- BOTÓN ADMIN (oculto / discreto) -->
+  <div class="admin-toggle">
+    <button onclick="toggleAdmin()">⚙️ Panel admin</button>
+  </div>
+
+  <!-- PANEL ADMIN -->
+  <div class="admin-panel" id="adminPanel">
+    <h3>🔑 Panel de activación manual</h3>
+
+    <div class="pin-row">
+      <input type="password" id="pinInput" placeholder="PIN de administrador" onkeydown="if(event.key===&#39;Enter&#39;)checkPin()">
+      <button onclick="checkPin()">Entrar</button>
+    </div>
+
+    <div class="admin-levels" id="adminLevels">
+
+      <!-- STARTER -->
+      <div class="admin-row" id="row-starter">
+        <div class="admin-row-label">
+          <span class="dot" id="dot-starter"></span>
+          🌱 Nivel 1 · Starter
+        </div>
+        <div class="admin-row-btns">
+          <button class="btn-unlock" onclick="adminUnlock(&#39;starter&#39;)">Desbloquear</button>
+          <button class="btn-lock" onclick="adminLock(&#39;starter&#39;)">Revocar</button>
+        </div>
+      </div>
+
+      <!-- INVESTING -->
+      <div class="admin-row" id="row-investing">
+        <div class="admin-row-label">
+          <span class="dot" id="dot-investing"></span>
+          🦊 Nivel 2 · Investing
+        </div>
+        <div class="admin-row-btns">
+          <button class="btn-unlock" onclick="adminUnlock(&#39;investing&#39;)">Desbloquear</button>
+          <button class="btn-lock" onclick="adminLock(&#39;investing&#39;)">Revocar</button>
+        </div>
+      </div>
+
+      <!-- EAGLE -->
+      <div class="admin-row" id="row-eagle">
+        <div class="admin-row-label">
+          <span class="dot" id="dot-eagle"></span>
+          🦅 Nivel 3 · Eagle
+        </div>
+        <div class="admin-row-btns">
+          <button class="btn-unlock" onclick="adminUnlock(&#39;eagle&#39;)">Desbloquear</button>
+          <button class="btn-lock" onclick="adminLock(&#39;eagle&#39;)">Revocar</button>
+        </div>
+      </div>
+
+      <!-- WOLF -->
+      <div class="admin-row" id="row-wolf">
+        <div class="admin-row-label">
+          <span class="dot" id="dot-wolf"></span>
+          🐺 Nivel 4 · Wolf
+        </div>
+        <div class="admin-row-btns">
+          <button class="btn-unlock" onclick="adminUnlock(&#39;wolf&#39;)">Desbloquear</button>
+          <button class="btn-lock" onclick="adminLock(&#39;wolf&#39;)">Revocar</button>
+        </div>
+      </div>
+
+      <!-- RUNNER -->
+      <div class="admin-row" id="row-runner">
+        <div class="admin-row-label">
+          <span class="dot" id="dot-runner"></span>
+          ⚡ Nivel 5 · Correcaminos
+        </div>
+        <div class="admin-row-btns">
+          <button class="btn-unlock" onclick="adminUnlock(&#39;runner&#39;)">Desbloquear</button>
+          <button class="btn-lock" onclick="adminLock(&#39;runner&#39;)">Revocar</button>
+        </div>
+      </div>
+
+      <div class="admin-msg" id="adminMsg"></div>
+
+      <!-- GENERADOR DE LINKS -->
+      <div class="copy-link-section">
+        <p>📋 Copiar link de activación para enviar al alumno:</p>
+        <div class="copy-link-row">
+          <button onclick="copyLink(&#39;starter&#39;)">🌱 Starter</button>
+          <button onclick="copyLink(&#39;investing&#39;)">🦊 Investing</button>
+          <button onclick="copyLink(&#39;eagle&#39;)">🦅 Eagle</button>
+          <button onclick="copyLink(&#39;wolf&#39;)">🐺 Wolf</button>
+          <button onclick="copyLink(&#39;runner&#39;)">⚡ Runner</button>
+        </div>
+        <div class="link-copied" id="linkCopied"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// =====================================================================
+//  CONFIGURACIÓN — editá estas dos cosas:
+//  1. ADMIN_PIN: el PIN para entrar al panel admin
+//  2. AUTOKEY: clave secreta que usa Make para generar links automáticos
+//     Make manda: activar.html?nivel=wolf&autokey=TU_CLAVE_AQUI
+//     NUNCA compartir esta clave públicamente.
+// =====================================================================
+
+const ADMIN_PIN = '2025chad';       // ← CAMBIÁ ESTO
+const AUTOKEY   = 'chad2026auto';   // ← CAMBIÁ ESTO (usá algo largo y raro)
+
+// =====================================================================
+// Mapeo nivel → localStorage key (mismo que usa index.html y academy.html)
+// =====================================================================
+const KEY_MAP = {
+  'starter':   'chadInversor.ownsStarter',
+  'investing': 'chadInversor.ownsInvesting',
+  'eagle':     'chadInversor.ownsEagle',
+  'wolf':      'chadInversor.ownsWolf',
+  'runner':    'chadInversor.ownsRunner',
+};
+
+const NIVEL_LABELS = {
+  'starter':   '🌱 Nivel 1 · Starter',
+  'investing': '🦊 Nivel 2 · Investing',
+  'eagle':     '🦅 Nivel 3 · Eagle',
+  'wolf':      '🐺 Nivel 4 · Wolf',
+  'runner':    '⚡ Nivel 5 · Correcaminos',
+};
+
+// =====================================================================
+// LÓGICA PRINCIPAL — activación por URL
+// =====================================================================
+function show(id) {
+  ['viewLoading','viewSuccess','viewError','viewDirect'].forEach(v => {
+    document.getElementById(v).classList.remove('show');
+    document.getElementById(v).style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  if (el) { el.style.display = 'block'; el.classList.add('show'); }
+}
+
+function activarPorURL() {
+  const params   = new URLSearchParams(window.location.search);
+  const nivel    = (params.get('nivel') || '').toLowerCase().trim();
+  const autokey  = (params.get('autokey') || '').trim();
+
+  // Sin parámetros → pantalla directa
+  if (!nivel && !autokey) {
+    show('viewDirect');
+    return;
+  }
+
+  // Validar nivel
+  if (!KEY_MAP[nivel]) {
+    document.getElementById('errorMsg').textContent = 'El nivel especificado no es válido. Revisá el link que te enviaron.';
+    show('viewError');
+    return;
+  }
+
+  // Validar autokey
+  if (autokey !== AUTOKEY) {
+    document.getElementById('errorMsg').textContent = 'El código de activación no es válido o ya fue usado. Contactá al soporte.';
+    show('viewError');
+    return;
+  }
+
+  // Todo OK → desbloquear
+  unlock(nivel);
+  mostrarExito([nivel]);
+}
+
+function unlock(nivel) {
+  const key = KEY_MAP[nivel];
+  if (!key) return;
+  try { localStorage.setItem(key, 'true'); } catch(e) {}
+}
+
+function mostrarExito(niveles) {
+  const labels = niveles.map(n => NIVEL_LABELS[n] || n).join(', ');
+  document.getElementById('successMsg').textContent = 'Tu acceso fue activado correctamente.';
+
+  const badges = niveles.map(n => {
+    const label = NIVEL_LABELS[n] || n;
+    return `<div style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(255,226,122,.1),rgba(139,101,8,.05));border:1px solid rgba(212,160,23,.4);border-radius:8px;padding:8px 16px;margin:4px;font-size:14px;font-weight:600;background-clip:text;">${label}</div>`;
+  }).join('');
+
+  document.getElementById('nivelesActivados').innerHTML = badges;
+  show('viewSuccess');
+
+  // Redirigir a academy después de 3 segundos
+  setTimeout(() => { window.location.href = 'academy.html'; }, 3500);
+}
+
+// =====================================================================
+// PANEL ADMIN
+// =====================================================================
+let adminUnlocked = false;
+
+function toggleAdmin() {
+  const panel = document.getElementById('adminPanel');
+  panel.classList.toggle('show');
+}
+
+function checkPin() {
+  const input = document.getElementById('pinInput').value;
+  if (input === ADMIN_PIN) {
+    adminUnlocked = true;
+    document.getElementById('adminLevels').classList.add('show');
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').placeholder = '✓ Acceso concedido';
+    document.getElementById('pinInput').disabled = true;
+    refreshAdminDots();
+  } else {
+    document.getElementById('pinInput').style.borderColor = '#ff6b6b';
+    setTimeout(() => { document.getElementById('pinInput').style.borderColor = ''; }, 1000);
+  }
+}
+
+function refreshAdminDots() {
+  Object.keys(KEY_MAP).forEach(nivel => {
+    const key   = KEY_MAP[nivel];
+    const dot   = document.getElementById('dot-' + nivel);
+    const owned = localStorage.getItem(key) === 'true';
+    if (dot) dot.classList.toggle('active', owned);
+  });
+}
+
+function adminUnlock(nivel) {
+  if (!adminUnlocked) return;
+  unlock(nivel);
+  refreshAdminDots();
+  showAdminMsg('✓ ' + (NIVEL_LABELS[nivel] || nivel) + ' desbloqueado');
+}
+
+function adminLock(nivel) {
+  if (!adminUnlocked) return;
+  const key = KEY_MAP[nivel];
+  if (key) { try { localStorage.removeItem(key); } catch(e) {} }
+  refreshAdminDots();
+  showAdminMsg('🔒 ' + (NIVEL_LABELS[nivel] || nivel) + ' revocado');
+}
+
+function showAdminMsg(msg) {
+  const el = document.getElementById('adminMsg');
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ''; }, 2500);
+}
+
+// Generador de links
+function copyLink(nivel) {
+  const base = window.location.href.split('?')[0];
+  const link = `${base}?nivel=${nivel}&autokey=${AUTOKEY}`;
+
+  navigator.clipboard.writeText(link).then(() => {
+    const el = document.getElementById('linkCopied');
+    el.textContent = '✓ Link copiado: ' + link;
+    setTimeout(() => { el.textContent = ''; }, 4000);
+  }).catch(() => {
+    // Fallback para mobile
+    const el = document.getElementById('linkCopied');
+    el.textContent = link;
+  });
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  activarPorURL();
+});
+</script>
+
+
+</body></html>

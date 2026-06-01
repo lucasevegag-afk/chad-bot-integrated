@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pagos · Chad Inversor</title>
+<meta name="description" content="Métodos de pago para los 6 niveles de Chad Inversor: Starter, Investing, Eagle, Wolf, Correcaminos y Bot.">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap">
+<style>
+  :root {
+    --bg: #050505;
+    --bg-1: #0a0a0a;
+    --bg-2: #121212;
+    --bg-3: #181818;
+    --line: rgba(212, 160, 23, 0.15);
+    --line-2: rgba(212, 160, 23, 0.35);
+    --text: #ececec;
+    --muted: #8a8a8a;
+    --gold-1: #ffe27a;
+    --gold-2: #d4a017;
+    --gold-3: #8b6508;
+    --gold-grad: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    --gold-soft: linear-gradient(135deg, rgba(255,226,122,0.14), rgba(139,101,8,0.04));
+    --shadow: 0 24px 60px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-gold: 0 20px 48px rgba(212, 160, 23, 0.18);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  /* ========= TOP BAR ========= */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(5,5,5,0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 4px;
+    font-size: 14px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .back-link {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color .2s;
+  }
+  .back-link:hover { color: var(--gold-1); }
+  .back-link svg { width: 16px; height: 16px; }
+
+  /* ========= HERO ========= */
+  .hero {
+    padding: 44px 24px 24px;
+    text-align: center;
+    background:
+      radial-gradient(60% 60% at 50% 0%, rgba(212,160,23,0.12), transparent 70%),
+      var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: clamp(22px, 3.2vw, 36px);
+    margin: 0 0 14px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 2px;
+  }
+  .hero p {
+    color: var(--muted);
+    max-width: 640px;
+    margin: 0 auto;
+    font-size: 16px;
+  }
+  .hero-divider {
+    width: 80px;
+    height: 2px;
+    background: var(--gold-grad);
+    margin: 18px auto 0;
+    border-radius: 2px;
+  }
+
+  /* ========= LEVEL ========= */
+  .level {
+    padding: 40px 24px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    scroll-margin-top: 80px;
+  }
+  .level:nth-child(odd) {
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-1) 100%);
+  }
+  .level:nth-child(even) {
+    background: var(--bg);
+  }
+  .level-inner {
+    max-width: 740px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .level-media {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background: #050a14;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line-2);
+  }
+  .level-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .level-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-1);
+    margin-bottom: 18px;
+  }
+  .level h2 {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: clamp(22px, 2.6vw, 32px);
+    margin: 0 0 10px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 1px;
+  }
+  .level-tagline {
+    color: var(--gold-1);
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 24px;
+    opacity: 0.85;
+  }
+  .level-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 18px 22px;
+    background: var(--gold-soft);
+    border: 1px solid var(--line-2);
+    border-radius: 12px;
+    margin-bottom: 22px;
+  }
+  .level-price {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 24px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .level-price-sub {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .level-intro {
+    color: var(--text);
+    font-size: 15px;
+    margin: 0 0 28px;
+    opacity: 0.92;
+  }
+  .level-intro strong { color: var(--gold-1); font-weight: 600; }
+
+  /* ========= PAYMENT METHODS ========= */
+  .pay-section-label {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 3px;
+    font-size: 12px;
+    color: var(--gold-1);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .pay-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mercadopago-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px 18px;
+    background: linear-gradient(135deg, #00b1ea 0%, #009ee3 100%);
+    color: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    box-shadow: 0 10px 28px rgba(0, 158, 227, 0.28);
+  }
+  .mercadopago-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(0, 158, 227, 0.45);
+    filter: brightness(1.05);
+  }
+  .mercadopago-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .mercadopago-btn .mp-price {
+    margin-left: auto;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 3px 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 6px;
+  }
+
+  .binance-pay-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px 18px;
+    background: linear-gradient(135deg, #f3ba2f 0%, #f0b90b 100%);
+    color: #181a20;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    box-shadow: 0 10px 28px rgba(240, 185, 11, 0.28);
+  }
+  .binance-pay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(240, 185, 11, 0.45);
+    filter: brightness(1.05);
+  }
+  .binance-pay-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .binance-pay-btn .bp-price {
+    margin-left: auto;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 3px 10px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 6px;
+  }
+
+  .paypal-btn-wrap {
+    width: 100%;
+  }
+  .paypal-btn-wrap > div { width: 100%; }
+  [id^="paypal-form-fields-container-"] label[for="quantity"],
+  [id^="paypal-form-fields-container-"] .selectContainer,
+  [id^="paypal-container-"] .item-header,
+  [id^="paypal-container-"] .item-description,
+  [id^="paypal-container-"] #checkout-button,
+  [id^="paypal-container-"] img[alt="card icons"] { display: none !important; }
+
+  /* ========= NAV ========= */
+  .nav-levels {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 24px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .nav-levels a {
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--muted);
+    transition: all .2s;
+  }
+  .nav-levels a:hover {
+    border-color: var(--gold-2);
+    color: var(--gold-1);
+    background: rgba(212,160,23,0.08);
+  }
+
+  /* ========= FOOTER ========= */
+  footer {
+    padding: 60px 24px 40px;
+    text-align: center;
+    border-top: 1px solid var(--line);
+    background: var(--bg-1);
+  }
+  .footer-brand {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 4px;
+    font-size: 14px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 8px;
+  }
+  .footer-tag {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* Themes */
+  .level.theme-seed .level-badge { color: #86efac; border-color: rgba(74,222,128,0.4); }
+  .level.theme-seed .level-tagline { color: #86efac; }
+  .level.theme-fox .level-badge { color: #bef264; border-color: rgba(132,204,22,0.4); }
+  .level.theme-fox .level-tagline { color: #bef264; }
+  .level.theme-eagle .level-badge { color: var(--gold-1); border-color: var(--line-2); }
+  .level.theme-eagle .level-tagline { color: var(--gold-1); }
+  .level.theme-wolf .level-badge { color: var(--gold-1); border-color: rgba(255,226,122,0.45); }
+  .level.theme-wolf .level-tagline { color: var(--gold-1); }
+  .level.theme-runner .level-badge { color: #93c5fd; border-color: rgba(59,130,246,0.45); }
+  .level.theme-runner .level-tagline { color: #93c5fd; }
+  .level.theme-bot .level-badge { color: #fb923c; border-color: rgba(251,146,60,0.45); }
+  .level.theme-bot .level-tagline { color: #fb923c; }
+
+  /* ========= MOBILE ========= */
+  @media (max-width: 860px) {
+    .level { padding: 30px 18px; }
+    .level-inner {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .level-media { aspect-ratio: 4 / 3; }
+    .hero { padding: 32px 18px 20px; }
+    .nav-levels { padding: 14px 18px 0; }
+  }
+  /* ========= TOKEN ANIMATIONS ========= */
+  /* Niveles 1, 2, 3 y 5: contenedor circular + glow dorado pulsante */
+  .level.theme-seed .level-media,
+  .level.theme-fox .level-media,
+  .level.theme-eagle .level-media,
+  .level.theme-runner .level-media {
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    animation: tokenGlow 3.2s ease-in-out infinite;
+  }
+  /* Niveles 1, 2, 3, 4: float suave de la imagen (combinado con glow del contenedor) */
+  .level.theme-seed .level-media img,
+  .level.theme-fox .level-media img,
+  .level.theme-eagle .level-media img,
+  .level.theme-wolf .level-media img {
+    animation: tokenFloat 4s ease-in-out infinite;
+  }
+  /* Niveles 4 y 6: solo glow dorado pulsante (contenedor cuadrado) */
+  .level.theme-wolf .level-media,
+  .level.theme-bot .level-media {
+    animation: tokenGlow 3.2s ease-in-out infinite;
+  }
+  /* Respeto preferencia de movimiento reducido del sistema */
+  @media (prefers-reduced-motion: reduce) {
+    .level-media,
+    .level-media img,
+    .level-media::after {
+      animation: none !important;
+    }
+  }
+  @keyframes tokenGlow {
+    0%, 100% { box-shadow: 0 0 24px rgba(212,160,23,0.20), var(--shadow); }
+    50%      { box-shadow: 0 0 56px rgba(212,160,23,0.55), var(--shadow); }
+  }
+  @keyframes tokenFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+</style>
+<!-- PayPal SDK · hosted buttons -->
+<script src="https://www.paypal.com/sdk/js?client-id=BAAmSSNhYp1DMIAJwknSayMgL6pr9v7LjfAwxVUt4JtKEb7AO9x64pIpbun6JBFxiIqUUDZbI2oUm1imgw&components=hosted-buttons&disable-funding=venmo&currency=USD" defer></script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">CHAD INVERSOR</div>
+    <a href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Volver al inicio
+    </a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>MÉTODOS DE PAGO</h1>
+  <p>Elegí el nivel que querés desbloquear. Cada uno disponible con Mercado Pago, PayPal y Binance Pay — pagás en tu moneda preferida.</p>
+  <div class="hero-divider"></div>
+  <nav class="nav-levels">
+    <a href="#nivel-1">Nivel 1 · Starter</a>
+    <a href="#nivel-2">Nivel 2 · Investing</a>
+    <a href="#nivel-3">Nivel 3 · Eagle</a>
+    <a href="#nivel-4">Nivel 4 · Wolf</a>
+    <a href="#nivel-5">Nivel 5 · Correcaminos</a>
+    <a href="#nivel-6">Nivel 6 · Bot</a>
+  </nav>
+</section>
+
+<!-- ============================================================
+     NIVEL 1 · STARTER PACK
+============================================================ -->
+<section class="level theme-seed" id="nivel-1">
+  <div class="level-inner">
+    <div class="level-media">
+      <img src="img/sheepgoldentoken.png" alt="Starter Pack — Nivel 1">
+    </div>
+    <div>
+      <span class="level-badge">🌱 Nivel 1 · Iniciante</span>
+      <h2>Starter Pack</h2>
+      <p class="level-tagline">La semilla · Fundamentos · Empezá con base sólida</p>
+      <div class="level-price-row">
+        <div class="level-price">$9.99</div>
+        <div class="level-price-sub">Acceso completo de por vida</div>
+      </div>
+      <p class="level-intro">
+        Todo trader exitoso empezó con <strong>una semilla</strong>: los fundamentos bien plantados. El Starter Pack es el primer paso — lo que nadie te enseñó, pero que te ahorra meses de pérdidas por errores evitables.
+      </p>
+
+      <div class="pay-section-label">Elegí tu método de pago</div>
+      <div class="pay-buttons">
+        <a href="https://mpago.la/1oxKFjX" target="_blank" rel="noopener noreferrer" class="mercadopago-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          <span>Pagar con Mercado Pago</span>
+          <span class="mp-price">USD 10</span>
+        </a>
+        <div class="paypal-btn-wrap">
+          <div id="paypal-container-VPGVA5GYFAJZY"></div>
+          <script>
+            paypal.HostedButtons({ hostedButtonId: "VPGVA5GYFAJZY" }).render("#paypal-container-VPGVA5GYFAJZY");
+          </script>
+        </div>
+        <a href="https://app.binance.com/uni-qr/DSdGRKnD" target="_blank" rel="noopener noreferrer" class="binance-pay-btn">
+          <svg viewBox="0 0 126 126" fill="currentColor"><path d="M38.73 53.2 63 28.94l24.28 24.28 14.12-14.12L63 .7 24.6 39.08l14.13 14.12zM.58 63l14.12-14.12L28.82 63 14.7 77.12.58 63zm38.14 9.8L63 97.06l24.28-24.28 14.13 14.12L63 125.3 24.6 86.92l14.2-14.12zm58.42-9.8 14.12-14.12L125.4 63l-14.12 14.12L97.14 63zM77.32 62.99 63 48.66 52.41 59.25l-1.22 1.22-2.5 2.52-.03.03L63 77.34l14.32-14.34V63z"></path></svg>
+          <span>Pagar con Binance Pay</span>
+          <span class="bp-price">USD 10</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     NIVEL 2 · INVESTING
+============================================================ -->
+<section class="level theme-fox" id="nivel-2">
+  <div class="level-inner">
+    <div class="level-media">
+      <img src="img/foxgoldentoken.png" alt="Investing — Nivel 2">
+    </div>
+    <div>
+      <span class="level-badge">🦊 Nivel 2 · Astuto</span>
+      <h2>Investing</h2>
+      <p class="level-tagline">Inversión · Disciplina · Mentalidad consistente</p>
+      <div class="level-price-row">
+        <div class="level-price">$20</div>
+        <div class="level-price-sub">Acceso completo de por vida</div>
+      </div>
+      <p class="level-intro">
+        El zorro no gana por fuerza, gana por <strong>astucia</strong>. Este nivel te enseña a invertir y operar con la mentalidad que separa al trader consistente del emocional.
+      </p>
+
+      <div class="pay-section-label">Elegí tu método de pago</div>
+      <div class="pay-buttons">
+        <a href="https://mpago.la/2DChmie" target="_blank" rel="noopener noreferrer" class="mercadopago-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          <span>Pagar con Mercado Pago</span>
+          <span class="mp-price">USD 20</span>
+        </a>
+        <div class="paypal-btn-wrap">
+          <div id="paypal-container-MAZ6S3XEXJHH6"></div>
+          <script>
+            paypal.HostedButtons({ hostedButtonId: "MAZ6S3XEXJHH6" }).render("#paypal-container-MAZ6S3XEXJHH6");
+          </script>
+        </div>
+        <a href="https://app.binance.com/uni-qr/LQ6swT18" target="_blank" rel="noopener noreferrer" class="binance-pay-btn">
+          <svg viewBox="0 0 126 126" fill="currentColor"><path d="M38.73 53.2 63 28.94l24.28 24.28 14.12-14.12L63 .7 24.6 39.08l14.13 14.12zM.58 63l14.12-14.12L28.82 63 14.7 77.12.58 63zm38.14 9.8L63 97.06l24.28-24.28 14.13 14.12L63 125.3 24.6 86.92l14.2-14.12zm58.42-9.8 14.12-14.12L125.4 63l-14.12 14.12L97.14 63zM77.32 62.99 63 48.66 52.41 59.25l-1.22 1.22-2.5 2.52-.03.03L63 77.34l14.32-14.34V63z"></path></svg>
+          <span>Pagar con Binance Pay</span>
+          <span class="bp-price">USD 20</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     NIVEL 3 · EAGLE
+============================================================ -->
+<section class="level theme-eagle" id="nivel-3">
+  <div class="level-inner">
+    <div class="level-media">
+      <img src="img/eaglegoldentoken.png" alt="Eagle — Nivel 3">
+    </div>
+    <div>
+      <span class="level-badge">🦅 Nivel 3 · Visión</span>
+      <h2>Eagle</h2>
+      <p class="level-tagline">Ebook · Videos · Estrategias personalizadas</p>
+      <div class="level-price-row">
+        <div class="level-price">$99</div>
+        <div class="level-price-sub">Acceso completo de por vida</div>
+      </div>
+      <p class="level-intro">
+        El águila ve desde arriba y ataca con precisión. Este nivel te da <strong>visión completa del mercado</strong> y te enseña a ejecutar como un profesional, no como un retail más.
+      </p>
+
+      <div class="pay-section-label">Elegí tu método de pago</div>
+      <div class="pay-buttons">
+        <a href="https://mpago.li/1ocMqS5" target="_blank" rel="noopener noreferrer" class="mercadopago-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          <span>Pagar con Mercado Pago</span>
+          <span class="mp-price">USD 99</span>
+        </a>
+        <div class="paypal-btn-wrap">
+          <div id="paypal-container-95CKUE7C6PG64"></div>
+          <script>
+            paypal.HostedButtons({ hostedButtonId: "95CKUE7C6PG64" }).render("#paypal-container-95CKUE7C6PG64");
+          </script>
+        </div>
+        <a href="https://app.binance.com/uni-qr/VzHR2dcC" target="_blank" rel="noopener noreferrer" class="binance-pay-btn">
+          <svg viewBox="0 0 126 126" fill="currentColor"><path d="M38.73 53.2 63 28.94l24.28 24.28 14.12-14.12L63 .7 24.6 39.08l14.13 14.12zM.58 63l14.12-14.12L28.82 63 14.7 77.12.58 63zm38.14 9.8L63 97.06l24.28-24.28 14.13 14.12L63 125.3 24.6 86.92l14.2-14.12zm58.42-9.8 14.12-14.12L125.4 63l-14.12 14.12L97.14 63zM77.32 62.99 63 48.66 52.41 59.25l-1.22 1.22-2.5 2.52-.03.03L63 77.34l14.32-14.34V63z"></path></svg>
+          <span>Pagar con Binance Pay</span>
+          <span class="bp-price">USD 99</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     NIVEL 4 · WOLF
+============================================================ -->
+<section class="level theme-wolf" id="nivel-4">
+  <div class="level-inner">
+    <div class="level-media">
+      <img src="img/goldendoglogo.png" alt="Wolf — Nivel 4">
+    </div>
+    <div>
+      <span class="level-badge">🐺 Nivel 4 · Apex</span>
+      <h2>Wolf 👑</h2>
+      <p class="level-tagline">Avanzado profesional · Todos los timeframes · Operatoria en vivo</p>
+      <div class="level-price-row">
+        <div class="level-price">$292</div>
+        <div class="level-price-sub">Acceso completo de por vida · Comunidad VIP</div>
+      </div>
+      <p class="level-intro">
+        El lobo caza en solitario pero domina el territorio. Este es el <strong>nivel avanzado profesional</strong> — operatoria real, en vivo, con estrategias que se adaptan a cualquier timeframe.
+      </p>
+
+      <div class="pay-section-label">Elegí tu método de pago</div>
+      <div class="pay-buttons">
+        <a href="https://mpago.li/2yXwcGt" target="_blank" rel="noopener noreferrer" class="mercadopago-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          <span>Pagar con Mercado Pago</span>
+          <span class="mp-price">USD 292</span>
+        </a>
+        <div class="paypal-btn-wrap">
+          <div id="paypal-container-7NTQWT6D9H9DS"></div>
+          <script>
+            paypal.HostedButtons({ hostedButtonId: "7NTQWT6D9H9DS" }).render("#paypal-container-7NTQWT6D9H9DS");
+          </script>
+        </div>
+        <a href="https://app.binance.com/uni-qr/Np6JWCNs" target="_blank" rel="noopener noreferrer" class="binance-pay-btn">
+          <svg viewBox="0 0 126 126" fill="currentColor"><path d="M38.73 53.2 63 28.94l24.28 24.28 14.12-14.12L63 .7 24.6 39.08l14.13 14.12zM.58 63l14.12-14.12L28.82 63 14.7 77.12.58 63zm38.14 9.8L63 97.06l24.28-24.28 14.13 14.12L63 125.3 24.6 86.92l14.2-14.12zm58.42-9.8 14.12-14.12L125.4 63l-14.12 14.12L97.14 63zM77.32 62.99 63 48.66 52.41 59.25l-1.22 1.22-2.5 2.52-.03.03L63 77.34l14.32-14.34V63z"></path></svg>
+          <span>Pagar con Binance Pay</span>
+          <span class="bp-price">USD 292</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     NIVEL 5 · CORRECAMINOS
+============================================================ -->
+<section class="level theme-runner" id="nivel-5">
+  <div class="level-inner">
+    <div class="level-media">
+      <img src="img/correcaminostoken.png" alt="Chad Correcaminos — Nivel 5">
+    </div>
+    <div>
+      <span class="level-badge">⚡ Nivel 5 · Avanzado</span>
+      <h2>Chad Correcaminos</h2>
+      <p class="level-tagline">Scalper Profesional · Velocidad · Precisión · Resultados</p>
+      <div class="level-price-row">
+        <div class="level-price">$149</div>
+        <div class="level-price-sub">Acceso completo de por vida</div>
+      </div>
+      <p class="level-intro">
+        El mercado no espera. Tú tampoco. <strong>Sé el Correcaminos.</strong> Este nivel avanzado está diseñado para traders que ya dominan los fundamentos y quieren especializarse en <strong>scalping profesional</strong>.
+      </p>
+
+      <div class="pay-section-label">Elegí tu método de pago</div>
+      <div class="pay-buttons">
+        <a href="https://mpago.li/2dJMkQz" target="_blank" rel="noopener noreferrer" class="mercadopago-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          <span>Pagar con Mercado Pago</span>
+          <span class="mp-price">USD 149</span>
+        </a>
+        <div class="paypal-btn-wrap">
+          <div id="paypal-container-FUZ2PSL98MGA2"></div>
+          <script>
+            paypal.HostedButtons({ hostedButtonId: "FUZ2PSL98MGA2" }).render("#paypal-container-FUZ2PSL98MGA2");
+          </script>
+        </div>
+        <a href="https://app.binance.com/uni-qr/MsUg9q8B" target="_blank" rel="noopener noreferrer" class="binance-pay-btn">
+          <svg viewBox="0 0 126 126" fill="currentColor"><path d="M38.73 53.2 63 28.94l24.28 24.28 14.12-14.12L63 .7 24.6 39.08l14.13 14.12zM.58 63l14.12-14.12L28.82 63 14.7 77.12.58 63zm38.14 9.8L63 97.06l24.28-24.28 14.13 14.12L63 125.3 24.6 86.92l14.2-14.12zm58.42-9.8 14.12-14.12L125.4 63l-14.12 14.12L97.14 63zM77.32 62.99 63 48.66 52.41 59.25l-1.22 1.22-2.5 2.52-.03.03L63 77.34l14.32-14.34V63z"></path></svg>
+          <span>Pagar con Binance Pay</span>
+          <span class="bp-price">USD 149</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     NIVEL 6 · CHAD BOT
+============================================================ -->
+<section class="level theme-bot" id="nivel-6">
+  <div class="level-inner">
+    <div class="level-media">
+      <img src="img/chadbot.png" alt="Chad Bot — Nivel 6">
+    </div>
+    <div>
+      <span class="level-badge">🤖 Nivel 6 · Automatización</span>
+      <h2>Chad Bot</h2>
+      <p class="level-tagline">Bot de trading automatizado con IA · Ejecución en tiempo real</p>
+      <div class="level-price-row">
+        <div class="level-price">$49</div>
+        <div class="level-price-sub">Acceso Chad Autotrading completo</div>
+      </div>
+      <p class="level-intro">
+        Desbloqueá la versión pro con <strong>ejecución automática</strong>, configuración paso a paso y comunidad exclusiva. El bot ejecuta setups en tiempo real sin intervención manual.
+      </p>
+
+      <div class="pay-section-label">Elegí tu método de pago</div>
+      <div class="pay-buttons">
+        <a href="https://mpago.la/2KWUgMU" target="_blank" rel="noopener noreferrer" class="mercadopago-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          <span>Pagar con Mercado Pago</span>
+          <span class="mp-price">USD 49</span>
+        </a>
+        <div class="paypal-btn-wrap">
+          <div id="paypal-container-VF5USPR9PDUHL"></div>
+          <script>
+            paypal.HostedButtons({ hostedButtonId: "VF5USPR9PDUHL" }).render("#paypal-container-VF5USPR9PDUHL");
+          </script>
+        </div>
+        <a href="https://app.binance.com/uni-qr/JN946Nme" target="_blank" rel="noopener noreferrer" class="binance-pay-btn">
+          <svg viewBox="0 0 126 126" fill="currentColor"><path d="M38.73 53.2 63 28.94l24.28 24.28 14.12-14.12L63 .7 24.6 39.08l14.13 14.12zM.58 63l14.12-14.12L28.82 63 14.7 77.12.58 63zm38.14 9.8L63 97.06l24.28-24.28 14.13 14.12L63 125.3 24.6 86.92l14.2-14.12zm58.42-9.8 14.12-14.12L125.4 63l-14.12 14.12L97.14 63zM77.32 62.99 63 48.66 52.41 59.25l-1.22 1.22-2.5 2.52-.03.03L63 77.34l14.32-14.34V63z"></path></svg>
+          <span>Pagar con Binance Pay</span>
+          <span class="bp-price">USD 49</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">CHAD INVERSOR</div>
+  <div class="footer-tag">Educación financiera · Trading · Inversiones</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesiones del Mercado — Chad Inversor</title>
+<meta name="description" content="Cuándo operar y cuándo no. Sesiones de Sydney, Tokyo, London y New York en tu hora local, con mapa mundial y timeline 24h.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap">
+<style>
+  :root {
+    --bg: #050505;
+    --bg-1: #0a0a0a;
+    --bg-2: #121212;
+    --bg-3: #181818;
+    --line: rgba(212, 160, 23, 0.15);
+    --line-2: rgba(212, 160, 23, 0.35);
+    --text: #ececec;
+    --muted: #8a8a8a;
+    --gold-1: #ffe27a;
+    --gold-2: #d4a017;
+    --gold-3: #8b6508;
+    --green: #4ade80;
+    --gold-grad: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%);
+    --gold-soft: linear-gradient(135deg, rgba(255,226,122,0.14), rgba(139,101,8,0.04));
+    --shadow: 0 24px 60px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-gold: 0 20px 48px rgba(212, 160, 23, 0.18);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(60% 50% at 10% 0%, rgba(212,160,23,0.10), transparent 60%),
+      radial-gradient(60% 50% at 100% 20%, rgba(212,160,23,0.08), transparent 60%),
+      radial-gradient(40% 40% at 50% 100%, rgba(212,160,23,0.05), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section { position: relative; padding: 80px 0; z-index: 1; }
+
+  h1, h2, h3 { font-family: 'Cinzel', serif; font-weight: 600; letter-spacing: 0.5px; }
+  .h-gold {
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-head { text-align: center; max-width: 720px; margin: 0 auto 20px; }
+  .section-head h2 {
+    font-size: clamp(32px, 4.5vw, 52px);
+    margin: 16px 0 14px;
+    line-height: 1.15;
+  }
+  .divider {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold-2);
+    padding: 8px 16px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    background: var(--gold-soft);
+  }
+
+  /* Back link */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    margin-bottom: 30px;
+    transition: color .2s, border-color .2s, transform .2s;
+  }
+  .back-link:hover {
+    color: var(--gold-1);
+    border-color: var(--line-2);
+    transform: translateX(-3px);
+  }
+  .back-link svg { width: 14px; height: 14px; }
+
+  footer {
+    padding: 40px 0 60px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--line);
+    margin-top: 40px;
+  }
+
+  /* ===== SESIONES ===== */
+  #sesiones { padding: 40px 0 40px; }
+  .sesh-intro { text-align: center; max-width: 780px; margin: 24px auto 40px; }
+  .sesh-intro .intro-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 26px;
+    text-align: left;
+  }
+  @media (max-width: 720px) { .sesh-intro .intro-grid { grid-template-columns: 1fr; } }
+  .sesh-intro-card {
+    padding: 16px 16px 14px;
+    background: linear-gradient(180deg, rgba(22,22,22,0.9), rgba(8,8,8,0.9));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .sesh-intro-card .ic { font-size: 22px; margin-bottom: 6px; display: block; }
+  .sesh-intro-card h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    margin: 0 0 6px;
+    color: var(--gold-1);
+  }
+  .sesh-intro-card p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+
+  .sesh-wrapper {
+    background: linear-gradient(180deg, rgba(22,22,22,0.85), rgba(8,8,8,0.85));
+    border: 1px solid var(--line-2);
+    border-radius: 24px;
+    padding: 32px 26px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .sesh-wrapper::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(50% 40% at 15% 0%, rgba(212,160,23,0.08), transparent 60%),
+      radial-gradient(50% 40% at 85% 100%, rgba(212,160,23,0.06), transparent 60%);
+    pointer-events: none;
+  }
+  .sesh-wrapper > * { position: relative; z-index: 1; }
+
+  /* TIMEZONE SELECTOR */
+  .tz-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .tz-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all .25s ease;
+    text-transform: uppercase;
+  }
+  .tz-btn:hover { color: var(--text); border-color: var(--line-2); }
+  .tz-btn.active {
+    background: var(--gold-grad);
+    color: #120a00;
+    border-color: var(--gold-2);
+    box-shadow: 0 6px 16px rgba(212,160,23,0.3);
+  }
+  .tz-btn.primary { position: relative; }
+  .tz-btn.primary::after {
+    content: "★";
+    position: absolute;
+    top: -6px;
+    right: -4px;
+    font-size: 10px;
+    color: var(--gold-1);
+  }
+  .tz-btn.active.primary::after { color: #120a00; }
+
+  /* ===== WORLD MAP ===== */
+  .world-map-wrap {
+    position: relative;
+    background: radial-gradient(ellipse at 50% 40%, rgba(18,28,44,0.55) 0%, rgba(6,10,18,0.85) 60%, rgba(4,6,10,0.95) 100%);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .world-map-wrap::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,226,122,0.3), transparent 50%),
+      radial-gradient(1px 1px at 60% 70%, rgba(255,226,122,0.2), transparent 50%),
+      radial-gradient(1px 1px at 80% 20%, rgba(255,226,122,0.25), transparent 50%),
+      radial-gradient(1px 1px at 30% 80%, rgba(255,226,122,0.2), transparent 50%),
+      radial-gradient(1px 1px at 90% 60%, rgba(255,226,122,0.3), transparent 50%);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  .world-map-svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
+
+  /* latitude/longitude grid */
+  .world-map-svg .graticule {
+    fill: none;
+    stroke: rgba(212,160,23,0.06);
+    stroke-width: 0.3;
+    stroke-dasharray: 1 2;
+  }
+  .world-map-svg .equator, .world-map-svg .prime-meridian {
+    stroke: rgba(212,160,23,0.14);
+    stroke-width: 0.5;
+    stroke-dasharray: none;
+  }
+
+  /* timezone stripes */
+  .world-map-svg .tz-stripe {
+    fill: rgba(255,255,255,0.012);
+    stroke: rgba(212,160,23,0.06);
+    stroke-width: 0.25;
+  }
+
+  /* daylight band */
+  .world-map-svg .daylight { fill: rgba(255,226,122,0.04); stroke: none; }
+
+  /* continents */
+  .world-map-svg .continent {
+    fill: rgba(212,160,23,0.14);
+    stroke: rgba(212,160,23,0.45);
+    stroke-width: 0.5;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+  }
+
+  /* city pins */
+  .world-map-svg .city-pin { cursor: default; transition: all .3s ease; }
+  .world-map-svg .city-pin circle.pulse {
+    fill: rgba(74,222,128,0.4);
+    opacity: 0;
+  }
+  .world-map-svg .city-pin.active circle.pulse {
+    animation: pinPulse 2s ease-in-out infinite;
+  }
+  @keyframes pinPulse {
+    0%   { opacity: 0.7; r: 3; }
+    100% { opacity: 0; r: 16; }
+  }
+  .world-map-svg .city-pin circle.dot {
+    fill: var(--muted);
+    stroke: rgba(0,0,0,0.7);
+    stroke-width: 0.8;
+    transition: fill .3s, r .3s;
+  }
+  .world-map-svg .city-pin.active circle.dot {
+    fill: var(--green);
+    r: 4;
+    filter: drop-shadow(0 0 5px var(--green));
+  }
+  .world-map-svg .city-label {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    fill: var(--muted);
+    transition: fill .3s;
+    text-shadow: 0 0 4px rgba(0,0,0,0.8);
+  }
+  .world-map-svg .city-pin.active .city-label { fill: var(--gold-1); }
+
+  /* NOW line */
+  .world-map-svg .now-line {
+    stroke: var(--gold-1);
+    stroke-width: 1.3;
+    stroke-dasharray: 3 3;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 4px rgba(255,226,122,0.7));
+  }
+  .world-map-svg .now-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 6.5px;
+    fill: var(--gold-1);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* SESSION CARDS */
+  .sesh-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 780px) { .sesh-grid { grid-template-columns: repeat(2, 1fr); } }
+  .sesh-card {
+    position: relative;
+    padding: 18px 12px;
+    background: linear-gradient(180deg, rgba(12,12,12,0.9), rgba(6,6,6,0.9));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    text-align: center;
+    transition: all .3s ease;
+    overflow: hidden;
+  }
+  .sesh-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(212,160,23,0.14), transparent 70%);
+    opacity: 0;
+    transition: opacity .3s;
+    pointer-events: none;
+  }
+  .sesh-card.active {
+    border-color: var(--gold-2);
+    box-shadow: 0 0 0 1px var(--gold-2), 0 12px 30px rgba(212,160,23,0.22);
+    transform: translateY(-3px);
+  }
+  .sesh-card.active::before { opacity: 1; }
+  .sesh-flag { font-size: 26px; margin-bottom: 4px; line-height: 1; }
+  .sesh-label {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .sesh-sub {
+    font-size: 8.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .sesh-hours {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.5px;
+  }
+  .sesh-zone {
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .sesh-note {
+    font-size: 9.5px;
+    color: var(--muted);
+    line-height: 1.4;
+    padding: 8px 0 8px;
+    border-top: 1px solid var(--line);
+    margin-bottom: 8px;
+    min-height: 30px;
+  }
+  .sesh-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .sesh-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--muted); }
+  .sesh-card.active .sesh-status { border-color: var(--green); color: var(--green); background: rgba(74,222,128,0.08); }
+  .sesh-card.active .sesh-dot { background: var(--green); box-shadow: 0 0 6px var(--green); animation: seshPulse 1.5s ease-in-out infinite; }
+  @keyframes seshPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(1.4); }
+  }
+
+  /* 24H TIMELINE */
+  .sesh-timeline {
+    padding: 20px 18px;
+    background: linear-gradient(180deg, rgba(6,6,6,0.7), rgba(12,12,12,0.7));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .tl-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tl-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold-2);
+    text-transform: uppercase;
+  }
+  .tl-now { font-size: 10.5px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .tl-now strong {
+    color: var(--gold-1);
+    font-family: 'Inter', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-left: 4px;
+    font-weight: 700;
+  }
+  .tl-track { position: relative; }
+  .tl-hours {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .tl-bars {
+    position: relative;
+    height: 58px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .tl-bar {
+    position: absolute;
+    height: 11px;
+    border-radius: 2px;
+    opacity: 0.88;
+    transition: left .4s ease, width .4s ease;
+  }
+  .tl-bar.sydney  { top: 4px;  background: linear-gradient(90deg, #4ade80, #22c55e); }
+  .tl-bar.tokyo   { top: 17px; background: linear-gradient(90deg, #f87171, #ef4444); }
+  .tl-bar.london  { top: 30px; background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+  .tl-bar.newyork { top: 43px; background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+  .tl-now-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--gold-1);
+    box-shadow: 0 0 12px var(--gold-1);
+    z-index: 3;
+    transform: translateX(-1px);
+    pointer-events: none;
+    transition: left .4s ease;
+  }
+  .tl-now-line::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 10px;
+    height: 10px;
+    background: var(--gold-1);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--gold-1);
+  }
+  .tl-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .tl-legend > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+  .tl-legend .tl-dot { width: 10px; height: 10px; border-radius: 2px; }
+  .tl-legend .tl-dot.sydney  { background: #22c55e; }
+  .tl-legend .tl-dot.tokyo   { background: #ef4444; }
+  .tl-legend .tl-dot.london  { background: #3b82f6; }
+  .tl-legend .tl-dot.newyork { background: #f59e0b; }
+  .tl-legend .tl-overlap {
+    margin-left: auto;
+    color: var(--gold-2);
+    font-weight: 600;
+    font-size: 10.5px;
+  }
+  @media (max-width: 680px) {
+    .tl-legend .tl-overlap { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<section>
+  <div class="container">
+    <a href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+      Volver al inicio
+    </a>
+
+    <div id="sesiones">
+      <div class="section-head">
+        <div class="divider">SESIONES DEL MERCADO</div>
+        <h2>Cuándo <span class="h-gold">operar</span> — y cuándo no.</h2>
+      </div>
+
+      <div class="sesh-intro">
+        <p style="color: var(--muted); font-size: 15px; line-height: 1.7;">
+          El mercado Forex y de índices no duerme: opera 24/5 porque el mundo está conectado. Pero <strong style="color: var(--gold-1);">no todas las horas son iguales</strong>. La volatilidad, el volumen y los movimientos limpios se concentran cuando las grandes plazas están abiertas.
+        </p>
+
+        <div class="intro-grid">
+          <div class="sesh-intro-card">
+            <span class="ic">💧</span>
+            <h4>LIQUIDEZ</h4>
+            <p>Con sesiones abiertas hay más órdenes en mercado. Spreads más bajos y menos slippage.</p>
+          </div>
+          <div class="sesh-intro-card">
+            <span class="ic">⚡</span>
+            <h4>VOLATILIDAD</h4>
+            <p>Los movimientos fuertes y direccionales aparecen en London y NY. Fuera de esas horas: lateralización.</p>
+          </div>
+          <div class="sesh-intro-card">
+            <span class="ic">🎯</span>
+            <h4>OVERLAPS</h4>
+            <p>Cuando dos sesiones se superponen (ej. London-NY) sale el 70% del volumen diario. Ahí hay que estar.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sesh-wrapper">
+        <!-- TIMEZONE SELECTOR -->
+        <div class="tz-selector" id="tzSelector">
+          <button class="tz-btn primary active" data-tz="-3"  data-name="Argentina">🇦🇷 Argentina</button>
+          <button class="tz-btn"                 data-tz="-3"  data-name="Chile">🇨🇱 Chile</button>
+          <button class="tz-btn"                 data-tz="-5"  data-name="Nueva York">🇺🇸 Nueva York</button>
+          <button class="tz-btn"                 data-tz="-6"  data-name="México">🇲🇽 México</button>
+          <button class="tz-btn"                 data-tz="-5"  data-name="Colombia">🇨🇴 Colombia</button>
+          <button class="tz-btn"                 data-tz="-5"  data-name="Perú">🇵🇪 Perú</button>
+          <button class="tz-btn"                 data-tz="+1"  data-name="España">🇪🇸 España</button>
+          <button class="tz-btn"                 data-tz="0"   data-name="UTC">🌐 UTC</button>
+        </div>
+
+        <!-- WORLD MAP (realistic equirectangular, 900x450) -->
+        <div class="world-map-wrap">
+          <svg class="world-map-svg" viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <!-- graticule: lat/lon lines every 30° -->
+            <g class="graticule">
+              <line x1="0" y1="75"  x2="900" y2="75"/>   <!-- 60N -->
+              <line x1="0" y1="150" x2="900" y2="150"/>  <!-- 30N -->
+              <line x1="0" y1="300" x2="900" y2="300"/>  <!-- 30S -->
+              <line x1="0" y1="375" x2="900" y2="375"/>  <!-- 60S -->
+              <line x1="150" y1="0" x2="150" y2="450"/>  <!-- 120W -->
+              <line x1="300" y1="0" x2="300" y2="450"/>  <!-- 60W -->
+              <line x1="600" y1="0" x2="600" y2="450"/>  <!-- 60E -->
+              <line x1="750" y1="0" x2="750" y2="450"/>  <!-- 120E -->
+            </g>
+            <!-- equator & prime meridian emphasized -->
+            <line class="equator" x1="0" y1="225" x2="900" y2="225"/>
+            <line class="prime-meridian" x1="450" y1="0" x2="450" y2="450"/>
+
+            <!-- timezone stripes (24 hours of 37.5px each) -->
+            <g class="tz-stripes">
+              <rect class="tz-stripe" x="0"    y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="75"   y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="150"  y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="225"  y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="300"  y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="375"  y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="525"  y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="600"  y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="675"  y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="750"  y="0" width="37.5" height="450"/>
+              <rect class="tz-stripe" x="825"  y="0" width="37.5" height="450"/>
+            </g>
+
+            <!-- daylight band -->
+            <rect id="daylightBand" class="daylight" x="0" y="0" width="450" height="450"/>
+
+            <!-- continents (real coords, equirectangular projection) -->
+            <g class="continents">
+            <path class="continent" data-region="north-america" d="M 30.0,60.0 L 37.5,50.0 L 62.5,47.5 L 100.0,50.0 L 137.5,52.5 L 162.5,42.5 L 187.5,42.5 L 212.5,40.0 L 237.5,42.5 L 250.0,50.0 L 262.5,55.0 L 287.5,72.5 L 312.5,92.5 L 300.0,105.0 L 285.0,115.0 L 275.0,120.0 L 265.0,125.0 L 260.0,132.5 L 255.0,140.0 L 250.0,147.5 L 247.5,155.0 L 250.0,162.5 L 242.5,162.5 L 232.5,150.0 L 217.5,152.5 L 207.5,160.0 L 207.5,170.0 L 212.5,180.0 L 222.5,180.0 L 232.5,185.0 L 242.5,187.5 L 240.0,197.5 L 255.0,202.5 L 252.5,205.0 L 245.0,202.5 L 235.0,195.0 L 215.0,185.0 L 192.5,180.0 L 185.0,165.0 L 175.0,167.5 L 165.0,155.0 L 162.5,145.0 L 155.0,142.5 L 150.0,137.5 L 145.0,132.5 L 140.0,125.0 L 137.5,112.5 L 132.5,100.0 L 125.0,90.0 L 112.5,80.0 L 100.0,77.5 L 87.5,75.0 L 62.5,80.0 L 50.0,80.0 L 40.0,75.0 L 30.0,67.5 L 30.0,60.0 Z"/>
+            <path class="continent" data-region="greenland" d="M 337.5,17.5 L 387.5,17.5 L 412.5,25.0 L 400.0,35.0 L 405.0,42.5 L 395.0,50.0 L 375.0,60.0 L 350.0,70.0 L 330.0,75.0 L 320.0,65.0 L 312.5,55.0 L 305.0,45.0 L 312.5,35.0 L 325.0,27.5 L 337.5,17.5 Z"/>
+            <path class="continent" data-region="south-america" d="M 257.5,205.0 L 270.0,197.5 L 287.5,197.5 L 300.0,202.5 L 312.5,212.5 L 322.5,215.0 L 330.0,227.5 L 342.5,235.0 L 355.0,245.0 L 362.5,245.0 L 362.5,262.5 L 352.5,270.0 L 345.0,282.5 L 330.0,292.5 L 317.5,307.5 L 307.5,312.5 L 300.0,322.5 L 292.5,332.5 L 287.5,345.0 L 277.5,355.0 L 265.0,357.5 L 272.5,337.5 L 265.0,325.0 L 267.5,312.5 L 272.5,295.0 L 272.5,275.0 L 272.5,260.0 L 255.0,245.0 L 250.0,235.0 L 252.5,225.0 L 255.0,220.0 L 257.5,205.0 Z"/>
+            <path class="continent" data-region="europe" d="M 427.5,117.5 L 427.5,132.5 L 437.5,135.0 L 450.0,127.5 L 457.5,117.5 L 470.0,115.0 L 480.0,112.5 L 482.5,122.5 L 495.0,125.0 L 487.5,130.0 L 497.5,127.5 L 507.5,132.5 L 517.5,130.0 L 520.0,122.5 L 525.0,112.5 L 550.0,107.5 L 570.0,95.0 L 587.5,82.5 L 600.0,70.0 L 595.0,57.5 L 575.0,52.5 L 555.0,57.5 L 532.5,50.0 L 520.0,47.5 L 505.0,50.0 L 490.0,55.0 L 480.0,60.0 L 462.5,70.0 L 462.5,80.0 L 480.0,85.0 L 470.0,90.0 L 460.0,95.0 L 455.0,97.5 L 445.0,102.5 L 437.5,105.0 L 445.0,115.0 L 427.5,117.5 Z"/>
+            <path class="continent" data-region="africa" d="M 427.5,145.0 L 435.0,135.0 L 450.0,132.5 L 472.5,132.5 L 487.5,142.5 L 512.5,145.0 L 530.0,147.5 L 537.5,152.5 L 545.0,180.0 L 557.5,195.0 L 577.5,195.0 L 575.0,220.0 L 555.0,230.0 L 550.0,245.0 L 550.0,270.0 L 537.5,287.5 L 530.0,300.0 L 512.5,310.0 L 495.0,307.5 L 487.5,287.5 L 480.0,262.5 L 480.0,240.0 L 472.5,227.5 L 472.5,215.0 L 457.5,210.0 L 442.5,212.5 L 430.0,212.5 L 417.5,205.0 L 407.5,190.0 L 407.5,172.5 L 417.5,157.5 L 425.0,152.5 L 427.5,145.0 Z"/>
+            <path class="continent" data-region="asia" d="M 600.0,70.0 L 615.0,50.0 L 642.5,42.5 L 700.0,37.5 L 725.0,40.0 L 762.5,42.5 L 800.0,45.0 L 837.5,47.5 L 875.0,55.0 L 875.0,65.0 L 855.0,75.0 L 857.5,85.0 L 842.5,97.5 L 807.5,90.0 L 805.0,110.0 L 800.0,120.0 L 775.0,117.5 L 765.0,127.5 L 765.0,137.5 L 752.5,132.5 L 752.5,147.5 L 742.5,165.0 L 725.0,172.5 L 720.0,185.0 L 717.5,200.0 L 707.5,222.5 L 700.0,210.0 L 695.0,187.5 L 685.0,175.0 L 680.0,170.0 L 675.0,170.0 L 670.0,170.0 L 665.0,172.5 L 650.0,187.5 L 650.0,200.0 L 645.0,205.0 L 632.5,187.5 L 630.0,172.5 L 620.0,165.0 L 605.0,162.5 L 592.5,162.5 L 582.5,160.0 L 570.0,152.5 L 570.0,150.0 L 555.0,132.5 L 540.0,135.0 L 525.0,135.0 L 517.5,130.0 L 522.5,122.5 L 550.0,115.0 L 575.0,112.5 L 587.5,100.0 L 600.0,87.5 L 600.0,70.0 Z"/>
+            <path class="continent" data-region="arabia" d="M 537.5,152.5 L 545.0,155.0 L 557.5,185.0 L 582.5,192.5 L 595.0,175.0 L 592.5,162.5 L 582.5,160.0 L 570.0,152.5 L 550.0,150.0 L 537.5,142.5 L 537.5,152.5 Z"/>
+            <path class="continent" data-region="india" d="M 620.0,165.0 L 630.0,172.5 L 632.5,187.5 L 637.5,197.5 L 645.0,205.0 L 650.0,200.0 L 650.0,187.5 L 665.0,172.5 L 670.0,170.0 L 675.0,170.0 L 680.0,170.0 L 680.0,157.5 L 670.0,157.5 L 650.0,150.0 L 637.5,142.5 L 627.5,145.0 L 620.0,162.5 L 620.0,165.0 Z"/>
+            <path class="continent" data-region="australia" d="M 732.5,280.0 L 732.5,290.0 L 737.5,310.0 L 745.0,312.5 L 755.0,310.0 L 770.0,305.0 L 787.5,310.0 L 795.0,312.5 L 800.0,320.0 L 810.0,320.0 L 817.5,332.5 L 820.0,325.0 L 827.5,317.5 L 832.5,295.0 L 832.5,287.5 L 825.0,280.0 L 815.0,272.5 L 805.0,250.0 L 795.0,255.0 L 787.5,262.5 L 780.0,255.0 L 772.5,260.0 L 762.5,260.0 L 752.5,270.0 L 740.0,275.0 L 732.5,280.0 Z"/>
+            <path class="continent" data-region="tasmania" d="M 810.0,325.0 L 820.0,325.0 L 820.0,332.5 L 810.0,332.5 L 810.0,325.0 Z"/>
+            <path class="continent" data-region="uk" d="M 437.5,80.0 L 442.5,80.0 L 447.5,82.5 L 452.5,85.0 L 450.0,90.0 L 455.0,92.5 L 452.5,97.5 L 445.0,100.0 L 437.5,100.0 L 435.0,95.0 L 437.5,87.5 L 437.5,80.0 Z"/>
+            <path class="continent" data-region="ireland" d="M 425.0,87.5 L 432.5,87.5 L 435.0,92.5 L 432.5,95.0 L 425.0,95.0 L 425.0,87.5 Z"/>
+            <path class="continent" data-region="iceland" d="M 390.0,60.0 L 415.0,60.0 L 417.5,65.0 L 405.0,67.5 L 392.5,65.0 L 390.0,60.0 Z"/>
+            <path class="continent" data-region="madagascar" d="M 557.5,255.0 L 575.0,262.5 L 575.0,280.0 L 567.5,287.5 L 560.0,280.0 L 557.5,267.5 L 557.5,255.0 Z"/>
+            <path class="continent" data-region="japan" d="M 802.5,112.5 L 812.5,115.0 L 812.5,120.0 L 805.0,125.0 L 802.5,135.0 L 797.5,137.5 L 787.5,140.0 L 777.5,140.0 L 775.0,142.5 L 777.5,147.5 L 785.0,142.5 L 795.0,140.0 L 802.5,132.5 L 802.5,122.5 L 805.0,117.5 L 802.5,112.5 Z"/>
+            <path class="continent" data-region="sri-lanka" d="M 650.0,200.0 L 655.0,202.5 L 655.0,210.0 L 650.0,210.0 L 650.0,200.0 Z"/>
+            <path class="continent" data-region="sumatra" d="M 687.5,212.5 L 695.0,212.5 L 707.5,230.0 L 715.0,240.0 L 707.5,240.0 L 697.5,227.5 L 687.5,217.5 L 687.5,212.5 Z"/>
+            <path class="continent" data-region="borneo" d="M 722.5,215.0 L 737.5,207.5 L 747.5,212.5 L 747.5,227.5 L 740.0,232.5 L 732.5,232.5 L 722.5,225.0 L 722.5,215.0 Z"/>
+            <path class="continent" data-region="java" d="M 712.5,242.5 L 735.0,245.0 L 735.0,247.5 L 712.5,247.5 L 712.5,242.5 Z"/>
+            <path class="continent" data-region="sulawesi" d="M 747.5,222.5 L 755.0,222.5 L 760.0,225.0 L 762.5,232.5 L 755.0,240.0 L 750.0,237.5 L 750.0,232.5 L 747.5,222.5 Z"/>
+            <path class="continent" data-region="new-guinea" d="M 777.5,227.5 L 800.0,232.5 L 822.5,237.5 L 825.0,247.5 L 812.5,247.5 L 795.0,245.0 L 782.5,235.0 L 777.5,227.5 Z"/>
+            <path class="continent" data-region="philippines" d="M 750.0,180.0 L 755.0,180.0 L 762.5,185.0 L 765.0,195.0 L 767.5,205.0 L 762.5,212.5 L 757.5,210.0 L 750.0,200.0 L 747.5,190.0 L 750.0,180.0 Z"/>
+            <path class="continent" data-region="nz-north" d="M 882.5,312.5 L 887.5,315.0 L 895.0,320.0 L 890.0,325.0 L 885.0,327.5 L 882.5,322.5 L 880.0,317.5 L 882.5,312.5 Z"/>
+            <path class="continent" data-region="nz-south" d="M 867.5,340.0 L 877.5,327.5 L 885.0,327.5 L 885.0,335.0 L 877.5,342.5 L 867.5,342.5 L 865.0,340.0 L 867.5,340.0 Z"/>
+            </g>
+
+            <!-- CITY PINS (at real lon/lat coords) -->
+            <g class="city-pin" data-city="newyork" transform="translate(265, 123)">
+              <circle class="pulse" r="3"/>
+              <circle class="dot" r="3.2"/>
+              <text class="city-label" x="-18" y="-7">NEW YORK</text>
+            </g>
+            <g class="city-pin" data-city="london" transform="translate(450, 96)">
+              <circle class="pulse" r="3"/>
+              <circle class="dot" r="3.2"/>
+              <text class="city-label" x="-12" y="-7">LONDON</text>
+            </g>
+            <g class="city-pin" data-city="tokyo" transform="translate(799, 136)">
+              <circle class="pulse" r="3"/>
+              <circle class="dot" r="3.2"/>
+              <text class="city-label" x="-10" y="-7">TOKYO</text>
+            </g>
+            <g class="city-pin" data-city="sydney" transform="translate(828, 310)">
+              <circle class="pulse" r="3"/>
+              <circle class="dot" r="3.2"/>
+              <text class="city-label" x="-13" y="16">SYDNEY</text>
+            </g>
+
+            <!-- NOW line -->
+            <line id="nowLine" class="now-line" x1="0" y1="15" x2="0" y2="435"/>
+            <text id="nowLineLabel" class="now-label" x="0" y="12">AHORA</text>
+          </svg>
+        </div>
+
+        <!-- SESSION CARDS -->
+        <div class="sesh-grid">
+          <div class="sesh-card" data-session="sydney">
+            <div class="sesh-flag">🇦🇺</div>
+            <div class="sesh-label">SYDNEY</div>
+            <div class="sesh-sub">Australia</div>
+            <div class="sesh-hours" data-start="22" data-end="7">--:-- — --:--</div>
+            <div class="sesh-zone" id="zone-sydney">Hora local</div>
+            <div class="sesh-note">Apertura semanal · volumen bajo · AUD, NZD</div>
+            <div class="sesh-status"><span class="sesh-dot"></span><span class="sesh-lbl">Cerrada</span></div>
+          </div>
+          <div class="sesh-card" data-session="tokyo">
+            <div class="sesh-flag">🇯🇵</div>
+            <div class="sesh-label">TOKYO</div>
+            <div class="sesh-sub">Asia</div>
+            <div class="sesh-hours" data-start="0" data-end="9">--:-- — --:--</div>
+            <div class="sesh-zone" id="zone-tokyo">Hora local</div>
+            <div class="sesh-note">JPY · Nikkei · rangos estrechos</div>
+            <div class="sesh-status"><span class="sesh-dot"></span><span class="sesh-lbl">Cerrada</span></div>
+          </div>
+          <div class="sesh-card" data-session="london">
+            <div class="sesh-flag">🇬🇧</div>
+            <div class="sesh-label">LONDON</div>
+            <div class="sesh-sub">Europa</div>
+            <div class="sesh-hours" data-start="8" data-end="17">--:-- — --:--</div>
+            <div class="sesh-zone" id="zone-london">Hora local</div>
+            <div class="sesh-note">Mayor liquidez global · GBP, EUR, XAU</div>
+            <div class="sesh-status"><span class="sesh-dot"></span><span class="sesh-lbl">Cerrada</span></div>
+          </div>
+          <div class="sesh-card" data-session="newyork">
+            <div class="sesh-flag">🇺🇸</div>
+            <div class="sesh-label">NEW YORK</div>
+            <div class="sesh-sub">Wall Street</div>
+            <div class="sesh-hours" data-start="13" data-end="22">--:-- — --:--</div>
+            <div class="sesh-zone" id="zone-newyork">Hora local</div>
+            <div class="sesh-note">USD · índices · volatilidad pico</div>
+            <div class="sesh-status"><span class="sesh-dot"></span><span class="sesh-lbl">Cerrada</span></div>
+          </div>
+        </div>
+
+        <!-- 24H TIMELINE -->
+        <div class="sesh-timeline">
+          <div class="tl-head">
+            <span class="tl-title">◈ Timeline 24h · <span id="tlTzName">Argentina</span></span>
+            <span class="tl-now">Ahora <strong id="tlNowTime">--:--</strong></span>
+          </div>
+          <div class="tl-track">
+            <div class="tl-hours">
+              <span>00</span><span>03</span><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span><span>21</span><span>24</span>
+            </div>
+            <div class="tl-bars" id="tlBars">
+              <div class="tl-now-line" id="tlNowLine" style="left:0%;"></div>
+            </div>
+          </div>
+          <div class="tl-legend">
+            <span><span class="tl-dot sydney"></span>Sydney</span>
+            <span><span class="tl-dot tokyo"></span>Tokyo</span>
+            <span><span class="tl-dot london"></span>London</span>
+            <span><span class="tl-dot newyork"></span>New York</span>
+            <span class="tl-overlap" id="tlOverlap">★ Overlap London–NY = máxima volatilidad</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container" style="display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center;">
+    <div style="font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 4px; font-size: 12px; background: linear-gradient(135deg, #ffe27a 0%, #d4a017 50%, #8b6508 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">
+      CHAD · INVERSOR
+    </div>
+    <div style="font-size: 11px; color: #8a8a8a; letter-spacing: 1px;">
+      © 2026 Chad Inversor · Todos los derechos reservados · Sesiones del Mercado
+    </div>
+    <div style="font-size: 10px; color: #6a6a6a; letter-spacing: 0.5px; max-width: 640px; line-height: 1.6; margin-top: 4px;">
+      El contenido de este sitio tiene fines educativos e informativos. No constituye asesoramiento financiero, legal ni fiscal. Invertir y operar en mercados financieros implica riesgos, incluyendo la pérdida total del capital. Hacé siempre tu propio análisis.
+    </div>
+  </div>
+</footer>
+
+<script>
+(function initSessions() {
+  const SESSIONS_UTC = {
+    sydney:  { start: 22, end: 7,  label: "Sydney"   },
+    tokyo:   { start: 0,  end: 9,  label: "Tokyo"    },
+    london:  { start: 8,  end: 17, label: "London"   },
+    newyork: { start: 13, end: 22, label: "New York" }
+  };
+
+  let selectedTz = -3;
+  let selectedName = "Argentina";
+
+  function mod24(h) { return ((h % 24) + 24) % 24; }
+  function getLocalHoursFromUTC(utcHour, tzOffset) { return mod24(utcHour + tzOffset); }
+  function getNowInTz(tzOffset) {
+    const now = new Date();
+    const utcDec = now.getUTCHours() + now.getUTCMinutes() / 60;
+    const local = mod24(utcDec + tzOffset);
+    const h = Math.floor(local);
+    const m = Math.floor((local - h) * 60);
+    return { decimal: local, hours: h, minutes: m };
+  }
+  function isActive(start, end, current) {
+    if (start < end) return current >= start && current < end;
+    return current >= start || current < end;
+  }
+  function fmt(h) { return String(h).padStart(2, "0") + ":00"; }
+
+  function renderSessionHours() {
+    document.querySelectorAll(".sesh-card").forEach(card => {
+      const key = card.getAttribute("data-session");
+      const s = SESSIONS_UTC[key];
+      const startLocal = getLocalHoursFromUTC(s.start, selectedTz);
+      const endLocal   = getLocalHoursFromUTC(s.end,   selectedTz);
+      const hoursEl = card.querySelector(".sesh-hours");
+      if (hoursEl) hoursEl.textContent = fmt(startLocal) + " — " + fmt(endLocal);
+      const zoneEl = card.querySelector(".sesh-zone");
+      if (zoneEl) zoneEl.textContent = "Hora " + selectedName;
+    });
+  }
+
+  function renderTimelineBars() {
+    const bars = document.getElementById("tlBars");
+    if (!bars) return;
+    bars.querySelectorAll(".tl-bar").forEach(b => b.remove());
+    Object.keys(SESSIONS_UTC).forEach(key => {
+      const s = SESSIONS_UTC[key];
+      const startLocal = getLocalHoursFromUTC(s.start, selectedTz);
+      const endLocal   = getLocalHoursFromUTC(s.end,   selectedTz);
+      const segments = [];
+      if (startLocal < endLocal) {
+        segments.push({ start: startLocal, width: endLocal - startLocal });
+      } else {
+        segments.push({ start: startLocal, width: 24 - startLocal });
+        segments.push({ start: 0,           width: endLocal });
+      }
+      segments.forEach(seg => {
+        if (seg.width <= 0) return;
+        const el = document.createElement("div");
+        el.className = "tl-bar " + key;
+        el.style.left  = (seg.start / 24 * 100) + "%";
+        el.style.width = (seg.width / 24 * 100) + "%";
+        bars.appendChild(el);
+      });
+    });
+  }
+
+  function updateLive() {
+    const now = getNowInTz(selectedTz);
+    const timeStr = String(now.hours).padStart(2, "0") + ":" + String(now.minutes).padStart(2, "0");
+    const tTime = document.getElementById("tlNowTime");
+    if (tTime) tTime.textContent = timeStr;
+    const tName = document.getElementById("tlTzName");
+    if (tName) tName.textContent = selectedName;
+
+    const line = document.getElementById("tlNowLine");
+    if (line) line.style.left = (now.decimal / 24 * 100) + "%";
+
+    const nowUtc = new Date();
+    const utcDec = nowUtc.getUTCHours() + nowUtc.getUTCMinutes() / 60;
+    const overlapAny = { london: false, newyork: false };
+    Object.keys(SESSIONS_UTC).forEach(key => {
+      const s = SESSIONS_UTC[key];
+      const active = isActive(s.start, s.end, utcDec);
+      const card = document.querySelector('.sesh-card[data-session="' + key + '"]');
+      if (card) {
+        card.classList.toggle("active", active);
+        const lbl = card.querySelector(".sesh-lbl");
+        if (lbl) lbl.textContent = active ? "Abierta" : "Cerrada";
+      }
+      const pin = document.querySelector('.city-pin[data-city="' + key + '"]');
+      if (pin) pin.classList.toggle("active", active);
+      if (key === "london" || key === "newyork") overlapAny[key] = active;
+    });
+
+    const overlapEl = document.getElementById("tlOverlap");
+    if (overlapEl) {
+      if (overlapAny.london && overlapAny.newyork) {
+        overlapEl.innerHTML = "★ OVERLAP LONDON–NY ACTIVO · máxima volatilidad";
+        overlapEl.style.color = "var(--gold-1)";
+      } else {
+        overlapEl.innerHTML = "★ Overlap London–NY = máxima volatilidad";
+        overlapEl.style.color = "";
+      }
+    }
+
+    // World map NOW line (UTC-based, viewBox width=900, Greenwich at x=450, 37.5px/hour)
+    const utcNow = utcDec;
+    let mapX = 450 + (utcNow * 37.5);
+    if (mapX > 900) mapX -= 900;
+    const nowLine = document.getElementById("nowLine");
+    const nowLabel = document.getElementById("nowLineLabel");
+    if (nowLine) { nowLine.setAttribute("x1", mapX); nowLine.setAttribute("x2", mapX); }
+    if (nowLabel) { nowLabel.setAttribute("x", mapX - 10); }
+
+    // Daylight band (12h wide, centered at solar noon)
+    const band = document.getElementById("daylightBand");
+    if (band) {
+      let dayStart = mapX - 225;
+      if (dayStart < 0) dayStart += 900;
+      if (dayStart > 450) dayStart -= 450;
+      band.setAttribute("x", dayStart);
+      band.setAttribute("width", 450);
+    }
+  }
+
+  function onTzChange(btn) {
+    document.querySelectorAll(".tz-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedTz = parseFloat(btn.getAttribute("data-tz"));
+    selectedName = btn.getAttribute("data-name");
+    renderSessionHours();
+    renderTimelineBars();
+    updateLive();
+  }
+
+  document.querySelectorAll("#tzSelector .tz-btn").forEach(btn => {
+    btn.addEventListener("click", () => onTzChange(btn));
+  });
+
+  renderSessionHours();
+  renderTimelineBars();
+  updateLive();
+  setInterval(updateLive, 60000);
+})();
+</script>
+
+</body>
+</html>

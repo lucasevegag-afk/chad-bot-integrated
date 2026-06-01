@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BIA · Home · Bias Global AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ════════════════════════════════════════════════════════════
+       DESIGN TOKENS · paleta y proporciones del mockup IA
+       ════════════════════════════════════════════════════════════ */
+    :root {
+      /* Backgrounds en capas (de más profundo a más cerca) */
+      --bg-deep:     #020711;   /* fondo página */
+      --bg-base:     #050b16;
+      --bg-navy:     #07111f;   /* navy card */
+      --bg-navy-2:   #0a1628;   /* navy card alt */
+      --bg-elev:     #0d1a2c;
+      --bg-hover:    #112135;
+
+      /* Líneas / bordes */
+      --line:        rgba(0, 229, 255, 0.10);
+      --line-2:      rgba(0, 229, 255, 0.20);
+      --line-3:      rgba(0, 229, 255, 0.40);
+
+      /* Texto */
+      --text:        #f4f8fb;
+      --text-soft:   #c8d2dd;
+      --muted:       #9aa8b8;
+      --muted-dim:   #6577899e;
+
+      /* Colores de marca */
+      --cyan:        #00e5ff;
+      --cyan-dim:    #00b8d4;
+      --cyan-glow:   rgba(0, 229, 255, 0.45);
+      --teal:        #00f5d4;
+      --teal-glow:   rgba(0, 245, 212, 0.40);
+      --emerald:     #10b981;
+      --emerald-glow:rgba(16, 185, 129, 0.40);
+      --rose:        #ff4d6d;
+      --rose-glow:   rgba(255, 77, 109, 0.40);
+      --gold:        #ffc857;
+      --amber:       #ffb74d;
+      --violet:      #8b7fff;     /* más sutil */
+      --indigo:      #5b6cff;
+
+      /* Sombras premium */
+      --shadow-sm:   0 2px 4px rgba(0, 0, 0, 0.6);
+      --shadow:      0 8px 24px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.40);
+      --shadow-lg:   0 24px 64px rgba(0, 0, 0, 0.65), 0 4px 12px rgba(0, 0, 0, 0.50);
+      --shadow-cyan: 0 0 40px var(--cyan-glow);
+      --inner-glow:  inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+      /* Radios */
+      --r-sm:        10px;
+      --r:           14px;
+      --r-lg:        20px;
+      --r-xl:        28px;
+
+      /* Transiciones */
+      --t-fast:      150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --t-base:      250ms cubic-bezier(0.4, 0, 0.2, 1);
+      --t-slow:      450ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background:
+        radial-gradient(ellipse 1400px 700px at 50% -200px, rgba(0, 229, 255, 0.12), transparent 50%),
+        radial-gradient(ellipse 900px 700px at 10% 40%, rgba(0, 184, 212, 0.05), transparent 50%),
+        radial-gradient(ellipse 900px 700px at 95% 90%, rgba(0, 245, 212, 0.04), transparent 50%),
+        var(--bg-deep);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+      opacity: 0.022;
+      pointer-events: none;
+      z-index: 0;
+      mix-blend-mode: overlay;
+    }
+
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Tipografía display */
+    .sora { font-family: 'Sora', 'Inter', sans-serif; }
+
+    /* Scrollbar custom */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0, 229, 255, 0.30); }
+
+    ::selection { background: rgba(0, 229, 255, 0.30); color: var(--text); }
+
+    *:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       LAYOUT — sidebar 240 / center fluido / right 360, gap 22
+       (center respira más, no parece dashboard admin)
+       ════════════════════════════════════════════════════════════ */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr 360px;
+      gap: 22px; padding: 22px;
+      max-width: 1640px; margin: 0 auto;
+      position: relative; z-index: 1;
+      animation: fadeIn 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (min-width: 1280px) {
+      .sidebar-left, .sidebar-right {
+        position: sticky; top: 22px;
+        height: fit-content; max-height: calc(100vh - 44px);
+        overflow-y: auto;
+      }
+    }
+    @media (max-width: 1280px) {
+      .dashboard-grid { grid-template-columns: 220px 1fr 340px; gap: 18px; }
+    }
+    @media (max-width: 1100px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .hero { grid-template-columns: 1fr !important; text-align: center; }
+      .mascot-wrap { order: -1; }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       SIDEBAR IZQUIERDO · más limpio, menos admin
+       ════════════════════════════════════════════════════════════ */
+    .sidebar-left {
+      display: flex; flex-direction: column;
+      min-height: calc(100vh - 44px);
+      padding: 6px 4px;
+    }
+
+    .logo-wrap { padding: 10px 10px 32px; }
+    .logo {
+      font-family: 'Sora', sans-serif;
+      font-size: 38px; font-weight: 800; letter-spacing: -2.5px;
+      background: linear-gradient(135deg, #00e5ff 0%, #00f5d4 70%, #66ff88 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 28px var(--cyan-glow));
+      line-height: 1;
+    }
+    .logo-sub {
+      font-family: 'Sora', sans-serif;
+      font-size: 9px; color: var(--cyan);
+      letter-spacing: 3px; font-weight: 600;
+      margin-top: 4px; opacity: 0.75;
+    }
+
+    .nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+    .nav a {
+      font-family: 'Sora', sans-serif;
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: var(--r);
+      color: var(--text-soft); font-weight: 500; font-size: 13.5px;
+      transition: all var(--t-fast);
+      position: relative;
+    }
+    .nav a:hover {
+      background: rgba(0, 229, 255, 0.04);
+      color: var(--text);
+    }
+    .nav a.active {
+      background: linear-gradient(90deg, rgba(0, 229, 255, 0.14), rgba(0, 229, 255, 0.03) 80%);
+      color: var(--cyan); font-weight: 600;
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 229, 255, 0.20),
+        0 0 24px rgba(0, 229, 255, 0.08);
+    }
+    .nav a.active::before {
+      content: ''; position: absolute;
+      left: 0; top: 50%; transform: translateY(-50%);
+      width: 3px; height: 20px;
+      background: linear-gradient(180deg, var(--cyan), var(--teal));
+      border-radius: 0 3px 3px 0;
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+    .nav a .ico { font-size: 16px; line-height: 1; width: 20px; text-align: center; }
+    .nav-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--line-2), transparent);
+      margin: 14px 14px;
+    }
+    .nav a.bot-link {
+      background: linear-gradient(90deg, rgba(255, 200, 87, 0.08), rgba(255, 183, 77, 0.02));
+      color: var(--gold); font-weight: 600;
+      border: 1px solid rgba(255, 200, 87, 0.18);
+    }
+    .nav a.bot-link:hover {
+      background: linear-gradient(90deg, rgba(255, 200, 87, 0.16), rgba(255, 183, 77, 0.06));
+      box-shadow: 0 0 24px rgba(255, 200, 87, 0.12);
+    }
+    .nav a.bot-link .arrow { margin-left: auto; opacity: 0.6; transition: transform var(--t-fast); }
+    .nav a.bot-link:hover .arrow { transform: translateX(2px); opacity: 1; }
+
+    /* BIA Pro card — más elegante, menos violeta saturado */
+    .pro-card {
+      margin-top: 18px; padding: 16px 16px 14px;
+      background:
+        radial-gradient(ellipse at top right, rgba(139, 127, 255, 0.16), transparent 60%),
+        linear-gradient(160deg, rgba(139, 127, 255, 0.06), rgba(91, 108, 255, 0.02));
+      border: 1px solid rgba(139, 127, 255, 0.20);
+      border-radius: var(--r-lg);
+      box-shadow: 0 4px 20px rgba(91, 108, 255, 0.06);
+      position: relative; overflow: hidden;
+    }
+    .pro-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px; font-weight: 700;
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .pro-title-spark {
+      animation: sparkle 2.5s ease-in-out infinite;
+      filter: drop-shadow(0 0 8px rgba(139, 127, 255, 0.50));
+    }
+    @keyframes sparkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.7; transform: scale(0.94); }
+    }
+    .pro-desc {
+      font-size: 11.5px; color: var(--text-soft);
+      line-height: 1.5; margin-bottom: 12px;
+    }
+    .pro-btn {
+      font-family: 'Sora', sans-serif;
+      width: 100%; padding: 10px 12px;
+      background: linear-gradient(135deg, #8b7fff, #5b6cff);
+      border-radius: var(--r);
+      color: #fff; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.3px;
+      transition: all var(--t-fast);
+      box-shadow: 0 4px 14px rgba(91, 108, 255, 0.22);
+    }
+    .pro-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(91, 108, 255, 0.36);
+    }
+
+    .market-status {
+      margin-top: 16px; padding: 11px 13px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 10.5px; color: var(--text-soft);
+      background: rgba(0, 245, 212, 0.04);
+      border: 1px solid rgba(0, 245, 212, 0.15);
+      border-radius: var(--r);
+    }
+    .market-dot-wrap { position: relative; width: 10px; height: 10px; }
+    .market-dot {
+      position: absolute; inset: 0;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 10px var(--teal-glow);
+    }
+    .market-dot-pulse {
+      position: absolute; inset: 0;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse-dot 2s ease-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    .market-status-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 600; color: var(--text); font-size: 11.5px;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       CENTER · respira más
+       ════════════════════════════════════════════════════════════ */
+    .center { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+
+    /* TOPBAR */
+    .topbar { display: flex; align-items: center; gap: 12px; }
+    .search-box {
+      flex: 1; display: flex; align-items: center; gap: 12px;
+      padding: 13px 20px;
+      background: var(--bg-navy);
+      border: 1px solid var(--line-2);
+      border-radius: 18px;
+      box-shadow: var(--inner-glow), 0 4px 12px rgba(0, 0, 0, 0.40);
+      transition: all var(--t-base);
+    }
+    .search-box:focus-within {
+      border-color: var(--line-3);
+      box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.10), var(--inner-glow);
+      background: var(--bg-navy-2);
+    }
+    .search-box .search-ico { color: var(--muted); font-size: 14px; opacity: 0.7; }
+    .search-box input {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--text); font-size: 13.5px; font-family: inherit;
+    }
+    .search-box input::placeholder { color: var(--muted); }
+    .search-box .send-btn {
+      width: 34px; height: 34px; border-radius: 12px;
+      background: linear-gradient(135deg, #00e5ff, #00b8d4);
+      color: #001a20;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px;
+      transition: all var(--t-fast);
+      box-shadow: 0 4px 14px rgba(0, 229, 255, 0.32);
+    }
+    .search-box .send-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 229, 255, 0.50);
+    }
+
+    .icon-btn {
+      width: 46px; height: 46px;
+      background: var(--bg-navy); border: 1px solid var(--line-2);
+      border-radius: 14px;
+      color: var(--text-soft);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      transition: all var(--t-fast);
+      font-size: 16px;
+      box-shadow: var(--inner-glow);
+    }
+    .icon-btn:hover {
+      background: var(--bg-navy-2);
+      border-color: var(--line-3);
+      color: var(--text);
+    }
+    .notif-dot {
+      position: absolute; top: 10px; right: 10px;
+      width: 9px; height: 9px;
+      background: var(--rose);
+      border-radius: 50%; border: 2px solid var(--bg-navy);
+      box-shadow: 0 0 8px var(--rose-glow);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       HERO · pieza dominante, cinematográfica
+       ════════════════════════════════════════════════════════════ */
+    .hero {
+      padding: 24px 32px;
+      min-height: 260px;
+      background:
+        radial-gradient(circle at 78% 45%, rgba(0, 229, 255, 0.16), transparent 34%),
+        linear-gradient(135deg, #07111f 0%, #08172b 55%, #04101d 100%);
+      border: 1px solid rgba(0, 229, 255, 0.18);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 24px 64px rgba(0, 0, 0, 0.60),
+        0 0 45px rgba(0, 229, 255, 0.06);
+    }
+    /* Texto a la izquierda — relative, encima del visual del robot */
+    .hero-content {
+      position: relative;
+      z-index: 5;
+      max-width: 62%;          /* más ancho para que el título no rompa en 5 líneas */
+    }
+    @media (max-width: 1100px) {
+      .hero-content { max-width: 100%; text-align: center; }
+    }
+    .hero-greet {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; color: var(--text-soft);
+      margin-bottom: 8px; font-weight: 500;
+      position: relative;
+      letter-spacing: -0.01em;
+    }
+    .hero-greet .wave {
+      display: inline-block;
+      animation: wave 2.5s ease-in-out infinite;
+      transform-origin: 70% 70%;
+    }
+    @keyframes wave {
+      0%, 60%, 100% { transform: rotate(0deg); }
+      10%, 30%      { transform: rotate(14deg); }
+      20%           { transform: rotate(-8deg); }
+      40%           { transform: rotate(14deg); }
+      50%           { transform: rotate(-4deg); }
+    }
+    .hero-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(18px, 2vw, 26px);
+      font-weight: 700; line-height: 1.15;
+      margin-bottom: 10px; letter-spacing: -0.8px;
+      position: relative;
+      color: var(--text);
+    }
+    .hero-title .bia-grad {
+      background: linear-gradient(135deg, #00e5ff 0%, #00f5d4 50%, #66ff88 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 32px rgba(0, 229, 255, 0.40));
+      font-weight: 800;
+    }
+    .hero-desc {
+      font-size: 12px; color: var(--text-soft);
+      line-height: 1.5; margin-bottom: 16px;
+      position: relative;
+      max-width: 420px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; position: relative; }
+    .btn-primary {
+      font-family: 'Sora', sans-serif;
+      padding: 9px 18px;
+      background: linear-gradient(135deg, #00e5ff 0%, #00b8d4 100%);
+      color: #001a20; font-size: 12px; font-weight: 700;
+      border-radius: 10px;
+      display: inline-flex; align-items: center; gap: 6px;
+      box-shadow:
+        0 6px 20px rgba(0, 229, 255, 0.28),
+        0 1px 0 rgba(255, 255, 255, 0.2) inset;
+      transition: all var(--t-fast);
+      letter-spacing: 0.1px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 14px 36px rgba(0, 229, 255, 0.42),
+        0 1px 0 rgba(255, 255, 255, 0.25) inset;
+    }
+    .btn-outline {
+      font-family: 'Sora', sans-serif;
+      padding: 9px 18px;
+      background: rgba(0, 229, 255, 0.03);
+      border: 1px solid var(--line-2);
+      color: var(--text); font-size: 12px; font-weight: 600;
+      border-radius: 10px;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: all var(--t-fast);
+      backdrop-filter: blur(8px);
+    }
+    .btn-outline:hover {
+      background: rgba(0, 229, 255, 0.08);
+      border-color: var(--line-3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 229, 255, 0.12);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       MASCOT · composición exacta del brief
+       Capas absolutas dentro del hero, NO contenedor con borde.
+       ════════════════════════════════════════════════════════════ */
+    .hero-visual {
+      position: absolute;
+      right: 0; top: 0;
+      width: 42%;              /* un poco más chico para dejar lugar al texto */
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-robot-glow {
+      position: absolute;
+      z-index: 1;
+      width: 250px; height: 250px;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      background:
+        radial-gradient(circle, rgba(0, 229, 255, 0.32) 0%, rgba(0, 229, 255, 0.13) 35%, transparent 68%);
+      filter: blur(7px);
+    }
+
+    .hero-robot-radar {
+      position: absolute;
+      z-index: 2;
+      width: 220px; height: 220px;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(0, 229, 255, 0.20);
+      border-radius: 50%;
+      background:
+        repeating-radial-gradient(circle, rgba(0, 229, 255, 0.16) 0 1px, transparent 1px 30px);
+      opacity: 0.80;
+    }
+
+    .hero-robot {
+      position: relative;
+      z-index: 3;
+      width: min(190px, 70%);
+      height: auto;
+      object-fit: contain;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      filter:
+        drop-shadow(0 0 14px rgba(0, 229, 255, 0.40))
+        drop-shadow(0 12px 24px rgba(0, 0, 0, 0.50));
+    }
+
+    .hero-robot-fade {
+      position: absolute;
+      z-index: 4;
+      inset: auto 0 0 0;
+      height: 20%;
+      background: linear-gradient(to top, rgba(4, 10, 20, 0.80), rgba(4, 10, 20, 0));
+      pointer-events: none;
+    }
+
+    /* En narrow: el visual pasa a flujo normal debajo del texto */
+    @media (max-width: 1100px) {
+      .hero-visual {
+        position: relative;
+        width: 100%;
+        height: 360px;
+        margin-top: 24px;
+      }
+      .hero-robot-glow,
+      .hero-robot-radar {
+        right: 50%;
+        transform: translateX(50%);
+      }
+      .hero-robot { width: min(280px, 70%); }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       SUGERENCIAS · chips premium
+       ════════════════════════════════════════════════════════════ */
+    .section-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px; color: var(--muted);
+      letter-spacing: 1.6px; font-weight: 600;
+      margin-bottom: 12px; text-transform: uppercase;
+    }
+    .suggestions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .suggestion-chip {
+      padding: 13px 16px;
+      background: var(--bg-navy);
+      border-radius: 14px;
+      color: var(--text);
+      font-size: 12px; text-align: left;
+      display: flex; align-items: center; gap: 10px;
+      border: 1px solid var(--line);
+      transition: all var(--t-fast);
+      position: relative; overflow: hidden;
+      box-shadow: var(--inner-glow);
+    }
+    .suggestion-chip:hover {
+      transform: translateY(-2px);
+      border-color: var(--chip-border, var(--line-2));
+      background: var(--bg-navy-2);
+      box-shadow: var(--inner-glow), 0 6px 18px rgba(0, 0, 0, 0.40), 0 0 24px var(--chip-shadow, transparent);
+    }
+    .suggestion-chip .chip-emoji {
+      font-size: 14px; line-height: 1;
+    }
+    .suggestion-chip .chip-text {
+      line-height: 1.35;
+    }
+    .suggestion-chip .chip-bold { font-weight: 700; }
+    .suggestion-chip .chip-light { color: var(--text-soft); font-weight: 500; }
+
+    /* ════════════════════════════════════════════════════════════
+       BIA PRO BANNER · más sutil con violeta tenue
+       ════════════════════════════════════════════════════════════ */
+    .pro-banner {
+      padding: 20px 24px;
+      background:
+        radial-gradient(ellipse 400px 200px at 12% 50%, rgba(139, 127, 255, 0.12), transparent 70%),
+        linear-gradient(135deg, var(--bg-navy), var(--bg-navy-2));
+      border: 1px solid rgba(139, 127, 255, 0.22);
+      border-radius: var(--r-lg);
+      display: flex; align-items: center; gap: 18px;
+      position: relative; overflow: hidden;
+      box-shadow: var(--inner-glow), 0 4px 24px rgba(0, 0, 0, 0.40);
+    }
+    .pro-banner-icon {
+      font-size: 32px;
+      filter: drop-shadow(0 4px 12px rgba(139, 127, 255, 0.40));
+    }
+    .pro-banner-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 15.5px; font-weight: 700; margin-bottom: 3px;
+    }
+    .pro-banner-desc { font-size: 12px; color: var(--text-soft); }
+    .pro-banner-btn {
+      font-family: 'Sora', sans-serif;
+      padding: 11px 20px;
+      background: rgba(139, 127, 255, 0.10);
+      border: 1px solid rgba(139, 127, 255, 0.40);
+      color: var(--violet); font-size: 12px; font-weight: 600;
+      border-radius: var(--r);
+      display: inline-flex; align-items: center; gap: 6px;
+      white-space: nowrap;
+      transition: all var(--t-fast);
+    }
+    .pro-banner-btn:hover {
+      background: rgba(139, 127, 255, 0.18);
+      border-color: var(--violet);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 18px rgba(139, 127, 255, 0.25);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       FEATURES GRID · profundidad y glow
+       ════════════════════════════════════════════════════════════ */
+    .features-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 19px; font-weight: 700;
+      margin-bottom: 14px; letter-spacing: -0.4px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .feature-card {
+      padding: 22px 20px;
+      background:
+        linear-gradient(160deg, var(--bg-navy) 0%, var(--bg-navy-2) 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      display: flex; flex-direction: column; gap: 10px;
+      position: relative; overflow: hidden;
+      transition: all var(--t-base);
+      cursor: pointer;
+      text-align: center;
+      align-items: center;
+      box-shadow: var(--inner-glow), 0 4px 16px rgba(0, 0, 0, 0.30);
+    }
+    .feature-card::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--card-accent, transparent);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform var(--t-base);
+      box-shadow: 0 0 12px var(--card-accent, transparent);
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--line-2);
+      box-shadow:
+        var(--inner-glow),
+        0 16px 40px rgba(0, 0, 0, 0.50),
+        0 0 32px var(--card-accent-faint, rgba(0, 229, 255, 0.08));
+    }
+    .feature-card:hover::after { transform: scaleX(0.8); }
+    .feature-deco {
+      position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+      width: 200px; height: 160px;
+      pointer-events: none;
+      opacity: 0.6;
+      transition: opacity var(--t-base);
+    }
+    .feature-card:hover .feature-deco { opacity: 1; }
+    .feature-icon {
+      font-size: 44px; position: relative; z-index: 1;
+      filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.40));
+      margin: 8px 0 4px;
+    }
+    .feature-badge {
+      position: absolute; top: -8px; right: -8px;
+      background: var(--rose); color: #fff;
+      font-size: 10px; font-weight: 800;
+      min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: 10px;
+      display: inline-flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px var(--rose-glow);
+    }
+    .feature-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 15px; font-weight: 700; letter-spacing: -0.3px;
+    }
+    .feature-desc {
+      font-size: 11.5px; color: var(--text-soft);
+      line-height: 1.55; flex: 1;
+      max-width: 220px;
+    }
+    .feature-cta {
+      font-family: 'Sora', sans-serif;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 11px; font-weight: 600;
+      border: 1px solid;
+      display: inline-flex; align-items: center; gap: 4px;
+      transition: all var(--t-fast);
+      margin-top: 6px;
+    }
+    .feature-cta:hover { transform: translateY(-1px); }
+
+    /* DISCLAIMER */
+    .disclaimer {
+      font-size: 10.5px; color: var(--muted);
+      text-align: center; padding: 18px 24px 8px;
+      border-top: 1px solid var(--line); margin-top: 14px;
+      line-height: 1.5;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       SIDEBAR DERECHO · premium
+       ════════════════════════════════════════════════════════════ */
+    .sidebar-right { display: flex; flex-direction: column; gap: 18px; }
+    .right-card {
+      padding: 20px;
+      background:
+        linear-gradient(160deg, var(--bg-navy) 0%, var(--bg-navy-2) 100%);
+      border: 1px solid var(--line-2);
+      border-radius: var(--r-lg);
+      box-shadow: var(--inner-glow), 0 8px 24px rgba(0, 0, 0, 0.50);
+    }
+    .right-card-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .right-card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 15px; font-weight: 700; letter-spacing: -0.3px;
+    }
+    .right-card-sub {
+      font-size: 10px; color: var(--muted);
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 8px var(--teal-glow);
+      animation: live-pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes live-pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.4; }
+    }
+    .ver-todas {
+      color: var(--cyan); font-size: 11px; font-weight: 600;
+      transition: all var(--t-fast);
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .ver-todas:hover { color: var(--teal); }
+
+    /* PULSE METRICS */
+    .pulse-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+    }
+    .pulse-cell {
+      padding: 12px;
+      background: rgba(2, 7, 17, 0.5);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      transition: all var(--t-fast);
+      position: relative; overflow: hidden;
+      backdrop-filter: blur(6px);
+    }
+    .pulse-cell::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: var(--pulse-color, transparent);
+      opacity: 0.5;
+    }
+    .pulse-cell:hover {
+      border-color: var(--line-2);
+      transform: translateY(-1px);
+    }
+    .pulse-label {
+      font-size: 9px; color: var(--muted);
+      letter-spacing: 0.3px; margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .pulse-value {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+    .pulse-spark { width: 100%; height: 22px; display: block; }
+
+    /* TOP OPORTUNIDADES */
+    .top-tabs {
+      display: flex; gap: 6px;
+      margin-bottom: 14px;
+      padding: 4px;
+      background: rgba(2, 7, 17, 0.6);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .top-tab {
+      font-family: 'Sora', sans-serif;
+      flex: 1;
+      padding: 8px 14px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 11.5px; font-weight: 600; letter-spacing: 0.5px;
+      transition: all var(--t-fast);
+    }
+    .top-tab:hover { color: var(--text-soft); }
+    .top-tab.active.long {
+      background: linear-gradient(135deg, rgba(0, 245, 212, 0.16), rgba(16, 185, 129, 0.10));
+      color: var(--teal);
+      box-shadow: inset 0 0 0 1px rgba(0, 245, 212, 0.30);
+    }
+    .top-tab.active.short {
+      background: linear-gradient(135deg, rgba(255, 77, 109, 0.16), rgba(244, 63, 94, 0.10));
+      color: var(--rose);
+      box-shadow: inset 0 0 0 1px rgba(255, 77, 109, 0.30);
+    }
+
+    .top-list { display: flex; flex-direction: column; gap: 4px; }
+    .top-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 9px 8px; border-radius: 10px;
+      transition: all var(--t-fast);
+      cursor: pointer;
+    }
+    .top-row:hover {
+      background: rgba(0, 229, 255, 0.04);
+      transform: translateX(2px);
+    }
+    .top-rank {
+      width: 18px; font-size: 11px; color: var(--muted);
+      font-weight: 700; text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .top-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: #fff;
+      border: 1px solid var(--line-2);
+      object-fit: contain; padding: 3px;
+      flex-shrink: 0;
+    }
+    .top-info { flex: 1; min-width: 0; }
+    .top-ticker {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .top-name {
+      font-size: 10.5px; color: var(--muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .top-score {
+      padding: 4px 11px;
+      border-radius: 8px;
+      font-size: 11.5px; font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.5px;
+    }
+    .top-score.long  { background: rgba(0, 245, 212, 0.14); color: var(--teal); }
+    .top-score.short { background: rgba(255, 77, 109, 0.14); color: var(--rose); }
+  </style>
+</head>
+<body>
+  <div class="dashboard-grid">
+
+    <!-- ═══════════ SIDEBAR IZQUIERDO ═══════════ -->
+    <aside class="sidebar-left">
+      <div class="logo-wrap">
+        <div class="logo">BIA</div>
+        <div class="logo-sub">BIAS GLOBAL AI</div>
+      </div>
+
+      <nav class="nav">
+        <a href="/home" class="active"><span class="ico">🏠</span> Inicio</a>
+        <a href="/indexbot_3.html"><span class="ico">📡</span> Radar Semanal</a>
+        <a href="/mapa-mercado"><span class="ico">🗺️</span> Mapa de Mercado</a>
+        <a href="/noticias"><span class="ico">📰</span> Noticias &amp; Alertas</a>
+        <a href="/oportunidades"><span class="ico">📈</span> Oportunidades</a>
+        <a href="/watchlist"><span class="ico">⭐</span> Watchlist</a>
+        <a href="/sesiones"><span class="ico">📅</span> Calendario</a>
+        <a href="/academy"><span class="ico">🎓</span> Academia</a>
+        <a href="/configuracion"><span class="ico">⚙️</span> Configuración</a>
+
+        <div class="nav-divider"></div>
+
+        <a href="/indexbot_3.html" class="bot-link">
+          <span class="ico">🤖</span> Bot Trading
+          <span class="arrow">→</span>
+        </a>
+      </nav>
+
+      <div class="pro-card">
+        <div class="pro-title">
+          <span class="pro-title-spark">✨</span>
+          BIA Pro
+        </div>
+        <div class="pro-desc">Desbloqueá todo el poder de BIA sin límites.</div>
+        <button class="pro-btn">Upgrade Now</button>
+      </div>
+
+      <div class="market-status">
+        <div class="market-dot-wrap">
+          <span class="market-dot"></span>
+          <span class="market-dot-pulse"></span>
+        </div>
+        <div>
+          <div class="market-status-title">Mercado Abierto</div>
+          <div>EEUU 09:30 AM</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════ CENTER ═══════════ -->
+    <main class="center">
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="search-box">
+          <span class="search-ico">🔍</span>
+          <input placeholder="Preguntale a BIA sobre acciones, mercados, noticias..." />
+          <button class="send-btn">→</button>
+        </div>
+        <button class="icon-btn" title="Notificaciones">
+          <span>🔔</span><span class="notif-dot"></span>
+        </button>
+        <button class="icon-btn" title="Perfil">👤</button>
+      </div>
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-content">
+          <div class="hero-greet">¡Bienvenido, Lucas! <span class="wave">👋</span></div>
+          <div class="hero-title">
+            Soy <span class="bia-grad">BIA</span>, tu asistente<br>inteligente de inversiones
+          </div>
+          <div class="hero-desc">
+            Estoy acá para ayudarte a entender el mercado,
+            detectar oportunidades y tomar mejores decisiones.
+          </div>
+          <div class="hero-actions">
+            <button class="btn-primary">✨ Preguntarle a BIA</button>
+            <button class="btn-outline">Ver oportunidades →</button>
+          </div>
+        </div>
+
+        <!-- Visual del robot · capas absolutas, sin contenedor con borde -->
+        <div class="hero-visual">
+          <div class="hero-robot-glow"></div>
+          <div class="hero-robot-radar"></div>
+          <img class="hero-robot" src="/img/bia-mascot-250.png" alt="BIA mascot" />
+          <div class="hero-robot-fade"></div>
+        </div>
+      </div>
+
+      <!-- SUGERENCIAS -->
+      <div>
+        <div class="section-label">Sugerencias rápidas</div>
+        <div class="suggestions-grid">
+          <button class="suggestion-chip" style="--chip-border: rgba(0, 245, 212, 0.30); --chip-shadow: rgba(0, 245, 212, 0.10);">
+            <span class="chip-emoji" style="color: var(--teal);">🟢</span>
+            <span class="chip-text"><span class="chip-bold" style="color: var(--teal);">5 acciones</span> <span class="chip-light">LONG esta semana</span></span>
+          </button>
+          <button class="suggestion-chip" style="--chip-border: rgba(255, 77, 109, 0.30); --chip-shadow: rgba(255, 77, 109, 0.10);">
+            <span class="chip-emoji">🔴</span>
+            <span class="chip-text"><span class="chip-bold" style="color: var(--rose);">5 acciones</span> <span class="chip-light">SHORT esta semana</span></span>
+          </button>
+          <button class="suggestion-chip" style="--chip-border: rgba(0, 229, 255, 0.25);">
+            <span class="chip-emoji">🔵</span>
+            <span class="chip-text"><span class="chip-bold" style="color: var(--cyan);">Noticias de</span> <span class="chip-light">alto impacto</span></span>
+          </button>
+          <button class="suggestion-chip" style="--chip-border: rgba(255, 200, 87, 0.25);">
+            <span class="chip-emoji">🟡</span>
+            <span class="chip-text"><span class="chip-bold" style="color: var(--gold);">¿Qué pasa con</span> <span class="chip-light">el oro hoy?</span></span>
+          </button>
+          <button class="suggestion-chip" style="--chip-border: rgba(139, 127, 255, 0.25);">
+            <span class="chip-emoji">🟣</span>
+            <span class="chip-text"><span class="chip-bold" style="color: var(--violet);">Radar de</span> <span class="chip-light">emergentes</span></span>
+          </button>
+          <button class="suggestion-chip" style="--chip-border: rgba(255, 183, 77, 0.25);">
+            <span class="chip-emoji">🟠</span>
+            <span class="chip-text"><span class="chip-bold" style="color: var(--amber);">Activos calientes</span> <span class="chip-light">de la semana</span></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- BIA PRO BANNER -->
+      <div class="pro-banner">
+        <div class="pro-banner-icon">🚀</div>
+        <div style="flex: 1;">
+          <div class="pro-banner-title">Potenciá tu experiencia con BIA Pro</div>
+          <div class="pro-banner-desc">Análisis ilimitados, alertas avanzadas, datos en tiempo real y mucho más.</div>
+        </div>
+        <button class="pro-banner-btn">✨ Conocer BIA Pro</button>
+      </div>
+
+      <!-- FEATURES GRID -->
+      <div>
+        <div class="features-title">Explorá todo lo que BIA tiene para vos</div>
+        <div class="features-grid">
+          <a href="/mapa-mercado" class="feature-card" style="--card-accent: var(--cyan); --card-accent-faint: rgba(0, 229, 255, 0.12);">
+            <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(0, 229, 255, 0.20), transparent 60%);"></div>
+            <div class="feature-icon">🗺️</div>
+            <div class="feature-title">Mapa de Mercado</div>
+            <div class="feature-desc">Visualizá el mercado en tiempo real por sectores y activos.</div>
+            <button class="feature-cta" style="color: var(--cyan); border-color: rgba(0, 229, 255, 0.35); background: rgba(0, 229, 255, 0.06);">Explorar →</button>
+          </a>
+          <a href="/indexbot_3.html" class="feature-card" style="--card-accent: var(--teal); --card-accent-faint: rgba(0, 245, 212, 0.12);">
+            <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(0, 245, 212, 0.20), transparent 60%);"></div>
+            <div class="feature-icon">📡</div>
+            <div class="feature-title">Radar Semanal</div>
+            <div class="feature-desc">5 acciones LONG y 5 SHORT seleccionadas por BIA cada semana.</div>
+            <button class="feature-cta" style="color: var(--teal); border-color: rgba(0, 245, 212, 0.35); background: rgba(0, 245, 212, 0.06);">Ver radar →</button>
+          </a>
+          <a href="/noticias" class="feature-card" style="--card-accent: var(--gold); --card-accent-faint: rgba(255, 200, 87, 0.12);">
+            <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(255, 200, 87, 0.20), transparent 60%);"></div>
+            <div class="feature-icon">🔔<span class="feature-badge">3</span></div>
+            <div class="feature-title">Noticias &amp; Alertas</div>
+            <div class="feature-desc">Filtradas por impacto, región, activo y sentimiento.</div>
+            <button class="feature-cta" style="color: var(--gold); border-color: rgba(255, 200, 87, 0.35); background: rgba(255, 200, 87, 0.06);">Ver noticias →</button>
+          </a>
+          <a href="/oportunidades" class="feature-card" style="--card-accent: var(--emerald); --card-accent-faint: rgba(16, 185, 129, 0.12);">
+            <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.20), transparent 60%);"></div>
+            <div class="feature-icon">📈</div>
+            <div class="feature-title">Oportunidades</div>
+            <div class="feature-desc">Accedé a todas las oportunidades detectadas por BIA.</div>
+            <button class="feature-cta" style="color: var(--emerald); border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.06);">Explorar →</button>
+          </a>
+          <a href="/watchlist" class="feature-card" style="--card-accent: var(--amber); --card-accent-faint: rgba(255, 183, 77, 0.12);">
+            <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(255, 183, 77, 0.20), transparent 60%);"></div>
+            <div class="feature-icon">⭐</div>
+            <div class="feature-title">Watchlist</div>
+            <div class="feature-desc">Seguí tus activos favoritos y recibí alertas inteligentes.</div>
+            <button class="feature-cta" style="color: var(--amber); border-color: rgba(255, 183, 77, 0.35); background: rgba(255, 183, 77, 0.06);">Ver watchlist →</button>
+          </a>
+          <a href="/academy" class="feature-card" style="--card-accent: var(--violet); --card-accent-faint: rgba(139, 127, 255, 0.12);">
+            <div class="feature-deco" style="background: radial-gradient(ellipse at center, rgba(139, 127, 255, 0.20), transparent 60%);"></div>
+            <div class="feature-icon">🎓</div>
+            <div class="feature-title">Academia BIA</div>
+            <div class="feature-desc">Aprendé con estrategias, guías y análisis educativos.</div>
+            <button class="feature-cta" style="color: var(--violet); border-color: rgba(139, 127, 255, 0.35); background: rgba(139, 127, 255, 0.06);">Explorar →</button>
+          </a>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        BIA no brinda asesoramiento financiero. La información es educativa y no constituye recomendación de compra o venta de activos.
+      </div>
+    </main>
+
+    <!-- ═══════════ SIDEBAR DERECHO ═══════════ -->
+    <aside class="sidebar-right">
+      <!-- PULSO DEL MERCADO -->
+      <div class="right-card">
+        <div class="right-card-head">
+          <div class="right-card-title">Pulso del Mercado</div>
+          <div class="right-card-sub">
+            <span class="live-dot"></span>
+            Hace 5 min
+          </div>
+        </div>
+        <div class="pulse-grid" id="pulse-grid"></div>
+      </div>
+
+      <!-- TOP OPORTUNIDADES -->
+      <div class="right-card">
+        <div class="right-card-head">
+          <div class="right-card-title">Top Oportunidades BIA</div>
+          <a href="#" class="ver-todas">Ver todas →</a>
+        </div>
+        <div class="top-tabs">
+          <button class="top-tab long active" onclick="switchTab('long')">LONG</button>
+          <button class="top-tab short" onclick="switchTab('short')">SHORT</button>
+        </div>
+        <div class="top-list" id="top-list"></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <script>
+    // ════════════ DATA MOCK ════════════
+    const PULSE = [
+      { label: 'Riesgo Global',     value: 'Medio',           color: '#ffc857', dir: 'flat' },
+      { label: 'Momentum',          value: 'Mixto',           color: '#00b8d4', dir: 'flat' },
+      { label: 'Volatilidad (VIX)', value: 'Alta',            color: '#ff4d6d', dir: 'down' },
+      { label: 'Dólar (DXY)',       value: 'Fuerte',          color: '#00f5d4', dir: 'up' },
+      { label: 'Oro (XAU/USD)',     value: 'En zona clave',   color: '#ffc857', dir: 'flat' },
+      { label: 'Bitcoin (BTC)',     value: 'En recuperación', color: '#00f5d4', dir: 'up' },
+    ];
+
+    const TOP_DATA = {
+      long: [
+        { rank: 1, ticker: 'NVDA', name: 'Nvidia Corporation',   score: 84 },
+        { rank: 2, ticker: 'MELI', name: 'MercadoLibre',          score: 78 },
+        { rank: 3, ticker: 'OXY',  name: 'Occidental Petroleum',  score: 76 },
+        { rank: 4, ticker: 'TSLA', name: 'Tesla Inc.',            score: 73 },
+        { rank: 5, ticker: 'BABA', name: 'Alibaba Group',         score: 71 },
+      ],
+      short: [
+        { rank: 1, ticker: 'INTC', name: 'Intel Corporation',     score: 79 },
+        { rank: 2, ticker: 'F',    name: 'Ford Motor Company',    score: 74 },
+        { rank: 3, ticker: 'ARKK', name: 'ARK Innovation ETF',    score: 71 },
+        { rank: 4, ticker: 'KWEB', name: 'KraneShares China Net', score: 70 },
+        { rank: 5, ticker: 'PFE',  name: 'Pfizer Inc.',           score: 68 },
+      ]
+    };
+
+    function genSparklinePath(seed, dir) {
+      const pts = []; const pts_full = [];
+      let v = 14;
+      for (let i = 0; i <= 12; i++) {
+        const noise = (Math.sin(seed * 31 + i * 7) + 1) * 2.5;
+        const trend = dir === 'down' ? 0.4 * i : dir === 'up' ? -0.4 * i : 0;
+        v = Math.max(3, Math.min(19, 12 + noise + trend));
+        const x = (i / 12) * 100;
+        pts.push(`${x},${v.toFixed(1)}`);
+        pts_full.push(`${x},${v.toFixed(1)}`);
+      }
+      pts_full.unshift('0,24'); pts_full.push('100,24');
+      return { line: pts.join(' '), area: pts_full.join(' ') };
+    }
+
+    function renderPulse() {
+      const grid = document.getElementById('pulse-grid');
+      grid.innerHTML = PULSE.map((m, i) => {
+        const { line, area } = genSparklinePath(i, m.dir);
+        const gradId = `grad-${i}`;
+        return `
+          <div class="pulse-cell" style="--pulse-color: ${m.color};">
+            <div class="pulse-label">${m.label}</div>
+            <div class="pulse-value" style="color: ${m.color};">${m.value}</div>
+            <svg class="pulse-spark" viewBox="0 0 100 24" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="${gradId}" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="${m.color}" stop-opacity="0.35" />
+                  <stop offset="100%" stop-color="${m.color}" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <polyline points="${area}" fill="url(#${gradId})" stroke="none" />
+              <polyline points="${line}" stroke="${m.color}" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+        `;
+      }).join('');
+    }
+
+    let currentTab = 'long';
+    function renderTop() {
+      const list = document.getElementById('top-list');
+      const data = TOP_DATA[currentTab];
+      list.innerHTML = data.map(t => `
+        <div class="top-row">
+          <span class="top-rank">${t.rank}</span>
+          <img class="top-logo" src="https://assets.parqet.com/logos/symbol/${t.ticker}?format=png&size=64"
+               onerror="this.outerHTML='<div class=&quot;top-logo&quot; style=&quot;background:#0d1a2c;color:var(--cyan);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;border-color:var(--line-2);&quot;>${t.ticker.slice(0,4)}</div>';"
+               alt="${t.ticker}" />
+          <div class="top-info">
+            <div class="top-ticker">${t.ticker}</div>
+            <div class="top-name">${t.name}</div>
+          </div>
+          <div class="top-score ${currentTab}">${t.score}</div>
+        </div>
+      `).join('');
+    }
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`.top-tab.${tab}`).classList.add('active');
+      renderTop();
+    }
+
+    renderPulse();
+    renderTop();
+
+    document.querySelectorAll('.top-score').forEach(el => {
+      const target = parseInt(el.textContent);
+      let current = 0;
+      const step = () => {
+        current += Math.ceil((target - current) / 6);
+        el.textContent = current;
+        if (current < target) requestAnimationFrame(step);
+        else el.textContent = target;
+      };
+      step();
+    });
+  </script>
+</body>
+</html>
