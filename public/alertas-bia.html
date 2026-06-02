@@ -352,9 +352,9 @@
         <div class="filter-group">
           <span class="filter-label">Tipo</span>
           <button class="filter-chip active" data-filter="type" data-value="all">Todos</button>
-          <button class="filter-chip" data-filter="type" data-value="signal">📈 Señales</button>
           <button class="filter-chip" data-filter="type" data-value="breakout">⚡ Breakouts</button>
-          <button class="filter-chip" data-filter="type" data-value="macro">📅 Macro</button>
+          <button class="filter-chip" data-filter="type" data-value="fakeout">🪤 Fakeouts</button>
+          <button class="filter-chip" data-filter="type" data-value="volatility">📊 Volatilidad</button>
         </div>
         <div class="filter-group">
           <span class="filter-label">Activo</span>
@@ -392,12 +392,9 @@
     /* ════════════════════════════════════════════════════════════
        Alertas Trading · fetch a Supabase + traducción ES
        ════════════════════════════════════════════════════════════ */
-    const API_BASE = (() => {
-      const h = window.location.hostname;
-      return (h === 'localhost' || h === '127.0.0.1')
-        ? 'http://localhost:3000'
-        : 'https://chad-alerts-mobile.vercel.app';
-    })();
+    // API Next.js (CORS habilitado). Si corrés local sin Next en :3000
+    // igual usamos Vercel para no romper la traducción.
+    const API_BASE = 'https://chad-alerts-mobile.vercel.app';
 
     const SUPABASE_URL = 'https://bcglsyrcchecybqqepnz.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_wwOYfsMx6ftLBHlfA6wA7w_cCSR9BNX';
@@ -411,14 +408,42 @@
       alerts: [],
     };
 
-    /* Maps */
-    const ASSET_DISPLAY = {
-      BTCUSDT: { gradient: 'linear-gradient(135deg, #F7931A 0%, #6b3a08 100%)', label: '₿' },
-      XAUUSD:  { gradient: 'linear-gradient(135deg, #FFE55C 0%, #8B6914 100%)', label: 'Au' },
-      EURUSD:  { gradient: 'linear-gradient(135deg, #003399 0%, #b22234 100%)', label: '€$' },
-      USOIL:   { gradient: 'linear-gradient(135deg, #4B5563 0%, #000 100%)', label: '●' },
-      NAS100:  { gradient: 'linear-gradient(135deg, #3b82f6 0%, #1e1b4b 100%)', label: 'NDX' },
+    /* ─── Logos TradingView CDN ───
+       TV mantiene SVGs en s3-symbol-logo.tradingview.com.
+       Para forex usamos las banderas país; para crypto los XTVC*;
+       commodities/indices usan paths propios. */
+    const TV_LOGO = {
+      BTCUSDT: 'https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC.svg',
+      ETHUSDT: 'https://s3-symbol-logo.tradingview.com/crypto/XTVCETH.svg',
+      SOLUSDT: 'https://s3-symbol-logo.tradingview.com/crypto/XTVCSOL.svg',
+      XAUUSD:  'https://s3-symbol-logo.tradingview.com/metal/gold.svg',
+      XAGUSD:  'https://s3-symbol-logo.tradingview.com/metal/silver.svg',
+      USOIL:   'https://s3-symbol-logo.tradingview.com/indices/wti.svg',
+      UKOIL:   'https://s3-symbol-logo.tradingview.com/indices/brent.svg',
+      EURUSD:  'https://s3-symbol-logo.tradingview.com/country/EU.svg',
+      GBPUSD:  'https://s3-symbol-logo.tradingview.com/country/GB.svg',
+      USDJPY:  'https://s3-symbol-logo.tradingview.com/country/JP.svg',
+      USDCHF:  'https://s3-symbol-logo.tradingview.com/country/CH.svg',
+      AUDUSD:  'https://s3-symbol-logo.tradingview.com/country/AU.svg',
+      USDCAD:  'https://s3-symbol-logo.tradingview.com/country/CA.svg',
+      DXY:     'https://s3-symbol-logo.tradingview.com/country/US.svg',
+      NAS100:  'https://s3-symbol-logo.tradingview.com/indices/nasdaq-100.svg',
+      SPX500:  'https://s3-symbol-logo.tradingview.com/indices/s-and-p-500.svg',
+      US30:    'https://s3-symbol-logo.tradingview.com/indices/dow-30.svg',
+      GER40:   'https://s3-symbol-logo.tradingview.com/indices/dax.svg',
     };
+
+    /* Tipos válidos de análisis técnico — todo lo demás se descarta */
+    const TA_TYPES = new Set([
+      'signal', 'buy', 'sell',
+      'breakout', 'fakeout', 'volatility',
+      'macro', 'macro_event', 'level_break', 'pullback',
+      'support', 'resistance', 'trend', 'reversal',
+      'rsi', 'macd', 'divergence', 'pattern',
+    ]);
+
+    /* Set de activos TA conocidos (filtro extra) */
+    const TA_ASSETS = new Set(Object.keys(TV_LOGO));
 
     function escapeHtml(s) {
       return String(s || '').replace(/[&<>"']/g, c =>
@@ -467,13 +492,38 @@
       }[category] || 'SEÑAL';
     }
 
+    /* Traducción no-bloqueante: si falla, mostramos en inglés y listo */
+    async function translatePending(pending, cache) {
+      try {
+        const trRes = await fetch(`${API_BASE}/api/translate-news`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ items: pending.map(a => ({ id: a.id, title: a.narrative, body: '' })) }),
+        });
+        if (!trRes.ok) return false;
+        const { translations } = await trRes.json();
+        if (translations) {
+          Object.assign(cache, translations);
+          saveCache(TR_CACHE, cache);
+          return true;
+        }
+        return false;
+      } catch (e) {
+        console.warn('Traducción no disponible:', e.message);
+        return false;
+      }
+    }
+
     /* ═════════ Fetch ═════════ */
     async function loadAlerts() {
       setBanner('loading', 'Cargando alertas del bot…');
       try {
+        // SOLO análisis técnico real generado por el bot:
+        // breakout, fakeout, volatility. Excluímos news y macro_event
+        // (que son narrativas de noticias económicas, no señales).
         const params = new URLSearchParams({
           select: '*',
-          alert_type: 'not.eq.news',  // Excluir alertas tipo "news"
+          alert_type: 'in.(breakout,fakeout,volatility)',
           order: 'created_at.desc',
           limit: '60',
         });
@@ -485,42 +535,27 @@
         state.alerts = await res.json();
         render();
 
-        // Traducir narrativas pendientes
+        setBanner(null);
+
+        // Traducción en background (no bloquea, no rompe)
         const cache = loadCache(TR_CACHE);
         const pending = state.alerts.filter(a => !cache[a.id] && a.narrative);
-        if (pending.length === 0) {
+        if (pending.length > 0) {
+          setBanner('loading', `Traduciendo ${pending.length} alertas…`);
+          const ok = await translatePending(pending, cache);
           setBanner(null);
-          return;
+          if (ok) render();
         }
-        setBanner('loading', `Traduciendo ${pending.length} alertas…`);
-        const trRes = await fetch(`${API_BASE}/api/translate-news`, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ items: pending.map(a => ({ id: a.id, title: a.narrative, body: '' })) }),
-        });
-        if (trRes.ok) {
-          const { translations } = await trRes.json();
-          if (translations) {
-            Object.assign(cache, translations);
-            saveCache(TR_CACHE, cache);
-          }
-        }
-        setBanner(null);
-        render();
       } catch (e) {
         console.error(e);
-        setBanner('error', `⚠️ Error: ${e.message}`);
+        setBanner('error', `⚠️ Error cargando alertas: ${e.message}`);
       }
     }
 
     /* ═════════ Filtros ═════════ */
     function matchesType(a, type) {
       if (type === 'all') return true;
-      const cat = getTypeCategory(a);
-      if (type === 'signal') return ['signal', 'buy', 'sell'].includes(cat);
-      if (type === 'breakout') return ['breakout', 'fakeout', 'volatility'].includes(cat);
-      if (type === 'macro') return cat === 'macro';
-      return false;
+      return getTypeCategory(a) === type;
     }
 
     function applyFilters(items) {
@@ -559,16 +594,18 @@
       const level = (a.level || 'low').toLowerCase();
       const type = getTypeCategory(a);
       const typeLabel = getTypeLabel(type);
-      const symbol = a.asset_symbol || '';
-      const isStock = /^[A-Z]{1,5}$/.test(symbol) && !ASSET_DISPLAY[symbol];
+      const symbol = (a.asset_symbol || '').toUpperCase();
+      const tvLogo = TV_LOGO[symbol];
+      // Para stocks plain (AAPL, TSLA…) intentamos TradingView via NASDAQ/NYSE
+      const isStock = !tvLogo && /^[A-Z]{1,5}$/.test(symbol);
 
-      const logoHtml = isStock
-        ? `<img class="alert-logo" src="https://assets.parqet.com/logos/symbol/${symbol}?format=png&size=128"
+      const logoHtml = tvLogo
+        ? `<img class="alert-logo" src="${tvLogo}"
                 onerror="this.outerHTML='<div class=&quot;alert-logo fallback&quot;>${symbol.slice(0,4)}</div>';" />`
-        : (() => {
-            const d = ASSET_DISPLAY[symbol] || { gradient: 'var(--bg-elev)', label: symbol.slice(0, 3) };
-            return `<div class="alert-logo" style="background: ${d.gradient}; display:flex; align-items:center; justify-content:center; color: #fff; font-weight:800; font-size:${d.label.length > 2 ? '14px' : '24px'}; padding: 0; letter-spacing:-0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.4);">${d.label}</div>`;
-          })();
+        : isStock
+          ? `<img class="alert-logo" src="https://s3-symbol-logo.tradingview.com/${symbol.toLowerCase()}.svg"
+                  onerror="this.onerror=null;this.src='https://assets.parqet.com/logos/symbol/${symbol}?format=png&size=128';this.addEventListener('error',()=>{this.outerHTML='<div class=&quot;alert-logo fallback&quot;>${symbol.slice(0,4)}</div>';},{once:true});" />`
+          : `<div class="alert-logo fallback">${symbol.slice(0,4) || '??'}</div>`;
 
       return `
         <div class="alert-card ${level}">

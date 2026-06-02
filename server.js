@@ -29,6 +29,7 @@ const { manager: marketData } = require('./server/marketData/marketDataManager')
 const { assetScanner } = require('./server/bot/scanner/assetScanner');
 const { wsServer } = require('./server/websocket/websocketServer');
 const newsFetcher = require('./server/services/news/news-fetcher');
+const signalAlertBridge = require('./server/services/signalAlertBridge');
 
 const log = createLogger('boot');
 const app = express();
@@ -110,6 +111,10 @@ async function main() {
 
   // 3) Arranca el scanner con los activos definidos por env.
   await assetScanner.start(env.SCANNER_ASSETS);
+
+  // 3.1) Bridge: replica señales internas del bot a Supabase (tabla alerts)
+  //      para que aparezcan en el feed de Alertas Trading del dashboard.
+  signalAlertBridge.start();
 
   // 3.5) Arranca el fetcher de noticias + calendario macro.
   newsFetcher.start();

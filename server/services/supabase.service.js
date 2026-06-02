@@ -60,6 +60,12 @@ const TYPE_MAP = {
   SELL:            'breakout',
   WATCH_LONG:      'volatility',
   WATCH_SHORT:     'volatility',
+  // Engines (signalManager) — setups confirmados S1/S2, divergencias D1/D2
+  S1:              'breakout',
+  S2:              'breakout',
+  D1:              'fakeout',
+  D2:              'fakeout',
+  EXIT:            'volatility',
   // Test
   TEST:            'volatility',
 };
