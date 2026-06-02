@@ -200,6 +200,101 @@ const STRATEGIES = [
       idealFor: 'Trader que quiere MEJOR profit que PA1 pero mejor psicología que J3. Punto medio óptimo.',
     },
   },
+
+  // ═══════════════════════════════════════════════════════════════
+  // EUR/USD strategies
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'P1-EUR',
+    name: 'P1 alto winrate · EUR',
+    asset: 'EURUSD',
+    badge: '🎯 Especialidad EUR',
+    tagline: '68% winrate. En EUR/USD el setup de killzones funciona MEJOR en out-of-sample.',
+    config: {
+      S1_BAD_SESSIONS: 'NY_PM',
+      S1_BAD_DOWS: '1',
+      S1_KILLZONES: '7,8,9,12,13,14',
+      S1_SL_MULT: '1',
+      S1_TP_MULT: '0.5',
+    },
+    metrics: {
+      winRate_IS: 67.5,
+      winRate_OS: 68.2,
+      avgR_IS: 0.013,
+      avgR_OS: 0.022,
+      totalR_5y: 46.5,
+      maxDD_R: 26.0,
+      maxStreakLosses: 7,
+      decay_pct: 69.2,   // ¡decay POSITIVO! mejoró en OOS
+      trades_5y: 2004,
+    },
+    robustness: 'alta',
+    explanation: {
+      summary: 'En EUR/USD el setup P1 mostró comportamiento opuesto al de XAU/USD: el edge MEJORÓ en out-of-sample (+69% decay positivo). El setup encaja mejor con la microestructura FX que con commodities.',
+      how: 'Mismas killzones London + NY (7-9, 12-14 UTC). SL×1 ATR, TP×0.5 ATR (1:0.5 R/R). Sin lunes, sin NY_PM.',
+      pros: [
+        '✅ 68.2% winrate en OOS (subió 0.7pp vs train)',
+        '✅ Decay POSITIVO +69% (mejoró en data nueva)',
+        'DD máximo 26R (manejable)',
+        'Max streak losses solo 7 (psicológicamente cómoda)',
+        'Coherente con metodología ICT institucional',
+      ],
+      cons: [
+        'Profit total bajo: +46R en 5 años (vs +158 de PA1)',
+        'AvgR/trade chiquito (+0.022R) — requiere muchos trades para compounding',
+        'Sensible al spread del broker (TP cercano)',
+      ],
+      idealFor: 'Trader FX que opera EUR/USD spec con cuenta chica y bajo spread. Sentirse cómodo ganando seguido.',
+    },
+  },
+
+  {
+    id: 'PA1-EUR',
+    name: 'PA1 partial-profit · EUR (GENÉRICA)',
+    asset: 'EURUSD',
+    badge: '⭐ Universal & robusta',
+    tagline: '59% winrate idéntico al de XAU. La única estrategia que transfiere bien entre activos.',
+    config: {
+      S1_BAD_SESSIONS: 'NY_PM',
+      S1_BAD_HOURS: '10,15,18',
+      S1_BAD_DOWS: '1',
+      S1_SL_MULT: '0.7',
+      S1_TP_MULT: '2.5',
+      S1_PARTIAL_TP_MULT: '0.5',
+      S1_PARTIAL_FRACTION: '0.5',
+      S1_BE_AFTER_PARTIAL: '1',
+    },
+    metrics: {
+      winRate_IS: 58.8,
+      winRate_OS: 59.5,
+      avgR_IS: 0.054,
+      avgR_OS: 0.048,
+      totalR_5y: 158.2,
+      maxDD_R: 36.8,
+      maxStreakLosses: 8,
+      decay_pct: -11.1,
+      trades_5y: 2495,
+    },
+    robustness: 'alta',
+    explanation: {
+      summary: 'La estrategia "universal" — funciona prácticamente igual en XAU/USD y EUR/USD. La validación cruzada en dos activos distintos confirma que el edge es real y robusto, no overfit al gold.',
+      how: 'Mismos filtros J3 (sin NY_PM, sin Mon, sin horas 10/15/18). SL×0.7, TP final ×2.5. Partial: cierra 50% del trade en +0.5×ATR y mueve SL a breakeven.',
+      pros: [
+        '⭐ Edge TRANSFIERE entre activos (XAU + EUR similar)',
+        '✅ 59.5% winrate OOS prácticamente idéntico al IS',
+        '✅ Decay solo -11.1% (robusta)',
+        'Profit total +158R en 5 años EUR (vs +252R XAU — buen scale)',
+        'Mecanismo partial-profit reduce DD significativamente',
+        'Streak max losses solo 8',
+      ],
+      cons: [
+        'DD máximo 36.8R (más alto que P1-EUR)',
+        'Implementación compleja (broker debe soportar partial close)',
+        'Trades de larga duración (esperar TP×2.5)',
+      ],
+      idealFor: 'RECOMENDACIÓN PRINCIPAL para EUR/USD. Trader que busca consistencia y robustez verificada en multi-asset.',
+    },
+  },
 ];
 
 // ─────────────────────────────────────────

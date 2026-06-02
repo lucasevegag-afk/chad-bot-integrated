@@ -500,7 +500,7 @@
           <img src="https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC.svg" alt="" />
           BTC/USD
         </button>
-        <button class="asset-chip coming-soon" data-asset="EURUSD">
+        <button class="asset-chip" data-asset="EURUSD">
           <img src="https://s3-symbol-logo.tradingview.com/country/EU.svg" alt="" />
           EUR/USD
         </button>
@@ -703,6 +703,8 @@
         chip.classList.add('active');
         currentAsset = chip.dataset.asset;
         loadAssetData(currentAsset);
+        loadStrategies();         // ⭐ recargar estrategias del activo
+        tvLoaded = false;          // forzar refresh del chart al volver al tab
       });
     });
 
@@ -722,6 +724,8 @@
       if (tvLoaded) return;
       tvLoaded = true;
       const symbol = TV_SYMBOLS[currentAsset] || TV_SYMBOLS.XAUUSD;
+      const tvCnt = document.getElementById('tv-chart');
+      if (tvCnt) tvCnt.innerHTML = '';   // limpio si cambiamos de activo
       const cnt = document.createElement('div');
       cnt.className = 'tradingview-widget-container';
       cnt.style.height = '100%';
@@ -978,7 +982,7 @@
     async function loadStrategies() {
       const cnt = document.getElementById('strat-grid');
       try {
-        const r = await fetch('/api/strategies?asset=XAUUSD');
+        const r = await fetch('/api/strategies?asset=' + currentAsset);
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const data = await r.json();
         stratState = { active: data.active, list: data.strategies };
