@@ -20,11 +20,13 @@ const { botStateStore } = require('../botStateStore');
 const { signalManager } = require('../signalManager');
 const { createLogger } = require('../../utils/logger');
 
-const biasEngine = require('../engines/biasEngine');
-const sessionFlow = require('../engines/sessionFlowEngine');
-const nyManip = require('../engines/nyManipulationEngine');
-const sweepReclaim = require('../engines/sweepReclaimEngine');
+// Engines individuales: el scanner solo los usa para alimentar botStateStore
+// (UI muestra bias/session/lateralization). La señal real vive en s1Strategy.
+const biasEngine     = require('../engines/biasEngine');
+const sessionFlow    = require('../engines/sessionFlowEngine');
+const nyManip        = require('../engines/nyManipulationEngine');
 const lateralization = require('../engines/lateralizationEngine');
+const s1Strategy     = require('../strategies/s1Strategy');
 
 const log = createLogger('scanner');
 
@@ -105,10 +107,11 @@ class AssetScanner {
     // No vale la pena scanear si todavía no hay datos.
     if ((candlesByTf['5m'] || []).length < 30) return;
 
+    // Evaluar engines individuales para alimentar botStateStore (UI).
+    // La emisión de señal vive en s1Strategy (mismo módulo que usa el backtest).
     const bias    = biasEngine.evaluate({ symbol, candlesByTf });
     const session = sessionFlow.evaluate({ symbol });
     const ny      = nyManip.evaluate({ symbol, candlesByTf });
-    const sweep   = sweepReclaim.evaluate({ symbol, candlesByTf, timeframe: '5m' });
     const lat     = lateralization.evaluate({ symbol, candlesByTf, timeframe: '5m' });
 
     botStateStore.updateBotState(symbol, {
@@ -120,27 +123,18 @@ class AssetScanner {
       isLateralizing: lat.isLateralizing,
     });
 
-    // Composición simple: si hay sweep + reclaim + bias alineado + sesión operable
-    // → emitimos señal preliminar. La lógica fina (S1/S2/D1/D2) se llenará después.
-    if (
-      session.tradeable &&
-      !lat.isLateralizing &&
-      sweep.sweepDetected && sweep.reclaimed
-    ) {
-      const dir =
-        sweep.sweepSide === 'low'  ? 'long'  :
-        sweep.sweepSide === 'high' ? 'short' : null;
-      if (dir && (bias.tacticalBias === dir.toUpperCase() || bias.tacticalBias === 'NEUTRAL')) {
-        signalManager.submit({
-          asset: symbol,
-          timeframe: '5m',
-          type: 'S1',
-          direction: dir,
-          level: 3,
-          score: sweep.score + (ny.score || 0),
-          notes: `Sweep ${sweep.sweepSide} + reclaim. Sesión ${session.sessionState}.`,
-        });
-      }
+    // ─── Estrategia S1: lógica unificada live + backtest ───
+    const signal = s1Strategy.evaluate({ symbol, candlesByTf });
+    if (signal) {
+      signalManager.submit({
+        asset: symbol,
+        timeframe: signal.timeframe,
+        type: signal.type,
+        direction: signal.direction,
+        level: signal.level,
+        score: signal.score,
+        notes: signal.notes,
+      });
     }
   }
 

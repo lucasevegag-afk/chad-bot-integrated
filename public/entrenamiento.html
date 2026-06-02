@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrenamiento IA · BIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/bia-shell.css" />
+  <style>
+    /* ═══════════ ENTRENAMIENTO · estilos ═══════════ */
+
+    /* Selector de activo arriba */
+    .asset-selector {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      padding: 14px 18px;
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      margin-bottom: 14px;
+    }
+    .asset-selector-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; color: var(--muted);
+      letter-spacing: 1.4px; font-weight: 600;
+      text-transform: uppercase;
+      align-self: center;
+    }
+    .asset-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 12px; font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all var(--t-fast);
+    }
+    .asset-chip img { width: 18px; height: 18px; border-radius: 50%; background: #fff; padding: 1px; }
+    .asset-chip:hover { color: var(--text-soft); border-color: var(--line-2); }
+    .asset-chip.active {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.18), rgba(0, 184, 212, 0.06));
+      color: var(--cyan);
+      border-color: rgba(0, 229, 255, 0.45);
+      box-shadow: 0 0 0 1px rgba(0,229,255,0.10);
+    }
+    .asset-chip.coming-soon { opacity: 0.4; cursor: not-allowed; }
+    .asset-chip.coming-soon::after {
+      content: 'soon'; font-size: 8px; font-weight: 800;
+      padding: 1px 5px; border-radius: 5px;
+      background: rgba(154,168,184,0.18); color: var(--muted);
+      margin-left: 4px;
+    }
+
+    /* Tabs */
+    .train-tabs {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding: 8px 8px;
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      margin-bottom: 14px;
+    }
+    .train-tab {
+      padding: 9px 18px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 12px; font-weight: 600;
+      color: var(--muted);
+      transition: all var(--t-fast);
+      cursor: pointer;
+    }
+    .train-tab:hover { color: var(--text-soft); background: rgba(255,255,255,0.02); }
+    .train-tab.active {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(0, 184, 212, 0.05));
+      color: var(--cyan);
+      border-color: rgba(0, 229, 255, 0.40);
+    }
+
+    /* Tab content */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ─── OVERVIEW ─── */
+    .overview-grid {
+      display: grid; gap: 14px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width: 1100px) { .overview-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .stat-tile {
+      padding: 18px 20px;
+      background: linear-gradient(160deg, var(--bg-navy) 0%, var(--bg-navy-2) 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      position: relative; overflow: hidden;
+    }
+    .stat-tile::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: var(--tile-color, var(--cyan));
+      opacity: 0.6;
+    }
+    .stat-tile-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 9.5px; color: var(--muted);
+      letter-spacing: 1.3px; font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .stat-tile-value {
+      font-family: 'Sora', sans-serif;
+      font-size: 28px; font-weight: 800;
+      letter-spacing: -1px; line-height: 1;
+    }
+    .stat-tile-sub {
+      font-size: 10.5px; color: var(--muted);
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ─── HISTORICO ─── */
+    .chart-wrap {
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .chart-container {
+      width: 100%; height: 520px;
+      background: var(--bg-elev);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .data-table {
+      width: 100%;
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      overflow: hidden;
+      font-size: 13px;
+    }
+    .data-table th, .data-table td {
+      padding: 12px 16px;
+      text-align: left;
+    }
+    .data-table thead {
+      background: var(--bg-elev);
+      border-bottom: 1px solid var(--line);
+    }
+    .data-table th {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; color: var(--muted);
+      letter-spacing: 1.2px; font-weight: 700;
+      text-transform: uppercase;
+    }
+    .data-table tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .data-table tbody tr:last-child { border-bottom: none; }
+    .data-table tbody tr:hover { background: rgba(0, 229, 255, 0.03); }
+    .data-table .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    .tag-ok { color: var(--teal); font-weight: 700; }
+    .tag-pending { color: var(--gold); font-weight: 700; }
+    .tag-error { color: var(--rose); font-weight: 700; }
+
+    /* ─── BACKTEST ─── */
+    .backtest-controls {
+      display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+      padding: 18px;
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      margin-bottom: 14px;
+    }
+    .run-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 11px 24px;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--teal) 100%);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; font-weight: 800;
+      color: var(--bg-deep);
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all var(--t-fast);
+      box-shadow: 0 4px 14px rgba(0,229,255,0.30);
+    }
+    .run-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,229,255,0.40); }
+    .run-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .results-empty {
+      padding: 50px;
+      text-align: center;
+      background: var(--bg-navy);
+      border: 1px dashed var(--line-2);
+      border-radius: var(--r);
+      color: var(--muted);
+    }
+    .results-empty-icon { font-size: 38px; margin-bottom: 10px; }
+
+    /* ─── TUNING ─── */
+    .tuning-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 900px) { .tuning-grid { grid-template-columns: 1fr; } }
+    .tuning-card {
+      padding: 18px;
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+    }
+    .tuning-card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 12px; color: var(--muted);
+      letter-spacing: 1.2px; font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .slider-row {
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 12px; align-items: center;
+      margin-bottom: 14px;
+    }
+    .slider-label {
+      font-size: 12px; color: var(--text-soft);
+    }
+    .slider-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px; font-weight: 700;
+      color: var(--cyan);
+      min-width: 50px; text-align: right;
+    }
+    input[type=range] {
+      grid-column: 1 / -1;
+      width: 100%;
+      accent-color: var(--cyan);
+    }
+
+    /* ─── ESTRATEGIAS ─── */
+    .strat-grid {
+      display: grid; gap: 16px;
+      grid-template-columns: 1fr;
+    }
+    .strat-card {
+      padding: 22px 24px;
+      background: linear-gradient(160deg, var(--bg-navy) 0%, var(--bg-navy-2) 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      position: relative; overflow: hidden;
+      transition: all var(--t-fast);
+    }
+    .strat-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; bottom: 0; width: 4px;
+      background: var(--strat-color, var(--cyan));
+      box-shadow: 0 0 14px var(--strat-color, var(--cyan-glow));
+    }
+    .strat-card.robust-alta  { --strat-color: var(--teal); }
+    .strat-card.robust-media { --strat-color: var(--gold); }
+    .strat-card.robust-baja  { --strat-color: var(--rose); }
+    .strat-card.active {
+      box-shadow: 0 0 0 2px var(--strat-color, var(--cyan)) inset, 0 8px 28px rgba(0, 229, 255, 0.20);
+    }
+
+    .strat-head {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 6px; flex-wrap: wrap;
+    }
+    .strat-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .strat-badge {
+      padding: 4px 10px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line-2);
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 11px; font-weight: 700;
+      color: var(--text-soft);
+      letter-spacing: 0.4px;
+    }
+    .strat-active-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px;
+      background: rgba(0, 245, 212, 0.20);
+      border: 1px solid var(--teal);
+      border-radius: 12px;
+      font-size: 10px; font-weight: 800; color: var(--teal);
+      text-transform: uppercase; letter-spacing: 0.9px;
+    }
+    .strat-active-pill::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--teal); box-shadow: 0 0 8px var(--teal);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+    .strat-tagline {
+      color: var(--text-soft); font-size: 13.5px;
+      line-height: 1.5; margin-bottom: 16px;
+    }
+
+    .strat-metrics-row {
+      display: grid; gap: 10px;
+      grid-template-columns: repeat(6, 1fr);
+      padding: 12px 14px;
+      background: var(--bg-elev);
+      border-radius: var(--r);
+      border: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+    @media (max-width: 1100px) { .strat-metrics-row { grid-template-columns: repeat(3, 1fr); } }
+    .strat-metric {
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .strat-metric-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 9px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1.2px; font-weight: 700;
+    }
+    .strat-metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px; font-weight: 700;
+      color: var(--text);
+    }
+    .strat-metric-value.good  { color: var(--teal); }
+    .strat-metric-value.bad   { color: var(--rose); }
+    .strat-metric-value.warn  { color: var(--gold); }
+
+    .strat-section {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--line-2);
+    }
+    .strat-section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1.3px; font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .strat-explanation {
+      font-size: 13px; color: var(--text-soft);
+      line-height: 1.6;
+    }
+    .strat-prosons {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-top: 10px;
+    }
+    @media (max-width: 900px) { .strat-prosons { grid-template-columns: 1fr; } }
+    .strat-prosons ul {
+      list-style: none; padding: 0; margin: 0;
+      font-size: 12.5px; line-height: 1.7;
+    }
+    .strat-prosons li { padding: 3px 0; color: var(--text-soft); }
+    .strat-prosons .pros-title { color: var(--teal); font-weight: 700; }
+    .strat-prosons .cons-title { color: var(--rose); font-weight: 700; }
+
+    .strat-config {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px; line-height: 1.7;
+      background: var(--bg-deep);
+      padding: 12px 14px; border-radius: 8px;
+      border: 1px solid var(--line);
+      color: var(--cyan);
+      overflow-x: auto; white-space: pre;
+    }
+    .strat-actions {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .strat-btn {
+      padding: 10px 18px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line-2);
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 12px; font-weight: 700;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all var(--t-fast);
+    }
+    .strat-btn:hover { color: var(--cyan); border-color: var(--cyan); }
+    .strat-btn.primary {
+      background: linear-gradient(135deg, var(--cyan), var(--teal));
+      color: var(--bg-deep);
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(0, 229, 255, 0.30);
+    }
+    .strat-btn.primary:hover { transform: translateY(-1px); }
+    .strat-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .robust-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 8px;
+      font-size: 10px; font-weight: 700;
+      font-family: 'Sora', sans-serif;
+      text-transform: uppercase; letter-spacing: 0.6px;
+    }
+    .robust-pill.alta  { background: rgba(0, 245, 212, 0.18); color: var(--teal); }
+    .robust-pill.media { background: rgba(255, 200, 87, 0.18); color: var(--gold); }
+    .robust-pill.baja  { background: rgba(255, 77, 109, 0.18); color: var(--rose); }
+  </style>
+</head>
+<body>
+  <div class="dashboard-grid">
+
+    <!-- ═══════════ SIDEBAR ═══════════ -->
+    <aside class="sidebar-left">
+      <div class="logo-wrap">
+        <a href="/home.html" style="text-decoration:none;">
+          <div class="logo">BIA</div>
+          <div class="logo-sub">BIAS GLOBAL AI</div>
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="/home.html"><span class="ico">🏠</span> Inicio</a>
+        <a href="/radar-semanal.html"><span class="ico">📡</span> Radar Semanal</a>
+        <a href="/mercado.html"><span class="ico">🗺️</span> Mapa de Mercado</a>
+        <a href="/noticias-bia.html"><span class="ico">📰</span> Noticias</a>
+        <a href="/alertas-bia.html"><span class="ico">🚨</span> Alertas Trading</a>
+        <a href="/chat-bia.html"><span class="ico">💬</span> Chat BIA</a>
+        <a href="/entrenamiento.html" class="active"><span class="ico">🎯</span> Entrenamiento IA</a>
+        <a href="/sesiones"><span class="ico">📅</span> Calendario</a>
+        <a href="/academy"><span class="ico">🎓</span> Academia</a>
+        <a href="/configuracion"><span class="ico">⚙️</span> Configuración</a>
+        <div class="nav-divider"></div>
+        <a href="/indexbot_3.html" class="bot-link">
+          <span class="ico">🤖</span> Bot Trading
+          <span class="arrow">→</span>
+        </a>
+      </nav>
+      <div class="pro-card">
+        <div class="pro-title"><span class="pro-title-spark">✨</span> BIA Pro</div>
+        <div class="pro-desc">Desbloqueá todo el poder de BIA sin límites.</div>
+        <button class="pro-btn">Upgrade Now</button>
+      </div>
+      <div class="market-status">
+        <div class="market-dot-wrap">
+          <span class="market-dot"></span>
+          <span class="market-dot-pulse"></span>
+        </div>
+        <div>
+          <div class="market-status-title">Mercado Abierto</div>
+          <div>EEUU 09:30 AM</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════ CENTER ═══════════ -->
+    <main class="center" style="grid-column: 2 / span 2;">
+
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="search-box">
+          <span class="search-ico">🔍</span>
+          <input placeholder="Preguntale a BIA sobre el activo..." />
+          <button class="send-btn">→</button>
+        </div>
+        <button class="icon-btn" title="Notificaciones">🔔<span class="notif-dot"></span></button>
+        <button class="icon-btn" title="Perfil">👤</button>
+      </div>
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div class="page-title-row">
+          <div>
+            <div class="page-eyebrow">🎯 Laboratorio de IA · Backtesting</div>
+            <h1 class="page-title">Entrenamiento por Activo</h1>
+            <div class="page-desc">
+              Explorá el histórico, corré backtests sobre la estrategia S1 y tuneá parámetros
+              hasta encontrar el setup más rentable para cada activo.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASSET SELECTOR -->
+      <div class="asset-selector">
+        <span class="asset-selector-label">Activo</span>
+        <button class="asset-chip active" data-asset="XAUUSD">
+          <img src="https://s3-symbol-logo.tradingview.com/metal/gold.svg" alt="" />
+          XAU/USD
+        </button>
+        <button class="asset-chip coming-soon" data-asset="BTCUSDT">
+          <img src="https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC.svg" alt="" />
+          BTC/USD
+        </button>
+        <button class="asset-chip coming-soon" data-asset="EURUSD">
+          <img src="https://s3-symbol-logo.tradingview.com/country/EU.svg" alt="" />
+          EUR/USD
+        </button>
+        <button class="asset-chip coming-soon" data-asset="USOIL">
+          <img src="https://s3-symbol-logo.tradingview.com/indices/wti.svg" alt="" />
+          WTI Oil
+        </button>
+        <button class="asset-chip coming-soon" data-asset="NAS100">
+          <img src="https://s3-symbol-logo.tradingview.com/indices/nasdaq-100.svg" alt="" />
+          NAS100
+        </button>
+      </div>
+
+      <!-- TABS -->
+      <div class="train-tabs">
+        <button class="train-tab active" data-tab="overview">📊 Overview</button>
+        <button class="train-tab" data-tab="historico">📜 Histórico</button>
+        <button class="train-tab" data-tab="backtest">🧪 Backtest</button>
+        <button class="train-tab" data-tab="tuning">⚙️ Tuning</button>
+        <button class="train-tab" data-tab="estrategias">🧬 Estrategias</button>
+      </div>
+
+      <!-- ═══════ TAB · OVERVIEW ═══════ -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="overview-grid">
+          <div class="stat-tile" style="--tile-color: var(--cyan);">
+            <div class="stat-tile-label">Velas históricas</div>
+            <div class="stat-tile-value" id="ov-bars">—</div>
+            <div class="stat-tile-sub">M5 · 5 años</div>
+          </div>
+          <div class="stat-tile" style="--tile-color: var(--teal);">
+            <div class="stat-tile-label">Último backtest</div>
+            <div class="stat-tile-value" id="ov-winrate">—</div>
+            <div class="stat-tile-sub">win-rate · S1</div>
+          </div>
+          <div class="stat-tile" style="--tile-color: var(--gold);">
+            <div class="stat-tile-label">Total trades</div>
+            <div class="stat-tile-value" id="ov-trades">—</div>
+            <div class="stat-tile-sub">simulados</div>
+          </div>
+          <div class="stat-tile" style="--tile-color: var(--rose);">
+            <div class="stat-tile-label">Expectancy</div>
+            <div class="stat-tile-value" id="ov-expectancy">—</div>
+            <div class="stat-tile-sub">R por trade</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; padding: 18px; background: var(--bg-navy); border: 1px solid var(--line); border-radius: var(--r);">
+          <div style="font-family: 'Sora'; font-size: 12px; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; font-weight: 700; margin-bottom: 10px;">Pipeline de entrenamiento</div>
+          <div style="font-size: 13px; color: var(--text-soft); line-height: 1.7;">
+            <strong style="color: var(--cyan);">1.</strong> Descargo 5 años de velas XAU/USD desde Dukascopy (M5/M15/H1/H4) →
+            <strong style="color: var(--cyan);">2.</strong> Corro la estrategia <code style="background: var(--bg-elev); padding: 2px 6px; border-radius: 4px; color: var(--teal);">S1 (sweep + reclaim)</code> walk-forward →
+            <strong style="color: var(--cyan);">3.</strong> Simulo cada trade con SL/TP ATR-based →
+            <strong style="color: var(--cyan);">4.</strong> Mido <span style="color: var(--teal);">win-rate</span>, expectancy y drawdown →
+            <strong style="color: var(--cyan);">5.</strong> Tuneo parámetros e itero hasta optimizar.
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ TAB · HISTÓRICO ═══════ -->
+      <div class="tab-panel" id="tab-historico">
+        <div class="chart-wrap">
+          <div class="chart-container" id="tv-chart"></div>
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timeframe</th>
+              <th>Velas</th>
+              <th>Desde</th>
+              <th>Hasta</th>
+              <th>Tamaño</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="data-tbody">
+            <tr><td colspan="6" style="text-align:center; color: var(--muted); padding: 30px;">Cargando estado de datos…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ═══════ TAB · BACKTEST ═══════ -->
+      <div class="tab-panel" id="tab-backtest">
+        <div class="backtest-controls">
+          <button class="run-btn" id="run-backtest">
+            <span>▶</span> Correr backtest
+          </button>
+          <div style="font-size: 12px; color: var(--muted);">
+            Estrategia S1 · ATR exit (SL ×1, TP ×2) · cooldown 5min · timeout 48h
+          </div>
+        </div>
+
+        <div class="results-empty" id="results-empty">
+          <div class="results-empty-icon">🧪</div>
+          <div>Todavía no se corrió ningún backtest para este activo.</div>
+          <div style="font-size: 11px; margin-top: 6px;">Apretá <strong style="color: var(--cyan);">Correr backtest</strong> arriba para empezar.</div>
+        </div>
+
+        <div id="results-content" style="display: none;"></div>
+      </div>
+
+      <!-- ═══════ TAB · TUNING ═══════ -->
+      <div class="tab-panel" id="tab-tuning">
+        <div class="tuning-grid">
+          <div class="tuning-card">
+            <div class="tuning-card-title">⚡ Salida (ATR-based)</div>
+            <div class="slider-row">
+              <span class="slider-label">SL multiplicador</span>
+              <span class="slider-value" id="v-sl-mult">1.0</span>
+              <input type="range" id="s-sl-mult" min="0.5" max="3" step="0.1" value="1" />
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">TP multiplicador</span>
+              <span class="slider-value" id="v-tp-mult">2.0</span>
+              <input type="range" id="s-tp-mult" min="1" max="5" step="0.1" value="2" />
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Timeout (horas)</span>
+              <span class="slider-value" id="v-timeout">48</span>
+              <input type="range" id="s-timeout" min="4" max="168" step="4" value="48" />
+            </div>
+          </div>
+
+          <div class="tuning-card">
+            <div class="tuning-card-title">🎯 Filtros de señal</div>
+            <div class="slider-row">
+              <span class="slider-label">Score mínimo</span>
+              <span class="slider-value" id="v-score-min">30</span>
+              <input type="range" id="s-score-min" min="0" max="100" step="5" value="30" />
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Cooldown (minutos)</span>
+              <span class="slider-value" id="v-cooldown">5</span>
+              <input type="range" id="s-cooldown" min="1" max="60" step="1" value="5" />
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Sweep lookback (velas)</span>
+              <span class="slider-value" id="v-lookback">30</span>
+              <input type="range" id="s-lookback" min="10" max="100" step="5" value="30" />
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; padding: 14px 18px; background: rgba(255, 200, 87, 0.08); border: 1px solid rgba(255, 200, 87, 0.30); border-radius: var(--r); font-size: 12px; color: var(--gold);">
+          ⚠️ Los cambios acá no se aplican al bot live aún — primero se usan en backtest para validar.
+          Después de encontrar un set ganador, los aplicamos via <code style="background: var(--bg-elev); padding: 2px 6px; border-radius: 4px; color: var(--gold);">fly secrets</code>.
+        </div>
+      </div>
+
+      <!-- ═══════ TAB · ESTRATEGIAS (registry de configs backtested) ═══════ -->
+      <div class="tab-panel" id="tab-estrategias">
+        <div style="padding: 14px 18px; margin-bottom: 14px; background: var(--bg-navy); border: 1px solid var(--line); border-radius: var(--r); font-size: 13px; color: var(--text-soft); line-height: 1.6;">
+          Estrategias <strong style="color: var(--cyan);">validadas con walk-forward out-of-sample</strong> sobre 5 años de XAU/USD (Dukascopy).
+          Las 4 versiones representan distintos puntos en el trade-off <strong>winrate ↔ profit ↔ robustez</strong>.
+          Apretá <strong style="color: var(--teal);">Activar</strong> para que el bot live opere con esa config en el próximo restart.
+        </div>
+
+        <div class="strat-grid" id="strat-grid">
+          <div style="padding: 40px; text-align: center; color: var(--muted);">Cargando estrategias…</div>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        Backtest sobre datos históricos no garantiza resultados futuros. Calidad de data: Dukascopy bid-feed.
+      </div>
+    </main>
+  </div>
+
+  <script>
+    /* ════════════════════════════════════════════════════════════
+       Entrenamiento · wiring
+       ════════════════════════════════════════════════════════════ */
+
+    let currentAsset = 'XAUUSD';
+    const TV_SYMBOLS = {
+      XAUUSD:  'OANDA:XAUUSD',
+      BTCUSDT: 'BINANCE:BTCUSDT',
+      EURUSD:  'FX:EURUSD',
+      USOIL:   'TVC:USOIL',
+      NAS100:  'OANDA:NAS100USD',
+    };
+
+    /* Tab switching */
+    document.querySelectorAll('.train-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.train-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        if (tab.dataset.tab === 'historico') ensureTvChart();
+      });
+    });
+
+    /* Asset selector */
+    document.querySelectorAll('.asset-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (chip.classList.contains('coming-soon')) return;
+        document.querySelectorAll('.asset-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentAsset = chip.dataset.asset;
+        loadAssetData(currentAsset);
+      });
+    });
+
+    /* Sliders */
+    document.querySelectorAll('.tuning-card input[type=range]').forEach(input => {
+      input.addEventListener('input', e => {
+        const id = e.target.id.replace('s-', 'v-');
+        const v = parseFloat(e.target.value);
+        document.getElementById(id).textContent =
+          e.target.step === '0.1' ? v.toFixed(1) : v;
+      });
+    });
+
+    /* TradingView widget (lazy load on first tab open) */
+    let tvLoaded = false;
+    function ensureTvChart() {
+      if (tvLoaded) return;
+      tvLoaded = true;
+      const symbol = TV_SYMBOLS[currentAsset] || TV_SYMBOLS.XAUUSD;
+      const cnt = document.createElement('div');
+      cnt.className = 'tradingview-widget-container';
+      cnt.style.height = '100%';
+      cnt.innerHTML = '<div class="tradingview-widget-container__widget" style="height:100%"></div>';
+      const sc = document.createElement('script');
+      sc.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+      sc.async = true;
+      sc.innerHTML = JSON.stringify({
+        autosize: true,
+        symbol,
+        interval: '60',
+        timezone: 'America/Argentina/Buenos_Aires',
+        theme: 'dark',
+        style: '1',
+        locale: 'es',
+        backgroundColor: 'rgba(7, 17, 31, 1)',
+        toolbar_bg: 'rgba(7, 17, 31, 1)',
+        allow_symbol_change: false,
+        details: true,
+        hotlist: false,
+        calendar: false,
+        studies: ['STD;EMA%1Period_50', 'STD;EMA%1Period_200'],
+      });
+      cnt.appendChild(sc);
+      document.getElementById('tv-chart').appendChild(cnt);
+    }
+
+    /* Cargar estado de datos descargados (vía endpoint nuevo del server) */
+    async function loadAssetData(asset) {
+      const tbody = document.getElementById('data-tbody');
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--muted); padding: 30px;">Cargando…</td></tr>';
+
+      try {
+        const r = await fetch(`/api/backtest/dataset?symbol=${asset}`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+
+        const tfs = ['M5', 'M15', 'H1', 'H4'];
+        tbody.innerHTML = tfs.map(tf => {
+          const info = data.timeframes?.[tf];
+          if (!info) {
+            return `
+              <tr>
+                <td class="mono"><strong>${tf}</strong></td>
+                <td class="mono">—</td>
+                <td class="mono">—</td>
+                <td class="mono">—</td>
+                <td class="mono">—</td>
+                <td><span class="tag-pending">descargando…</span></td>
+              </tr>`;
+          }
+          return `
+            <tr>
+              <td class="mono"><strong>${tf}</strong></td>
+              <td class="mono">${info.rows.toLocaleString()}</td>
+              <td class="mono">${info.from}</td>
+              <td class="mono">${info.to}</td>
+              <td class="mono">${info.sizeMB} MB</td>
+              <td><span class="tag-ok">✓ OK</span></td>
+            </tr>`;
+        }).join('');
+
+        // Update overview tile
+        const m5 = data.timeframes?.M5;
+        document.getElementById('ov-bars').textContent = m5 ? m5.rows.toLocaleString() : '—';
+      } catch (e) {
+        tbody.innerHTML = `
+          <tr><td colspan="6" style="text-align:center; color: var(--rose); padding: 30px;">
+            ⚠️ ${e.message}<br/><span style="font-size:11px;color:var(--muted)">El endpoint /api/backtest/dataset todavía no existe — se va a wirear cuando termine la descarga.</span>
+          </td></tr>`;
+      }
+    }
+
+    /* Cargar último backtest si existe */
+    async function loadLastBacktest() {
+      try {
+        const r = await fetch(`/api/backtest/last?symbol=${currentAsset}`);
+        if (!r.ok) return;
+        const data = await r.json();
+        if (!data || !data.stats) return;
+        document.getElementById('ov-winrate').textContent = data.stats.winRate.toFixed(1) + '%';
+        document.getElementById('ov-trades').textContent = data.stats.total;
+        document.getElementById('ov-expectancy').textContent = data.stats.expectancy.toFixed(2) + 'R';
+        renderBacktestResults(data);
+      } catch (e) { /* no hay todavía */ }
+    }
+
+    function renderBacktestResults(data) {
+      document.getElementById('results-empty').style.display = 'none';
+      const cnt = document.getElementById('results-content');
+      cnt.style.display = 'block';
+      const s = data.stats;
+      cnt.innerHTML = `
+        <div class="overview-grid" style="margin-bottom: 14px;">
+          <div class="stat-tile" style="--tile-color: var(--teal);">
+            <div class="stat-tile-label">Win-rate</div>
+            <div class="stat-tile-value" style="color: var(--teal);">${s.winRate.toFixed(1)}%</div>
+            <div class="stat-tile-sub">${s.wins} de ${s.wins + s.losses}</div>
+          </div>
+          <div class="stat-tile" style="--tile-color: var(--cyan);">
+            <div class="stat-tile-label">Total R</div>
+            <div class="stat-tile-value">${s.totalR.toFixed(1)}R</div>
+            <div class="stat-tile-sub">${s.total} trades</div>
+          </div>
+          <div class="stat-tile" style="--tile-color: var(--gold);">
+            <div class="stat-tile-label">Avg R / trade</div>
+            <div class="stat-tile-value" style="color: var(--gold);">${s.expectancy.toFixed(2)}</div>
+            <div class="stat-tile-sub">expectancy</div>
+          </div>
+          <div class="stat-tile" style="--tile-color: var(--rose);">
+            <div class="stat-tile-label">Max Drawdown</div>
+            <div class="stat-tile-value" style="color: var(--rose);">${s.maxDrawdownR.toFixed(1)}R</div>
+            <div class="stat-tile-sub">${s.maxConsecLosses} losses seguidos</div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* Run backtest button */
+    document.getElementById('run-backtest').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Corriendo…';
+      try {
+        const r = await fetch(`/api/backtest/run`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ symbol: currentAsset }),
+        });
+        const data = await r.json();
+        if (data.ok) {
+          renderBacktestResults(data);
+          loadLastBacktest();
+        } else {
+          alert('Error: ' + (data.error || 'unknown'));
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>▶</span> Correr backtest';
+      }
+    });
+
+    /* ═══════ ESTRATEGIAS · registry render ═══════ */
+    let stratState = { active: null, list: [] };
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+    }
+
+    function colorClassForMetric(metric, val) {
+      if (metric === 'decay') {
+        if (Math.abs(val) < 15) return 'good';
+        if (Math.abs(val) < 50) return 'warn';
+        return 'bad';
+      }
+      if (metric === 'totalR' || metric === 'avgR') return val > 0 ? 'good' : 'bad';
+      if (metric === 'maxDD') return val < 20 ? 'good' : (val < 35 ? 'warn' : 'bad');
+      return '';
+    }
+
+    function renderStratCard(s, isActive) {
+      const m = s.metrics;
+      const configStr = Object.entries(s.config).map(([k, v]) => `${k}=${v}`).join('\n');
+      const flyCmd = 'fly secrets set ' + Object.entries(s.config).map(([k, v]) => `${k}=${v}`).join(' ');
+
+      const decayClass = colorClassForMetric('decay', m.decay_pct);
+      const totalRClass = colorClassForMetric('totalR', m.totalR_5y);
+      const ddClass = colorClassForMetric('maxDD', m.maxDD_R);
+
+      return `
+        <div class="strat-card robust-${s.robustness} ${isActive ? 'active' : ''}" data-strat="${s.id}">
+          <div class="strat-head">
+            <div class="strat-name">${escapeHtml(s.name)}</div>
+            <span class="strat-badge">${escapeHtml(s.badge)}</span>
+            <span class="robust-pill ${s.robustness}">${s.robustness === 'alta' ? '⭐ robusta' : s.robustness === 'media' ? '⚠ media' : '⚠ frágil'}</span>
+            ${isActive ? '<span class="strat-active-pill">activa en live</span>' : ''}
+          </div>
+          <div class="strat-tagline">${escapeHtml(s.tagline)}</div>
+
+          <div class="strat-metrics-row">
+            <div class="strat-metric">
+              <div class="strat-metric-label">WinRate OS</div>
+              <div class="strat-metric-value">${m.winRate_OS.toFixed(1)}%</div>
+            </div>
+            <div class="strat-metric">
+              <div class="strat-metric-label">Avg R / trade</div>
+              <div class="strat-metric-value ${m.avgR_OS > 0 ? 'good' : 'bad'}">${m.avgR_OS.toFixed(3)}</div>
+            </div>
+            <div class="strat-metric">
+              <div class="strat-metric-label">Total R 5y</div>
+              <div class="strat-metric-value ${totalRClass}">${m.totalR_5y.toFixed(0)}R</div>
+            </div>
+            <div class="strat-metric">
+              <div class="strat-metric-label">Max DD</div>
+              <div class="strat-metric-value ${ddClass}">${m.maxDD_R.toFixed(0)}R</div>
+            </div>
+            <div class="strat-metric">
+              <div class="strat-metric-label">Decay OOS</div>
+              <div class="strat-metric-value ${decayClass}">${m.decay_pct.toFixed(1)}%</div>
+            </div>
+            <div class="strat-metric">
+              <div class="strat-metric-label">Trades 5y</div>
+              <div class="strat-metric-value">${m.trades_5y.toLocaleString()}</div>
+            </div>
+          </div>
+
+          <div class="strat-section">
+            <div class="strat-section-title">¿Cómo opera?</div>
+            <div class="strat-explanation">${escapeHtml(s.explanation.how)}</div>
+          </div>
+
+          <div class="strat-section">
+            <div class="strat-section-title">Resumen</div>
+            <div class="strat-explanation">${escapeHtml(s.explanation.summary)}</div>
+          </div>
+
+          <div class="strat-prosons">
+            <div>
+              <div class="pros-title">✅ Pros</div>
+              <ul>
+                ${s.explanation.pros.map(p => `<li>• ${escapeHtml(p)}</li>`).join('')}
+              </ul>
+            </div>
+            <div>
+              <div class="cons-title">⚠️ Contras</div>
+              <ul>
+                ${s.explanation.cons.map(c => `<li>• ${escapeHtml(c)}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+
+          <div class="strat-section">
+            <div class="strat-section-title">Ideal para</div>
+            <div class="strat-explanation">${escapeHtml(s.explanation.idealFor)}</div>
+          </div>
+
+          <div class="strat-section">
+            <div class="strat-section-title">Config (env vars)</div>
+            <div class="strat-config">${escapeHtml(configStr)}</div>
+          </div>
+
+          <div class="strat-actions">
+            <button class="strat-btn primary" onclick="activateStrategy('${s.id}')" ${isActive ? 'disabled' : ''}>
+              ${isActive ? '✅ Activa' : '▶ Activar en live'}
+            </button>
+            <button class="strat-btn" onclick="copyFlyCmd('${s.id}', this)">📋 Copy fly command</button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadStrategies() {
+      const cnt = document.getElementById('strat-grid');
+      try {
+        const r = await fetch('/api/strategies?asset=XAUUSD');
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        stratState = { active: data.active, list: data.strategies };
+        if (!data.strategies || data.strategies.length === 0) {
+          cnt.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--muted);">Sin estrategias todavía</div>';
+          return;
+        }
+        cnt.innerHTML = data.strategies.map(s => renderStratCard(s, s.id === data.active)).join('');
+      } catch (e) {
+        cnt.innerHTML = `<div style="padding: 40px; text-align: center; color: var(--rose);">⚠️ ${e.message}</div>`;
+      }
+    }
+
+    async function activateStrategy(id) {
+      if (!confirm(`Activar "${id}" como estrategia del bot live?\n\nSe aplicará en el próximo restart del proceso.`)) return;
+      try {
+        const r = await fetch('/api/strategies/activate', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+        const data = await r.json();
+        if (data.ok) {
+          alert(`✅ Estrategia "${id}" activada.\n\n${data.note}`);
+          loadStrategies();
+        } else {
+          alert('Error: ' + (data.error || 'unknown'));
+        }
+      } catch (e) { alert('Error: ' + e.message); }
+    }
+
+    function copyFlyCmd(id, btn) {
+      const s = stratState.list.find(x => x.id === id);
+      if (!s) return;
+      const cmd = 'fly secrets set ' + Object.entries(s.config).map(([k, v]) => `${k}=${v}`).join(' ');
+      navigator.clipboard.writeText(cmd).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✅ Copiado';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      });
+    }
+
+    /* Init */
+    loadAssetData(currentAsset);
+    loadLastBacktest();
+    loadStrategies();
+  </script>
+</body>
+</html>

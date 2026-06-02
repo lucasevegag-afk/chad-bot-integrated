@@ -14,3 +14,8 @@ dist/
 build/
 coverage/
 .cache/
+
+# Backtest data (regenerable, large CSVs)
+backtest/data/
+backtest/results/*.json
+backtest/results/*.csv
