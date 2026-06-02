@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radar Semanal · BIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/bia-shell.css" />
+  <style>
+    /* ════════════════════════════════════════════════════════════
+       RADAR SEMANAL · estilos específicos
+       ════════════════════════════════════════════════════════════ */
+    .radar-filters {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      padding: 14px 18px;
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+    }
+    .filter-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .filter-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; color: var(--muted);
+      letter-spacing: 1.4px; font-weight: 600;
+      text-transform: uppercase;
+    }
+    .filter-chip {
+      font-family: 'Sora', sans-serif;
+      padding: 6px 12px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 11px; font-weight: 600;
+      transition: all var(--t-fast);
+      white-space: nowrap;
+    }
+    .filter-chip:hover { color: var(--text-soft); border-color: var(--line-2); }
+    .filter-chip.active {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(0, 184, 212, 0.05));
+      color: var(--cyan);
+      border-color: rgba(0, 229, 255, 0.40);
+    }
+
+    .refresh-btn {
+      font-family: 'Sora', sans-serif;
+      margin-left: auto;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line-2);
+      border-radius: 12px;
+      color: var(--cyan); font-size: 11px; font-weight: 600;
+      transition: all var(--t-fast);
+    }
+    .refresh-btn:hover { border-color: var(--line-3); background: var(--bg-hover); }
+    .refresh-btn.spinning .ico { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Status banners */
+    .status-banner {
+      padding: 12px 16px;
+      border-radius: var(--r);
+      font-size: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .status-banner.loading {
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.30);
+      color: var(--cyan);
+    }
+    .status-banner.error {
+      background: rgba(255, 77, 109, 0.08);
+      border: 1px solid rgba(255, 77, 109, 0.30);
+      color: var(--rose);
+    }
+    .status-banner.ok {
+      background: rgba(0, 245, 212, 0.08);
+      border: 1px solid rgba(0, 245, 212, 0.30);
+      color: var(--teal);
+    }
+    .loader-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--cyan);
+      animation: blink 1.2s ease-in-out infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.3; } }
+
+    /* Disclaimer banner */
+    .edu-banner {
+      padding: 11px 16px;
+      background: rgba(255, 200, 87, 0.06);
+      border: 1px solid rgba(255, 200, 87, 0.20);
+      border-radius: var(--r);
+      font-size: 11px; color: var(--gold);
+      display: flex; gap: 10px; align-items: flex-start;
+      line-height: 1.5;
+    }
+
+    /* ─── Layout en columna única, cards full-width ─── */
+    .ideas-grid {
+      display: flex; flex-direction: column;
+      gap: 32px;
+    }
+    .ideas-section {
+      display: flex; flex-direction: column;
+      gap: 14px;
+    }
+
+    .col-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; margin-bottom: 12px;
+      border-radius: var(--r);
+    }
+    .col-header.long {
+      background: linear-gradient(135deg, rgba(0, 245, 212, 0.14), rgba(0, 245, 212, 0.02));
+      border: 1px solid rgba(0, 245, 212, 0.30);
+    }
+    .col-header.short {
+      background: linear-gradient(135deg, rgba(255, 77, 109, 0.14), rgba(255, 77, 109, 0.02));
+      border: 1px solid rgba(255, 77, 109, 0.30);
+    }
+    .col-icon { font-size: 22px; }
+    .col-info { flex: 1; }
+    .col-eyebrow {
+      font-family: 'Sora', sans-serif;
+      font-size: 9px; letter-spacing: 1.6px;
+      font-weight: 700; opacity: 0.9;
+    }
+    .col-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; font-weight: 700;
+      color: var(--text);
+    }
+    .col-count {
+      padding: 3px 10px; border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 800;
+    }
+    .col-header.long .col-count  { background: rgba(0, 245, 212, 0.18); color: var(--teal); }
+    .col-header.short .col-count { background: rgba(255, 77, 109, 0.18); color: var(--rose); }
+
+    /* ─── Idea card · FULL WIDTH expandible ─── */
+    .idea-card {
+      padding: 20px 22px;
+      background:
+        linear-gradient(160deg, var(--bg-navy) 0%, var(--bg-navy-2) 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 14px rgba(0,0,0,0.30);
+      transition: all var(--t-fast);
+      cursor: pointer;
+    }
+    .idea-card:hover {
+      border-color: var(--card-accent, var(--line-2));
+    }
+    .idea-card.long  { --card-accent: rgba(0, 245, 212, 0.40); }
+    .idea-card.short { --card-accent: rgba(255, 77, 109, 0.40); }
+    .idea-card.expanded {
+      border-color: var(--card-accent);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.04),
+        0 8px 32px rgba(0,0,0,0.50),
+        0 0 40px var(--card-accent);
+    }
+
+    /* Layout horizontal: logo + info en línea con score derecha */
+    .idea-head {
+      display: grid;
+      grid-template-columns: 64px 1fr auto auto;
+      gap: 18px; align-items: center;
+    }
+    .idea-logo {
+      width: 64px; height: 64px; border-radius: 14px;
+      background: #fff;
+      border: 1.5px solid;
+      object-fit: contain; padding: 6px;
+      flex-shrink: 0;
+    }
+    .idea-card.long  .idea-logo { border-color: rgba(0, 245, 212, 0.50); }
+    .idea-card.short .idea-logo { border-color: rgba(255, 77, 109, 0.50); }
+    .idea-logo.fallback {
+      background: var(--bg-elev) !important;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px; font-weight: 800;
+      color: var(--cyan);
+      padding: 0 !important;
+    }
+    .idea-info { min-width: 0; }
+    .idea-ticker {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px; font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .idea-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-soft);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      margin-top: 2px;
+    }
+    .idea-meta {
+      display: flex; gap: 8px; margin-top: 4px;
+      font-size: 10px; color: var(--muted);
+      flex-wrap: wrap;
+    }
+    .idea-meta-tag {
+      padding: 2px 8px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font-size: 9.5px;
+      letter-spacing: 0.3px;
+    }
+    .idea-chip {
+      padding: 5px 12px; border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 11px; font-weight: 800;
+      display: inline-flex; align-items: center; gap: 4px;
+      flex-shrink: 0;
+      letter-spacing: 0.4px;
+    }
+    .idea-card.long  .idea-chip { background: rgba(0, 245, 212, 0.18); color: var(--teal); }
+    .idea-card.short .idea-chip { background: rgba(255, 77, 109, 0.18); color: var(--rose); }
+
+    /* Score circular grande */
+    .score-circle-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .score-circle {
+      position: relative;
+      width: 68px; height: 68px;
+    }
+    .score-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .score-circle svg circle {
+      fill: none; stroke-width: 6;
+      stroke-linecap: round;
+    }
+    .score-circle .track { stroke: var(--bg-elev); }
+    .idea-card.long  .score-circle .progress { stroke: var(--teal); filter: drop-shadow(0 0 6px var(--teal-glow)); }
+    .idea-card.short .score-circle .progress { stroke: var(--rose); filter: drop-shadow(0 0 6px var(--rose-glow)); }
+    .score-circle-val {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px; font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .idea-card.long  .score-circle-val { color: var(--teal); }
+    .idea-card.short .score-circle-val { color: var(--rose); }
+    .score-circle-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 8.5px; color: var(--muted);
+      letter-spacing: 1px; font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* Body — preview siempre visible */
+    .idea-preview {
+      margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid var(--line);
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .idea-preview-text {
+      flex: 1;
+      font-size: 13px; line-height: 1.55;
+      color: var(--text-soft);
+    }
+    .idea-preview-text strong { color: var(--text); font-weight: 700; }
+    .idea-expand-btn {
+      font-family: 'Sora', sans-serif;
+      padding: 8px 16px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line-2);
+      border-radius: 10px;
+      color: var(--cyan); font-size: 11px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: all var(--t-fast);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .idea-expand-btn:hover {
+      background: var(--bg-hover); border-color: var(--line-3);
+    }
+    .idea-card.expanded .idea-expand-btn .arrow { transform: rotate(180deg); }
+    .idea-expand-btn .arrow { transition: transform var(--t-fast); }
+
+    /* ─── Detail panel (visible solo si expanded) ─── */
+    .idea-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .idea-card.expanded .idea-detail { max-height: 2000px; }
+    .idea-detail-inner {
+      margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+    }
+    @media (max-width: 1100px) {
+      .idea-detail-inner { grid-template-columns: 1fr; }
+    }
+
+    /* Sección izquierda del detalle: análisis */
+    .detail-analysis {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .detail-row .detail-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; color: var(--muted);
+      font-weight: 700; letter-spacing: 0.8px;
+      margin-bottom: 3px; text-transform: uppercase;
+    }
+    .detail-row .detail-value {
+      font-size: 13px; line-height: 1.5;
+      color: var(--text-soft);
+    }
+    .detail-row.highlight .detail-value {
+      font-weight: 600;
+    }
+    .idea-card.long  .detail-row.highlight .detail-value { color: var(--teal); }
+    .idea-card.short .detail-row.highlight .detail-value { color: var(--rose); }
+    .idea-summary {
+      padding: 14px 16px;
+      background: var(--bg-deep);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 13px; line-height: 1.6;
+      color: var(--text);
+      margin-top: 4px;
+    }
+
+    /* Sección derecha del detalle: chart + noticias */
+    .detail-side {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .detail-side-card {
+      background: var(--bg-deep);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .detail-side-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px; color: var(--cyan);
+      letter-spacing: 1.4px; font-weight: 700;
+      text-transform: uppercase;
+      padding: 12px 14px; border-bottom: 1px solid var(--line);
+      background: rgba(0, 229, 255, 0.03);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .detail-chart {
+      height: 260px;
+      background: var(--bg-deep);
+    }
+    .detail-news {
+      padding: 12px 14px;
+      display: flex; flex-direction: column; gap: 10px;
+      max-height: 280px; overflow-y: auto;
+    }
+    .news-item {
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .news-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .news-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 12px; font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+    .news-meta {
+      font-size: 9.5px; color: var(--muted);
+      display: flex; gap: 6px;
+      letter-spacing: 0.3px;
+    }
+    .news-impact {
+      padding: 1px 6px; border-radius: 4px;
+      font-weight: 700; letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .news-impact.high   { background: rgba(255, 77, 109, 0.18); color: var(--rose); }
+    .news-impact.medium { background: rgba(255, 200, 87, 0.18); color: var(--gold); }
+    .news-empty {
+      font-size: 11px; color: var(--muted);
+      padding: 16px 14px; text-align: center;
+    }
+
+    /* Action buttons (debajo del detalle) */
+    .idea-actions {
+      display: flex; gap: 8px;
+      margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid var(--line);
+      grid-column: 1 / -1;
+    }
+    .idea-action {
+      font-family: 'Sora', sans-serif;
+      padding: 10px 16px;
+      background: var(--bg-deep);
+      border: 1px solid var(--line);
+      color: var(--text-soft);
+      border-radius: 10px;
+      font-size: 11.5px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: all var(--t-fast);
+    }
+    .idea-action:hover {
+      background: var(--bg-elev);
+      color: var(--cyan);
+      border-color: var(--line-2);
+    }
+    .idea-action.primary {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.18), rgba(0, 184, 212, 0.08));
+      color: var(--cyan);
+      border-color: rgba(0, 229, 255, 0.40);
+    }
+    .idea-action.primary:hover {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.30), rgba(0, 184, 212, 0.15));
+      border-color: var(--cyan);
+    }
+
+    /* Empty */
+    .empty-state {
+      padding: 24px; text-align: center;
+      background: var(--bg-navy);
+      border: 1px dashed var(--line-2);
+      border-radius: var(--r);
+      color: var(--muted); font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-grid">
+
+    <!-- ═══════════ SIDEBAR ═══════════ -->
+    <aside class="sidebar-left">
+      <div class="logo-wrap">
+        <a href="/home.html" style="text-decoration:none;">
+          <div class="logo">BIA</div>
+          <div class="logo-sub">BIAS GLOBAL AI</div>
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="/home.html"><span class="ico">🏠</span> Inicio</a>
+        <a href="/radar-semanal.html" class="active"><span class="ico">📡</span> Radar Semanal</a>
+        <a href="/mercado.html"><span class="ico">🗺️</span> Mapa de Mercado</a>
+        <a href="/noticias-bia.html"><span class="ico">📰</span> Noticias &amp; Alertas</a>
+        <a href="/oportunidades.html"><span class="ico">📈</span> Oportunidades</a>
+        <a href="/chat-bia.html"><span class="ico">💬</span> Chat BIA</a>
+        <a href="/sesiones"><span class="ico">📅</span> Calendario</a>
+        <a href="/academy"><span class="ico">🎓</span> Academia</a>
+        <a href="/configuracion"><span class="ico">⚙️</span> Configuración</a>
+        <div class="nav-divider"></div>
+        <a href="/indexbot_3.html" class="bot-link">
+          <span class="ico">🤖</span> Bot Trading
+          <span class="arrow">→</span>
+        </a>
+      </nav>
+      <div class="pro-card">
+        <div class="pro-title"><span class="pro-title-spark">✨</span> BIA Pro</div>
+        <div class="pro-desc">Desbloqueá todo el poder de BIA sin límites.</div>
+        <button class="pro-btn">Upgrade Now</button>
+      </div>
+      <div class="market-status">
+        <div class="market-dot-wrap">
+          <span class="market-dot"></span>
+          <span class="market-dot-pulse"></span>
+        </div>
+        <div>
+          <div class="market-status-title">Mercado Abierto</div>
+          <div>EEUU 09:30 AM</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════ CENTER ═══════════ -->
+    <main class="center" style="grid-column: 2 / span 2;">
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="search-box">
+          <span class="search-ico">🔍</span>
+          <input placeholder="Preguntale a BIA sobre acciones, mercados, noticias..." />
+          <button class="send-btn">→</button>
+        </div>
+        <button class="icon-btn" title="Notificaciones">
+          <span>🔔</span><span class="notif-dot"></span>
+        </button>
+        <button class="icon-btn" title="Perfil">👤</button>
+      </div>
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div class="page-title-row">
+          <div>
+            <div class="page-eyebrow">🎯 Radar Semanal · BIA</div>
+            <h1 class="page-title">Oportunidades de la semana</h1>
+            <div class="page-desc">
+              5 ideas LONG + 5 SHORT analizadas por BIA esta semana.
+              Acciones, ADRs, ETFs sectoriales y mercados emergentes.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISCLAIMER -->
+      <div class="edu-banner">
+        <span>⚠️</span>
+        <span>
+          Esto es <strong>análisis educativo y opinión de mercado</strong>, no constituye asesoramiento financiero
+          personalizado. La decisión final corresponde al inversor.
+        </span>
+      </div>
+
+      <!-- FILTROS -->
+      <div class="radar-filters">
+        <div class="filter-group">
+          <span class="filter-label">Mercado</span>
+          <button class="filter-chip active" data-filter="market" data-value="all">Todos</button>
+          <button class="filter-chip" data-filter="market" data-value="USA">🇺🇸 USA</button>
+          <button class="filter-chip" data-filter="market" data-value="EMERGENTES">🌎 Emergentes</button>
+          <button class="filter-chip" data-filter="market" data-value="LATAM">🌎 Latam</button>
+          <button class="filter-chip" data-filter="market" data-value="ETF">📦 ETFs</button>
+          <button class="filter-chip" data-filter="market" data-value="TECH">💻 Tech</button>
+          <button class="filter-chip" data-filter="market" data-value="COMMODITIES">🛢️ Commodities</button>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Score</span>
+          <button class="filter-chip active" data-filter="score" data-value="all">Todos</button>
+          <button class="filter-chip" data-filter="score" data-value="70">70+</button>
+          <button class="filter-chip" data-filter="score" data-value="80">80+</button>
+        </div>
+        <button class="refresh-btn" id="refresh-btn">
+          <span class="ico">🔄</span> Regenerar
+        </button>
+      </div>
+
+      <!-- STATUS BANNER -->
+      <div id="status-banner" style="display: none;"></div>
+
+      <!-- GRID DE IDEAS -->
+      <div class="ideas-grid" id="ideas-grid">
+        <!-- Generado por JS -->
+      </div>
+
+      <div class="disclaimer">
+        Las ideas se cachean por 7 días en localStorage. "Regenerar" llama a BIA para análisis fresh (consume tokens).
+      </div>
+    </main>
+  </div>
+
+  <script>
+    /* ════════════════════════════════════════════════════════════
+       Config: dónde corre el API
+       En localhost usa Next.js local. En producción usa Vercel.
+       ════════════════════════════════════════════════════════════ */
+    const API_BASE = (() => {
+      const h = window.location.hostname;
+      return (h === 'localhost' || h === '127.0.0.1')
+        ? 'http://localhost:3000'
+        : 'https://chad-alerts-mobile.vercel.app';
+    })();
+    const CACHE_KEY  = 'radar-semanal-v1';
+    const CACHE_TTL  = 7 * 24 * 60 * 60 * 1000; // 7 días
+
+    /* ──────── MOCK fallback si API falla ──────── */
+    const MOCK = {
+      longs: [
+        { id:'L1', ticker:'NVDA', name:'NVIDIA Corporation', market:'TECH', country:'USA', sector:'Semiconductores · IA', bias:'LONG', score:87,
+          catalyst:'Datacenter sigue creciendo +120% YoY; pedidos de Blackwell agotados hasta 2026.',
+          risk:'Valuación exigente; desaceleración del capex IA puede impactar fuerte.',
+          technical:'Tendencia alcista intacta sobre la media móvil de 50 días.',
+          keyLevel:'Soporte US$ 130 · Resistencia US$ 158',
+          summary:'NVIDIA es el motor de la ola IA. Marca récords trimestre tras trimestre y sin competencia seria en el corto plazo.' },
+        { id:'L2', ticker:'MELI', name:'MercadoLibre', market:'LATAM', country:'Uruguay/Argentina', sector:'E-commerce · Fintech', bias:'LONG', score:81,
+          catalyst:'Fintech creciendo a tres dígitos y monopolio efectivo en e-commerce regional.',
+          risk:'FX y regulaciones cambiarias en Argentina/Brasil.',
+          technical:'En máximos históricos; correcciones a MM50 son oportunidad.',
+          keyLevel:'Soporte US$ 1.950 · Resistencia US$ 2.250',
+          summary:'El "Amazon + PayPal" de Latam. Domina e-commerce + pagos en una región con baja penetración bancaria.' },
+        { id:'L3', ticker:'PLTR', name:'Palantir Technologies', market:'USA', country:'USA', sector:'Software · Defensa', bias:'LONG', score:82,
+          catalyst:'Contratos DoD en aumento y expansión acelerada en clientes comerciales.',
+          risk:'Acción muy volátil, sensible a sentimiento general del mercado tech.',
+          technical:'Estructura alcista de máximos crecientes; volumen acompaña.',
+          keyLevel:'Soporte US$ 42 · Resistencia US$ 56',
+          summary:'Plataforma de análisis de datos usada por gobiernos y empresas grandes. Narrativa IA + defensa la impulsa.' },
+        { id:'L4', ticker:'XLE', name:'Energy Select Sector SPDR', market:'ETF', country:'USA', sector:'Energía', bias:'LONG', score:73,
+          catalyst:'Tensiones geopolíticas sostenidas y disciplina de capex de las petroleras grandes.',
+          risk:'Una recesión en EE.UU. bajaría fuerte la demanda de crudo.',
+          technical:'Consolidación lateral; comprado en rango inferior con stop cercano.',
+          keyLevel:'Soporte US$ 88 · Resistencia US$ 96',
+          summary:'ETF de petroleras US (Exxon, Chevron). Cobertura contra inflación y subas de la energía.' },
+        { id:'L5', ticker:'EWZ', name:'iShares MSCI Brazil ETF', market:'LATAM', country:'Brasil', sector:'ETF Emergentes', bias:'LONG', score:78,
+          catalyst:'Real fortaleciéndose, materias primas con tracción y BCB cerca de cortar tasas.',
+          risk:'Riesgo político local y dependencia de China para exportaciones.',
+          technical:'Rebote desde piso técnico anual; ruptura de canal bajista de 6 meses.',
+          keyLevel:'Soporte US$ 26,50 · Resistencia US$ 31',
+          summary:'Forma simple de invertir en Petrobras, Vale, Itaú. Cuando real se fortalece y suben commodities, sube.' },
+      ],
+      shorts: [
+        { id:'S1', ticker:'TSLA', name:'Tesla Inc.', market:'USA', country:'USA', sector:'Automotriz · Tech', bias:'SHORT', score:76,
+          catalyst:'Caída de márgenes por guerra de precios en China; demanda EVs desacelerando.',
+          risk:'Catalizador inesperado por Robotaxi o modelo barato podría disparar la acción.',
+          technical:'Ruptura de soporte de mediano plazo; medias móviles cruzan a la baja.',
+          keyLevel:'Resistencia US$ 195 · Próximo soporte US$ 165',
+          summary:'Pierde cuota EV mientras la valuación todavía descuenta crecimiento robotaxi y energía.' },
+        { id:'S2', ticker:'ARKK', name:'ARK Innovation ETF', market:'ETF', country:'USA', sector:'Growth · Disruptive Tech', bias:'SHORT', score:71,
+          catalyst:'Tasas altas penalizan empresas de crecimiento sin ganancias.',
+          risk:'Pivote dovish de la Fed haría rebotar fuerte.',
+          technical:'Debilidad relativa frente al S&P 500; canal bajista intacto.',
+          keyLevel:'Resistencia US$ 52 · Próximo soporte US$ 44',
+          summary:'ETF de tech disruptiva sin ganancias. Con tasas altas, sus flujos futuros valen menos hoy.' },
+        { id:'S3', ticker:'KWEB', name:'KraneShares CSI China Internet ETF', market:'EMERGENTES', country:'China', sector:'Internet · Tech China', bias:'SHORT', score:79,
+          catalyst:'Regulaciones agresivas y debilidad estructural del consumo interno.',
+          risk:'Cualquier paquete de estímulo grande puede cambiar el sentimiento.',
+          technical:'Tendencia primaria bajista; rebotes a MM200 son oportunidad.',
+          keyLevel:'Resistencia US$ 32 · Próximo soporte US$ 24',
+          summary:'Apuesta inversa a Alibaba, Tencent, JD. Gobierno chino interviene y confianza externa erosionada.' },
+        { id:'S4', ticker:'F', name:'Ford Motor Company', market:'USA', country:'USA', sector:'Automotriz tradicional', bias:'SHORT', score:68,
+          catalyst:'Pérdidas en división eléctrica (Model E) y demanda débil en Europa.',
+          risk:'Recortes de costos agresivos pueden sorprender al alza.',
+          technical:'Lateralizando cerca de mínimos anuales; debilidad relativa al sector.',
+          keyLevel:'Resistencia US$ 12,50 · Próximo soporte US$ 10',
+          summary:'Atrapada entre el negocio rentable de combustión (en declive) y EV que pierde miles por unidad.' },
+        { id:'S5', ticker:'INTC', name:'Intel Corporation', market:'TECH', country:'USA', sector:'Semiconductores', bias:'SHORT', score:72,
+          catalyst:'Pérdida de cuota frente a AMD y NVIDIA; foundry quema caja.',
+          risk:'Subsidios CHIPS Act o acuerdo de manufactura podrían mejorar la narrativa.',
+          technical:'Ruptura de soporte de largo plazo; medias confirman tendencia bajista.',
+          keyLevel:'Resistencia US$ 24 · Próximo soporte US$ 18',
+          summary:'El gigante histórico de chips quedó atrás en IA. Su apuesta a fabricar para terceros demora años.' },
+      ],
+      generatedAt: new Date().toISOString(),
+    };
+
+    /* ──────── Estado ──────── */
+    let state = {
+      data: null,
+      marketFilter: 'all',
+      scoreFilter:  'all',
+    };
+
+    /* ──────── Helpers ──────── */
+    function loadCache() {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const d = JSON.parse(raw);
+        const age = Date.now() - new Date(d.generatedAt).getTime();
+        if (age > CACHE_TTL) return null;
+        return d;
+      } catch { return null; }
+    }
+    function saveCache(d) {
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); } catch {}
+    }
+    function setBanner(kind, msg) {
+      const el = document.getElementById('status-banner');
+      if (!kind) { el.style.display = 'none'; return; }
+      el.style.display = 'flex';
+      el.className = 'status-banner ' + kind;
+      el.innerHTML = (kind === 'loading' ? '<span class="loader-dot"></span>' : '') + msg;
+    }
+
+    /* ──────── Fetch del API ──────── */
+    async function fetchIdeas(force = false) {
+      setBanner('loading', force ? 'Regenerando análisis con BIA…' : 'Cargando radar semanal…');
+
+      // Cache primero (si no force)
+      if (!force) {
+        const cached = loadCache();
+        if (cached) {
+          state.data = cached;
+          setBanner(null);
+          render();
+          return;
+        }
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/api/radar-semanal`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ force }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        state.data = {
+          longs: json.longs,
+          shorts: json.shorts,
+          generatedAt: json.generatedAt,
+        };
+        saveCache(state.data);
+        setBanner('ok', '✅ Análisis actualizado.');
+        setTimeout(() => setBanner(null), 3000);
+        render();
+      } catch (e) {
+        console.error('[radar-semanal] fetch error:', e);
+        // Fallback a mock
+        state.data = MOCK;
+        setBanner('error', `⚠️ No se pudo conectar al API (${e.message || 'CORS/red'}). Mostrando datos de ejemplo.`);
+        render();
+      }
+    }
+
+    /* ──────── Render ──────── */
+    function applyFilters(items) {
+      return items.filter(i => {
+        if (state.marketFilter !== 'all' && i.market !== state.marketFilter) return false;
+        const minScore = state.scoreFilter === '70' ? 70 : state.scoreFilter === '80' ? 80 : 0;
+        if (i.score < minScore) return false;
+        return true;
+      });
+    }
+
+    function renderColumn(items, bias) {
+      const cls = bias.toLowerCase();
+      const icon = bias === 'LONG' ? '🐂' : '🐻';
+      const name = bias === 'LONG' ? 'Ideas alcistas' : 'Ideas bajistas';
+
+      if (items.length === 0) {
+        return `
+          <section class="ideas-section">
+            <div class="col-header ${cls}">
+              <span class="col-icon">${icon}</span>
+              <div class="col-info">
+                <div class="col-eyebrow" style="color: var(--${cls === 'long' ? 'teal' : 'rose'});">${bias} IDEAS</div>
+                <div class="col-name">${name}</div>
+              </div>
+              <span class="col-count">0</span>
+            </div>
+            <div class="empty-state">No hay ideas ${bias} que cumplan los filtros.</div>
+          </section>
+        `;
+      }
+
+      return `
+        <section class="ideas-section">
+          <div class="col-header ${cls}">
+            <span class="col-icon">${icon}</span>
+            <div class="col-info">
+              <div class="col-eyebrow" style="color: var(--${cls === 'long' ? 'teal' : 'rose'});">${bias} IDEAS</div>
+              <div class="col-name">${name}</div>
+            </div>
+            <span class="col-count">${items.length}</span>
+          </div>
+          ${items.map(i => renderCard(i)).join('')}
+        </section>
+      `;
+    }
+
+    function renderCard(i) {
+      const cls = i.bias.toLowerCase();
+      const icon = i.bias === 'LONG' ? '🐂' : '🐻';
+      const logoUrl = `https://assets.parqet.com/logos/symbol/${i.ticker}?format=png&size=128`;
+
+      // Circle score: circunferencia = 2πr. r=30 → c=188.5
+      const circumference = 188.5;
+      const dashOffset = circumference - (i.score / 100) * circumference;
+
+      return `
+        <div class="idea-card ${cls}" data-id="${i.id}" data-ticker="${i.ticker}" data-bias="${i.bias}">
+          <div class="idea-head" onclick="toggleCard(event, '${i.id}')">
+            <img class="idea-logo" src="${logoUrl}" alt="${i.ticker}"
+                 onerror="this.outerHTML='<div class=&quot;idea-logo fallback&quot;>${i.ticker.slice(0,4)}</div>';" />
+            <div class="idea-info">
+              <div class="idea-ticker">
+                ${i.ticker}
+                <span class="idea-chip">${icon} ${i.bias}</span>
+              </div>
+              <div class="idea-name">${escapeHtml(i.name)}</div>
+              <div class="idea-meta">
+                <span class="idea-meta-tag">${escapeHtml(i.country || '')}</span>
+                <span class="idea-meta-tag">${escapeHtml(i.sector || '')}</span>
+                <span class="idea-meta-tag">${escapeHtml(i.market || '')}</span>
+              </div>
+            </div>
+            <div class="score-circle-wrap">
+              <div class="score-circle">
+                <svg viewBox="0 0 68 68">
+                  <circle class="track" cx="34" cy="34" r="30"></circle>
+                  <circle class="progress" cx="34" cy="34" r="30"
+                          stroke-dasharray="${circumference}"
+                          stroke-dashoffset="${dashOffset}"></circle>
+                </svg>
+                <div class="score-circle-val">${i.score}</div>
+              </div>
+              <div class="score-circle-label">Score</div>
+            </div>
+            <button class="idea-expand-btn" type="button">
+              <span class="label">Ver detalle</span>
+              <span class="arrow">▾</span>
+            </button>
+          </div>
+
+          <!-- Preview siempre visible -->
+          <div class="idea-preview">
+            <div class="idea-preview-text">
+              <strong>🎯 ${escapeHtml(i.catalyst || '')}</strong>
+            </div>
+          </div>
+
+          <!-- Detalle expandible -->
+          <div class="idea-detail">
+            <div class="idea-detail-inner">
+              <!-- Izquierda: análisis -->
+              <div class="detail-analysis">
+                <div class="detail-row"><div class="detail-label">⚠️ Riesgo principal</div><div class="detail-value">${escapeHtml(i.risk || '')}</div></div>
+                <div class="detail-row"><div class="detail-label">📊 Contexto técnico</div><div class="detail-value">${escapeHtml(i.technical || '')}</div></div>
+                <div class="detail-row highlight"><div class="detail-label">📍 Nivel clave</div><div class="detail-value">${escapeHtml(i.keyLevel || '')}</div></div>
+                <div class="detail-row"><div class="detail-label">📝 Resumen</div></div>
+                <div class="idea-summary">${escapeHtml(i.summary || '')}</div>
+              </div>
+
+              <!-- Derecha: chart + noticias -->
+              <div class="detail-side">
+                <div class="detail-side-card">
+                  <div class="detail-side-title">📈 Gráfico · ${i.ticker}</div>
+                  <div class="detail-chart" id="chart-${i.id}"></div>
+                </div>
+                <div class="detail-side-card">
+                  <div class="detail-side-title">📰 Noticias recientes</div>
+                  <div class="detail-news" id="news-${i.id}">
+                    <div class="news-empty">Cargando noticias del ticker…</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions abajo, ocupando todo el ancho -->
+              <div class="idea-actions">
+                <button class="idea-action primary">🤖 Analizar con BIA</button>
+                <button class="idea-action">⭐ Agregar a Watchlist</button>
+                <button class="idea-action" onclick="window.open('https://www.tradingview.com/symbols/${i.ticker}/', '_blank')">↗️ Abrir en TradingView</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ──────── Expand / Collapse + lazy load chart + news ──────── */
+    const chartsLoaded = new Set();
+    const newsLoaded = new Set();
+
+    window.toggleCard = function(e, id) {
+      // No expandir si se clickeó un botón interno del head
+      if (e.target.closest('button.idea-expand-btn')) {
+        // Botón → toggleamos
+      } else if (e.target.tagName === 'BUTTON') {
+        return;
+      }
+      const card = document.querySelector(`.idea-card[data-id="${id}"]`);
+      if (!card) return;
+      const wasExpanded = card.classList.contains('expanded');
+      card.classList.toggle('expanded');
+      if (!wasExpanded) {
+        // Lazy load chart + noticias al expandir
+        const ticker = card.dataset.ticker;
+        if (!chartsLoaded.has(id)) {
+          loadChart(id, ticker);
+          chartsLoaded.add(id);
+        }
+        if (!newsLoaded.has(id)) {
+          loadNews(id, ticker);
+          newsLoaded.add(id);
+        }
+      }
+    };
+
+    /* TradingView mini symbol overview widget */
+    function loadChart(id, ticker) {
+      const container = document.getElementById(`chart-${id}`);
+      if (!container) return;
+      container.innerHTML = '';
+
+      const wrap = document.createElement('div');
+      wrap.className = 'tradingview-widget-container';
+      wrap.style.cssText = 'width: 100%; height: 100%;';
+      const widget = document.createElement('div');
+      widget.className = 'tradingview-widget-container__widget';
+      widget.style.cssText = 'width: 100%; height: 100%;';
+      wrap.appendChild(widget);
+
+      const script = document.createElement('script');
+      script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
+      script.async = true;
+      script.type = 'text/javascript';
+      script.innerHTML = JSON.stringify({
+        symbols: [[`${ticker}|3M`]],
+        chartOnly: false,
+        width: '100%',
+        height: '100%',
+        locale: 'es',
+        colorTheme: 'dark',
+        autosize: true,
+        showVolume: false,
+        showMA: false,
+        hideDateRanges: false,
+        hideMarketStatus: true,
+        hideSymbolLogo: false,
+        scalePosition: 'right',
+        scaleMode: 'Normal',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '10',
+        noTimeScale: false,
+        valuesTracking: '1',
+        changeMode: 'price-and-percent',
+        chartType: 'area',
+        maLineColor: '#2962FF',
+        maLineWidth: 1,
+        maLength: 9,
+        backgroundColor: 'rgba(2, 7, 17, 0)',
+        lineWidth: 2,
+        lineType: 0,
+        dateRanges: ['1d|1', '1m|30', '3m|60', '12m|1D'],
+      });
+
+      wrap.appendChild(script);
+      container.appendChild(wrap);
+    }
+
+    /* Noticias del ticker — fetch + traducción al ES */
+    async function loadNews(id, ticker) {
+      const container = document.getElementById(`news-${id}`);
+      if (!container) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/news-by-ticker?ticker=${encodeURIComponent(ticker)}`, {
+          method: 'GET',
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const { news = [] } = await res.json();
+        if (news.length === 0) {
+          container.innerHTML = `<div class="news-empty">Sin noticias recientes para ${ticker}.</div>`;
+          return;
+        }
+
+        // Aplicar cache de traducciones si lo hay (mismo formato que mobile)
+        let cache = {};
+        try { cache = JSON.parse(localStorage.getItem('news-translations-v1') || '{}'); } catch {}
+
+        // Render inicial con título traducido (si está en cache) o original
+        const render = items => items.slice(0, 6).map(n => {
+          const tr = cache[n.id];
+          const title = (tr && tr.title_es) || n.title;
+          const clickable = !!n.url;
+          return `
+            <div class="news-item" ${clickable ? `onclick="window.open('${escapeHtml(n.url)}', '_blank')" style="cursor: pointer;"` : ''}>
+              <div class="news-title">${escapeHtml(title).slice(0, 130)}${clickable ? ' <span style="color: var(--cyan); font-size: 10px;">↗</span>' : ''}</div>
+              <div class="news-meta">
+                ${n.impact ? `<span class="news-impact ${n.impact}">${n.impact}</span>` : ''}
+                <span>${timeAgo(n.event_time)}</span>
+                ${n.source ? `<span style="opacity: 0.7;">· ${escapeHtml(n.source)}</span>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+        container.innerHTML = render(news);
+
+        // Pedir traducción de las que no tengan cache
+        const pending = news.filter(n => !cache[n.id]);
+        if (pending.length === 0) return;
+
+        const transRes = await fetch(`${API_BASE}/api/translate-news`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            items: pending.map(n => ({ id: n.id, title: n.title, body: n.body || '' })),
+          }),
+        });
+        if (!transRes.ok) return; // Fallback: dejar el original
+        const { translations } = await transRes.json();
+        if (!translations) return;
+        // Update cache
+        Object.assign(cache, translations);
+        try { localStorage.setItem('news-translations-v1', JSON.stringify(cache)); } catch {}
+        // Re-render
+        container.innerHTML = render(news);
+      } catch (e) {
+        console.error('[news-by-ticker] error:', e);
+        container.innerHTML = `
+          <div class="news-empty">
+            ⚠️ No se pudo cargar noticias.<br>
+            <small style="opacity: 0.7;">${escapeHtml(e.message || '')}</small>
+          </div>
+        `;
+      }
+    }
+
+    function timeAgo(d) {
+      if (!d) return '—';
+      const diff = Date.now() - new Date(d).getTime();
+      const mins = Math.floor(Math.abs(diff) / 60000);
+      const prefix = diff < 0 ? 'En' : 'Hace';
+      if (mins < 60) return `${prefix} ${mins} min`;
+      const h = Math.floor(mins / 60);
+      if (h < 24) return `${prefix} ${h}h`;
+      return `${prefix} ${Math.floor(h / 24)}d`;
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c =>
+        ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+    }
+
+    function render() {
+      if (!state.data) return;
+      const longs  = applyFilters(state.data.longs);
+      const shorts = applyFilters(state.data.shorts);
+      document.getElementById('ideas-grid').innerHTML =
+        renderColumn(longs, 'LONG') + renderColumn(shorts, 'SHORT');
+    }
+
+    /* ──────── Wire filters ──────── */
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const f = chip.dataset.filter;
+        const v = chip.dataset.value;
+        state[f === 'market' ? 'marketFilter' : 'scoreFilter'] = v;
+        document.querySelectorAll(`.filter-chip[data-filter="${f}"]`)
+          .forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        render();
+      });
+    });
+
+    document.getElementById('refresh-btn').addEventListener('click', e => {
+      e.currentTarget.classList.add('spinning');
+      fetchIdeas(true).finally(() => {
+        e.currentTarget.classList.remove('spinning');
+      });
+    });
+
+    /* ──────── Init ──────── */
+    fetchIdeas(false);
+  </script>
+</body>
+</html>

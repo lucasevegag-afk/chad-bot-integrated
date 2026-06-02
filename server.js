@@ -22,6 +22,7 @@ const botRoutes       = require('./server/routes/bot.routes');
 const marketRoutes    = require('./server/routes/market.routes');
 const analyticsRoutes = require('./server/routes/analytics.routes');
 const alertsRoutes    = require('./server/routes/alerts.routes');
+const photoRoutes     = require('./server/routes/photoRoutes');
 const usersRoutes     = require('./server/routes/users.routes');
 
 const { manager: marketData } = require('./server/marketData/marketDataManager');
@@ -62,6 +63,7 @@ app.use('/api', marketRoutes);
 app.use('/api', analyticsRoutes);
 app.use('/api', usersRoutes);
 app.use('/api', alertsRoutes); // ⭐ Push de alertas a Supabase / chad-alerts-mobile
+app.use('/api', photoRoutes);  // 📸 Proxy a Pexels para imágenes finanzas
 
 // ============= Rutas limpias de páginas =============
 app.use('/', pagesRoutes);

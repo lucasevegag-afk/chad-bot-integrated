@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noticias & Alertas · BIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/bia-shell.css" />
+  <style>
+    /* ════════════════════════════════════════════════════════════
+       NOTICIAS & ALERTAS · estilos específicos
+       ════════════════════════════════════════════════════════════ */
+
+    /* Tabs (Noticias / Alertas) */
+    .feed-tabs {
+      display: flex; gap: 4px;
+      padding: 4px;
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      margin-bottom: 4px;
+      width: fit-content;
+    }
+    .feed-tab {
+      font-family: 'Sora', sans-serif;
+      padding: 9px 18px;
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.4px;
+      transition: all var(--t-fast);
+    }
+    .feed-tab:hover { color: var(--text-soft); }
+    .feed-tab.active {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.16), rgba(0, 184, 212, 0.08));
+      color: var(--cyan);
+      box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.30);
+    }
+    .feed-tab .badge {
+      margin-left: 6px;
+      padding: 1px 7px;
+      background: rgba(255, 77, 109, 0.20);
+      color: var(--rose);
+      border-radius: 8px;
+      font-size: 9.5px; font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Filtros */
+    .feed-filters {
+      display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+      padding: 14px 18px;
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+    }
+    .filter-group {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .filter-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; color: var(--muted);
+      letter-spacing: 1.4px; font-weight: 600;
+      text-transform: uppercase;
+    }
+    .filter-chip {
+      font-family: 'Sora', sans-serif;
+      padding: 6px 12px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 11px; font-weight: 600;
+      transition: all var(--t-fast);
+      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .filter-chip:hover { color: var(--text-soft); border-color: var(--line-2); }
+    .filter-chip.active {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(0, 184, 212, 0.05));
+      color: var(--cyan);
+      border-color: rgba(0, 229, 255, 0.40);
+    }
+    .refresh-btn {
+      font-family: 'Sora', sans-serif;
+      margin-left: auto;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line-2);
+      border-radius: 12px;
+      color: var(--cyan); font-size: 11px; font-weight: 600;
+      transition: all var(--t-fast);
+    }
+    .refresh-btn:hover { border-color: var(--line-3); background: var(--bg-hover); }
+    .refresh-btn.spinning .ico { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Status banner */
+    .status-banner {
+      padding: 12px 16px;
+      border-radius: var(--r);
+      font-size: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .status-banner.loading {
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.30);
+      color: var(--cyan);
+    }
+    .status-banner.error {
+      background: rgba(255, 77, 109, 0.08);
+      border: 1px solid rgba(255, 77, 109, 0.30);
+      color: var(--rose);
+    }
+    .status-banner.ok {
+      background: rgba(0, 245, 212, 0.08);
+      border: 1px solid rgba(0, 245, 212, 0.30);
+      color: var(--teal);
+    }
+    .loader-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--cyan);
+      animation: blink 1.2s ease-in-out infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.3; } }
+
+    /* ─── Noticias · UNA columna full-width ─── */
+    .news-grid {
+      display: flex; flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Featured card */
+    .news-card-featured {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      background: linear-gradient(135deg, var(--bg-navy) 0%, var(--bg-navy-2) 100%);
+      border: 1px solid rgba(255, 77, 109, 0.30);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(255, 77, 109, 0.08);
+      transition: all var(--t-fast);
+      cursor: pointer;
+    }
+    .news-card-featured:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px rgba(255, 77, 109, 0.15);
+    }
+    @media (max-width: 900px) {
+      .news-card-featured { grid-template-columns: 1fr; }
+    }
+    .featured-hero {
+      position: relative;
+      height: 220px;
+      background-size: cover; background-position: center;
+    }
+    .featured-hero::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(7, 17, 31, 1), transparent 60%);
+    }
+    .featured-hero-fallback {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 80px; opacity: 0.4;
+    }
+    .featured-content { padding: 20px 24px; }
+    .featured-eyebrow {
+      display: inline-flex; gap: 8px; align-items: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; letter-spacing: 1.5px;
+      font-weight: 800; text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+    .featured-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px; font-weight: 700; line-height: 1.35;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .featured-body {
+      font-size: 12.5px; color: var(--text-soft);
+      line-height: 1.55;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Card normal · horizontal (imagen izquierda + contenido derecha) */
+    .news-card {
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      transition: all var(--t-fast);
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+    }
+    @media (max-width: 700px) {
+      .news-card { grid-template-columns: 1fr; }
+    }
+    .news-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-2);
+      background: var(--bg-navy-2);
+    }
+    .news-hero {
+      position: relative;
+      height: 100%;
+      min-height: 140px;
+      background-size: cover; background-position: center;
+      background-color: #050810;
+    }
+    .news-hero-fallback {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px; opacity: 0.4;
+    }
+    .news-impact-badge {
+      position: absolute; top: 10px; left: 10px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-family: 'Sora', sans-serif;
+      font-size: 9px; font-weight: 800;
+      letter-spacing: 0.6px; text-transform: uppercase;
+    }
+    .news-impact-badge.high   { background: var(--rose); color: #fff; }
+    .news-impact-badge.medium { background: var(--gold); color: #221a00; }
+    .news-impact-badge.low    { background: rgba(154, 168, 184, 0.7); color: #111; }
+    .news-content { padding: 16px 20px; flex: 1; display: flex; flex-direction: column; }
+    .news-meta {
+      display: flex; gap: 8px; align-items: center;
+      margin-bottom: 8px;
+      font-size: 9.5px; color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+    .news-source {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+    }
+    .news-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 15px; font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -0.2px;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .news-body {
+      font-size: 12.5px; color: var(--text-soft);
+      line-height: 1.55;
+      flex: 1;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .news-footer {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .news-asset-tag {
+      padding: 3px 8px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px; font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 32px; text-align: center;
+      background: var(--bg-navy);
+      border: 1px dashed var(--line-2);
+      border-radius: var(--r-lg);
+      color: var(--muted); font-size: 13px;
+    }
+
+    /* ─── Alertas list (modo Alertas) ─── */
+    .alerts-list {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .alert-row {
+      display: grid;
+      grid-template-columns: 44px 1fr auto auto;
+      gap: 14px; align-items: center;
+      padding: 14px 16px;
+      background: var(--bg-navy);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      transition: all var(--t-fast);
+      cursor: pointer;
+    }
+    .alert-row:hover {
+      border-color: var(--line-2);
+      background: var(--bg-navy-2);
+    }
+    .alert-logo {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: #fff;
+      border: 1.5px solid var(--line-2);
+      object-fit: contain; padding: 4px;
+      flex-shrink: 0;
+    }
+    .alert-info { min-width: 0; }
+    .alert-asset {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+    .alert-narrative {
+      font-size: 12px; color: var(--text-soft);
+      line-height: 1.45;
+      margin-top: 2px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .alert-level {
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-family: 'Sora', sans-serif;
+      font-size: 9.5px; font-weight: 800;
+      letter-spacing: 0.6px; text-transform: uppercase;
+    }
+    .alert-level.high   { background: rgba(255, 77, 109, 0.18); color: var(--rose); }
+    .alert-level.medium { background: rgba(255, 200, 87, 0.18); color: var(--gold); }
+    .alert-level.low    { background: rgba(154, 168, 184, 0.15); color: var(--muted); }
+    .alert-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--muted);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-grid">
+
+    <!-- ═══════════ SIDEBAR ═══════════ -->
+    <aside class="sidebar-left">
+      <div class="logo-wrap">
+        <a href="/home.html" style="text-decoration:none;">
+          <div class="logo">BIA</div>
+          <div class="logo-sub">BIAS GLOBAL AI</div>
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="/home.html"><span class="ico">🏠</span> Inicio</a>
+        <a href="/radar-semanal.html"><span class="ico">📡</span> Radar Semanal</a>
+        <a href="/mercado.html"><span class="ico">🗺️</span> Mapa de Mercado</a>
+        <a href="/noticias-bia.html" class="active"><span class="ico">📰</span> Noticias &amp; Alertas</a>
+        <a href="/oportunidades.html"><span class="ico">📈</span> Oportunidades</a>
+        <a href="/chat-bia.html"><span class="ico">💬</span> Chat BIA</a>
+        <a href="/sesiones"><span class="ico">📅</span> Calendario</a>
+        <a href="/academy"><span class="ico">🎓</span> Academia</a>
+        <a href="/configuracion"><span class="ico">⚙️</span> Configuración</a>
+        <div class="nav-divider"></div>
+        <a href="/indexbot_3.html" class="bot-link">
+          <span class="ico">🤖</span> Bot Trading
+          <span class="arrow">→</span>
+        </a>
+      </nav>
+      <div class="pro-card">
+        <div class="pro-title"><span class="pro-title-spark">✨</span> BIA Pro</div>
+        <div class="pro-desc">Desbloqueá todo el poder de BIA sin límites.</div>
+        <button class="pro-btn">Upgrade Now</button>
+      </div>
+      <div class="market-status">
+        <div class="market-dot-wrap">
+          <span class="market-dot"></span>
+          <span class="market-dot-pulse"></span>
+        </div>
+        <div>
+          <div class="market-status-title">Mercado Abierto</div>
+          <div>EEUU 09:30 AM</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════ CENTER ═══════════ -->
+    <main class="center" style="grid-column: 2 / span 2;">
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="search-box">
+          <span class="search-ico">🔍</span>
+          <input id="search-input" placeholder="Buscar en noticias y alertas..." />
+          <button class="send-btn">→</button>
+        </div>
+        <button class="icon-btn" title="Notificaciones">
+          <span>🔔</span><span class="notif-dot"></span>
+        </button>
+        <button class="icon-btn" title="Perfil">👤</button>
+      </div>
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div class="page-title-row">
+          <div>
+            <div class="page-eyebrow">📰 Feed en vivo</div>
+            <h1 class="page-title">Noticias &amp; Alertas</h1>
+            <div class="page-desc">
+              Filtradas por impacto, activo y fuente. Traducidas al español automáticamente.
+            </div>
+          </div>
+          <div class="feed-tabs">
+            <button class="feed-tab active" data-tab="noticias">📰 Noticias</button>
+            <button class="feed-tab" data-tab="alertas">🔔 Alertas <span class="badge" id="alerts-count" style="display:none;">0</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTROS -->
+      <div class="feed-filters">
+        <div class="filter-group">
+          <span class="filter-label">Impacto</span>
+          <button class="filter-chip active" data-filter="impact" data-value="all">Todos</button>
+          <button class="filter-chip" data-filter="impact" data-value="high">🔴 Alta</button>
+          <button class="filter-chip" data-filter="impact" data-value="medium">🟡 Media</button>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Activo</span>
+          <button class="filter-chip active" data-filter="asset" data-value="all">Todos</button>
+          <button class="filter-chip" data-filter="asset" data-value="BTCUSDT">₿ BTC</button>
+          <button class="filter-chip" data-filter="asset" data-value="XAUUSD">Au Oro</button>
+          <button class="filter-chip" data-filter="asset" data-value="EURUSD">€$ EUR</button>
+          <button class="filter-chip" data-filter="asset" data-value="USOIL">● Oil</button>
+          <button class="filter-chip" data-filter="asset" data-value="NAS100">NDX</button>
+        </div>
+        <button class="refresh-btn" id="refresh-btn">
+          <span class="ico">🔄</span> Recargar
+        </button>
+      </div>
+
+      <div id="status-banner" style="display: none;"></div>
+
+      <!-- FEED · noticias (default) -->
+      <div id="feed-noticias" class="news-grid"></div>
+
+      <!-- FEED · alertas (oculto por default) -->
+      <div id="feed-alertas" class="alerts-list" style="display: none;"></div>
+
+      <div class="disclaimer">
+        Las noticias se cachean por 5 minutos y la traducción al español por sesión. Click en cada card abre el artículo original.
+      </div>
+    </main>
+  </div>
+
+  <script>
+    /* ════════════════════════════════════════════════════════════
+       Config + Supabase client (CDN)
+       ════════════════════════════════════════════════════════════ */
+    const API_BASE = (() => {
+      const h = window.location.hostname;
+      return (h === 'localhost' || h === '127.0.0.1')
+        ? 'http://localhost:3000'
+        : 'https://chad-alerts-mobile.vercel.app';
+    })();
+
+    const SUPABASE_URL = 'https://bcglsyrcchecybqqepnz.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_wwOYfsMx6ftLBHlfA6wA7w_cCSR9BNX';
+
+    /* Cache de traducciones (compatible con mobile) */
+    const TR_CACHE_NEWS   = 'news-translations-v1';
+    const TR_CACHE_ALERTS = 'alerts-translations-v1';
+
+    /* Estado */
+    let state = {
+      tab: 'noticias',
+      impactFilter: 'all',
+      assetFilter: 'all',
+      news: [],
+      alerts: [],
+      searchQ: '',
+    };
+
+    /* ═════════ Utils ═════════ */
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c =>
+        ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+    }
+    /* ════════════════════════════════════════════════════════════
+       Helper de imágenes · evita duplicados y agrega fotos diversas
+       por categoría detectada (asset/keyword del título)
+       ════════════════════════════════════════════════════════════ */
+
+    /* Categorías → keywords de búsqueda en LoremFlickr (separados por ,) */
+    const ASSET_PHOTO_TAGS = {
+      BTCUSDT: 'bitcoin,cryptocurrency,blockchain',
+      ETHUSDT: 'ethereum,crypto,blockchain',
+      XAUUSD:  'gold,bullion,precious-metal',
+      EURUSD:  'euro,currency,forex',
+      GBPUSD:  'pound,forex,money',
+      USDJPY:  'yen,forex,currency',
+      USOIL:   'oil,petroleum,refinery',
+      NAS100:  'nasdaq,stocks,trading',
+      SPX500:  'wall-street,stocks,nyse',
+    };
+
+    /* Keywords genéricos por tema detectado en título/body */
+    const TITLE_PHOTO_TAGS = [
+      [/\b(fed|federal reserve|fomc|powell|jerome powell|rate)\b/i, 'federal-reserve,jerome-powell,washington'],
+      [/\b(earnings|quarterly|revenue|profit|q[1-4])\b/i, 'business-meeting,earnings,corporate'],
+      [/\b(tesla|elon musk|tsla)\b/i, 'tesla,electric-car,musk'],
+      [/\b(apple|aapl|iphone|tim cook)\b/i, 'apple,iphone,silicon-valley'],
+      [/\b(nvidia|nvda|ai|chip|semiconductor)\b/i, 'ai,chip,semiconductor'],
+      [/\b(google|alphabet|googl)\b/i, 'google,silicon-valley,tech'],
+      [/\b(amazon|amzn|aws)\b/i, 'amazon,warehouse,delivery'],
+      [/\b(microsoft|msft|azure)\b/i, 'microsoft,office,corporate'],
+      [/\b(meta|facebook|instagram)\b/i, 'social-media,meta,facebook'],
+      [/\b(oil|opec|crude|barrel)\b/i, 'oil,refinery,petroleum'],
+      [/\b(gold|silver|copper|metal)\b/i, 'gold,bullion,jewelry'],
+      [/\b(bitcoin|btc|crypto|ethereum|coin)\b/i, 'bitcoin,cryptocurrency,blockchain'],
+      [/\b(china|chinese|xi|beijing)\b/i, 'china,beijing,shanghai'],
+      [/\b(europe|eu|ecb|euro)\b/i, 'europe,frankfurt,banking'],
+      [/\b(japan|yen|nikkei|tokyo|boj)\b/i, 'japan,tokyo,nikkei'],
+      [/\b(election|biden|trump|politics)\b/i, 'politics,election,white-house'],
+      [/\b(inflation|cpi|prices|pmi)\b/i, 'inflation,supermarket,economy'],
+      [/\b(housing|mortgage|real estate|construction)\b/i, 'real-estate,construction,housing'],
+      [/\b(merger|acquisition|deal|buyout)\b/i, 'handshake,corporate-deal,boardroom'],
+      [/\b(layoffs|jobs|unemployment|hiring)\b/i, 'office-workers,corporate,jobs'],
+    ];
+
+    /* Track de imágenes usadas + cache de URLs ya resueltas (Pexels async) */
+    const usedImages = new Set();
+    const resolvedImages = new Map(); // newsId → url
+
+    function hashSeed(s) {
+      let h = 0;
+      for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+      return Math.abs(h);
+    }
+
+    /* ─── Categorías → query Pexels específico de finanzas ─── */
+    const ASSET_PEXELS_QUERY = {
+      BTCUSDT: 'bitcoin cryptocurrency',
+      ETHUSDT: 'ethereum crypto',
+      XAUUSD:  'gold bullion bars',
+      EURUSD:  'euro forex currency',
+      GBPUSD:  'british pound money',
+      USDJPY:  'japanese yen money',
+      USOIL:   'oil barrels refinery',
+      NAS100:  'stock market trading screen',
+      SPX500:  'wall street new york stock',
+    };
+    const TITLE_PEXELS_QUERY = [
+      [/\b(fed|federal reserve|fomc|powell|rate)\b/i, 'federal reserve building washington'],
+      [/\b(earnings|quarterly|revenue|profit|q[1-4])\b/i, 'business meeting corporate'],
+      [/\b(tesla|elon|tsla)\b/i, 'electric car tesla'],
+      [/\b(apple|aapl|iphone)\b/i, 'apple store iphone'],
+      [/\b(nvidia|nvda|ai|chip|semiconductor)\b/i, 'computer chip ai technology'],
+      [/\b(google|alphabet)\b/i, 'google office tech'],
+      [/\b(amazon|amzn|aws)\b/i, 'warehouse delivery amazon'],
+      [/\b(microsoft|msft|azure)\b/i, 'office computer corporate'],
+      [/\b(meta|facebook|instagram)\b/i, 'social media smartphone'],
+      [/\b(oil|opec|crude|barrel)\b/i, 'oil refinery petroleum'],
+      [/\b(gold|silver|metal)\b/i, 'gold bullion bars'],
+      [/\b(bitcoin|btc|crypto|ethereum)\b/i, 'bitcoin cryptocurrency'],
+      [/\b(china|chinese|beijing|shanghai)\b/i, 'shanghai skyline china'],
+      [/\b(europe|ecb|euro)\b/i, 'frankfurt skyline europe'],
+      [/\b(japan|yen|nikkei|tokyo)\b/i, 'tokyo skyline japan'],
+      [/\b(election|biden|trump|politics)\b/i, 'white house washington politics'],
+      [/\b(inflation|cpi|prices|pmi)\b/i, 'supermarket grocery prices'],
+      [/\b(housing|mortgage|real estate)\b/i, 'real estate suburban homes'],
+      [/\b(merger|acquisition|deal|buyout)\b/i, 'handshake business deal'],
+      [/\b(bank|banking|jpmorgan|wells fargo)\b/i, 'bank building columns'],
+      [/\b(tech|technology|startup|software)\b/i, 'silicon valley tech office'],
+    ];
+
+    function detectQuery(n) {
+      const assets = n.affected_assets || [];
+      for (const a of assets) {
+        if (ASSET_PEXELS_QUERY[a]) return ASSET_PEXELS_QUERY[a];
+      }
+      const text = `${n.title || ''} ${n.body || ''}`;
+      for (const [rx, q] of TITLE_PEXELS_QUERY) {
+        if (rx.test(text)) return q;
+      }
+      return 'wall street stock market';
+    }
+
+    /* getNewsImage SÍNCRONO devuelve placeholder + dispara fetch async para mejorarlo */
+    function getNewsImage(n) {
+      // 1) Imagen original SI existe y no es duplicada
+      if (n.image_url && !usedImages.has(n.image_url)) {
+        usedImages.add(n.image_url);
+        return n.image_url;
+      }
+      // 2) Si ya resolvimos asíncronamente esta noticia → usar cache
+      if (resolvedImages.has(n.id)) {
+        return resolvedImages.get(n.id);
+      }
+      // 3) Placeholder inicial (LoremFlickr finanzas), se reemplaza después con Pexels
+      const seed = hashSeed(n.id || n.title || '');
+      const query = detectQuery(n);
+      // Tag list para LoremFlickr (replace spaces with comma)
+      const tags = query.replace(/\s+/g, ',');
+      const placeholder = `https://loremflickr.com/600/400/${encodeURIComponent(tags)}?lock=${seed}`;
+      // Disparar fetch async — cuando llegue Pexels, swap del src en el DOM
+      fetchPexelsForNews(n, seed, query);
+      return placeholder;
+    }
+
+    async function fetchPexelsForNews(n, seed, query) {
+      try {
+        // /api/photo está en ESTE server (chad-bot-integrated), no en Vercel
+        // → usar URL relativa, no API_BASE
+        const res = await fetch(`/api/photo?query=${encodeURIComponent(query)}&seed=${seed}&count=20`, {
+          method: 'GET',
+        });
+        if (!res.ok) return; // dejar el placeholder
+        const data = await res.json();
+        if (!data.url) return;
+        resolvedImages.set(n.id, data.url);
+        // Buscar la card en el DOM y reemplazar el background
+        const cards = document.querySelectorAll(`[data-news-id="${n.id}"] .news-hero, [data-news-id="${n.id}"] .featured-hero`);
+        cards.forEach(el => {
+          el.style.backgroundImage = `url('${data.url}')`;
+        });
+      } catch (e) {
+        // silencioso: dejamos el placeholder
+      }
+    }
+
+    function resetImageRotation() {
+      usedImages.clear();
+    }
+
+    function timeAgo(d) {
+      if (!d) return '—';
+      const diff = Date.now() - new Date(d).getTime();
+      const mins = Math.floor(Math.abs(diff) / 60000);
+      const prefix = diff < 0 ? 'En' : 'Hace';
+      if (mins < 1) return 'Ahora';
+      if (mins < 60) return `${prefix} ${mins}m`;
+      const h = Math.floor(mins / 60);
+      if (h < 24) return `${prefix} ${h}h`;
+      const days = Math.floor(h / 24);
+      if (days < 7) return `${prefix} ${days}d`;
+      return new Date(d).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+    }
+    function loadCache(key) {
+      try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch { return {}; }
+    }
+    function saveCache(key, obj) {
+      try { localStorage.setItem(key, JSON.stringify(obj)); } catch {}
+    }
+    function setBanner(kind, msg) {
+      const el = document.getElementById('status-banner');
+      if (!kind) { el.style.display = 'none'; return; }
+      el.style.display = 'flex';
+      el.className = 'status-banner ' + kind;
+      el.innerHTML = (kind === 'loading' ? '<span class="loader-dot"></span>' : '') + msg;
+    }
+
+    /* ═════════ Fetch Supabase REST ═════════ */
+    async function fetchSupabase(table, params) {
+      const url = `${SUPABASE_URL}/rest/v1/${table}?${params}`;
+      const res = await fetch(url, {
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+      });
+      if (!res.ok) throw new Error(`Supabase ${res.status}`);
+      return res.json();
+    }
+
+    /* ═════════ Cargar noticias ═════════ */
+    async function loadNoticias() {
+      setBanner('loading', 'Cargando noticias…');
+      try {
+        const params = new URLSearchParams({
+          select: '*',
+          impact: 'in.(high,medium)',
+          order: 'event_time.desc',
+          limit: '40',
+        });
+        const data = await fetchSupabase('news_events', params.toString());
+        state.news = data || [];
+        render();
+
+        // Traducir las que no estén en cache
+        const cache = loadCache(TR_CACHE_NEWS);
+        const pending = state.news.filter(n => !cache[n.id]);
+        if (pending.length === 0) {
+          setBanner('ok', `✅ ${state.news.length} noticias`);
+          setTimeout(() => setBanner(null), 2000);
+          return;
+        }
+        setBanner('loading', `Traduciendo ${pending.length} noticias…`);
+        const res = await fetch(`${API_BASE}/api/translate-news`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ items: pending.map(n => ({ id: n.id, title: n.title, body: n.body || '' })) }),
+        });
+        if (res.ok) {
+          const { translations } = await res.json();
+          if (translations) {
+            Object.assign(cache, translations);
+            saveCache(TR_CACHE_NEWS, cache);
+          }
+        }
+        setBanner('ok', `✅ ${state.news.length} noticias traducidas`);
+        setTimeout(() => setBanner(null), 2000);
+        render();
+      } catch (e) {
+        console.error(e);
+        setBanner('error', `⚠️ Error: ${e.message}`);
+      }
+    }
+
+    /* ═════════ Cargar alertas ═════════ */
+    async function loadAlertas() {
+      setBanner('loading', 'Cargando alertas…');
+      try {
+        const params = new URLSearchParams({
+          select: '*',
+          order: 'created_at.desc',
+          limit: '50',
+        });
+        const data = await fetchSupabase('alerts', params.toString());
+        state.alerts = data || [];
+        document.getElementById('alerts-count').textContent = state.alerts.length;
+        document.getElementById('alerts-count').style.display = state.alerts.length ? 'inline-flex' : 'none';
+        render();
+
+        // Traducir narrativas
+        const cache = loadCache(TR_CACHE_ALERTS);
+        const pending = state.alerts.filter(a => !cache[a.id] && a.narrative);
+        if (pending.length === 0) {
+          setBanner('ok', `✅ ${state.alerts.length} alertas`);
+          setTimeout(() => setBanner(null), 2000);
+          return;
+        }
+        setBanner('loading', `Traduciendo ${pending.length} alertas…`);
+        const res = await fetch(`${API_BASE}/api/translate-news`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ items: pending.map(a => ({ id: a.id, title: a.narrative, body: '' })) }),
+        });
+        if (res.ok) {
+          const { translations } = await res.json();
+          if (translations) {
+            Object.assign(cache, translations);
+            saveCache(TR_CACHE_ALERTS, cache);
+          }
+        }
+        setBanner('ok', `✅ ${state.alerts.length} alertas traducidas`);
+        setTimeout(() => setBanner(null), 2000);
+        render();
+      } catch (e) {
+        console.error(e);
+        setBanner('error', `⚠️ Error: ${e.message}`);
+      }
+    }
+
+    /* ═════════ Render ═════════ */
+    const ASSET_EMOJI = {
+      BTCUSDT: { gradient: 'linear-gradient(135deg, #F7931A 0%, #6b3a08 100%)', label: '₿' },
+      XAUUSD:  { gradient: 'linear-gradient(135deg, #FFE55C 0%, #8B6914 100%)', label: 'Au' },
+      EURUSD:  { gradient: 'linear-gradient(135deg, #003399 0%, #b22234 100%)', label: '€$' },
+      USOIL:   { gradient: 'linear-gradient(135deg, #4B5563 0%, #000 100%)', label: '●' },
+      NAS100:  { gradient: 'linear-gradient(135deg, #3b82f6 0%, #1e1b4b 100%)', label: 'NDX' },
+    };
+
+    function matchSearch(text) {
+      if (!state.searchQ) return true;
+      return text.toLowerCase().includes(state.searchQ.toLowerCase());
+    }
+
+    function applyNewsFilters(items) {
+      return items.filter(n => {
+        if (state.impactFilter !== 'all' && n.impact !== state.impactFilter) return false;
+        if (state.assetFilter !== 'all') {
+          const assets = n.affected_assets || [];
+          if (!assets.includes(state.assetFilter)) return false;
+        }
+        if (state.searchQ) {
+          const t = (cacheTitleEs(n.id, TR_CACHE_NEWS) || n.title || '') + ' ' + (n.body || '');
+          if (!matchSearch(t)) return false;
+        }
+        return true;
+      });
+    }
+    function applyAlertFilters(items) {
+      return items.filter(a => {
+        if (state.impactFilter !== 'all') {
+          // mapping level → impact
+          const lvl = (a.level || '').toLowerCase();
+          if (lvl !== state.impactFilter) return false;
+        }
+        if (state.assetFilter !== 'all' && a.asset_symbol !== state.assetFilter) return false;
+        if (state.searchQ) {
+          const t = (cacheTitleEs(a.id, TR_CACHE_ALERTS) || a.narrative || '');
+          if (!matchSearch(t)) return false;
+        }
+        return true;
+      });
+    }
+    function cacheTitleEs(id, cacheKey) {
+      try {
+        const cache = JSON.parse(localStorage.getItem(cacheKey) || '{}');
+        return cache[id]?.title_es;
+      } catch { return null; }
+    }
+
+    function renderNoticias() {
+      const container = document.getElementById('feed-noticias');
+      const items = applyNewsFilters(state.news);
+      if (items.length === 0) {
+        container.innerHTML = '<div class="empty-state">Sin noticias que cumplan los filtros.</div>';
+        return;
+      }
+      // Reset rotation de imágenes (cada render arranca de cero)
+      resetImageRotation();
+      // El primer item de impact high es featured
+      const featuredIdx = items.findIndex(n => n.impact === 'high');
+      const featured = featuredIdx >= 0 ? items[featuredIdx] : null;
+      const rest = featured ? items.filter((_, i) => i !== featuredIdx) : items;
+
+      const html = (featured ? renderFeatured(featured) : '') + rest.map(renderCard).join('');
+      container.innerHTML = html;
+    }
+
+    function renderFeatured(n) {
+      const title = cacheTitleEs(n.id, TR_CACHE_NEWS) || n.title;
+      const img = getNewsImage(n);
+      const heroBg = `background-image: url('${escapeHtml(img)}'); background-color: #050810;`;
+      const heroFallback = '';
+      return `
+        <div class="news-card-featured" data-news-id="${escapeHtml(n.id)}" ${n.url ? `onclick="window.open('${escapeHtml(n.url)}', '_blank')"` : ''}>
+          <div class="featured-hero" style="${heroBg}">
+            ${heroFallback}
+            <span class="news-impact-badge high" style="top: 16px; left: 16px;">⚡ ÚLTIMA HORA</span>
+          </div>
+          <div class="featured-content">
+            <div class="featured-eyebrow">🔴 ALTO IMPACTO · ${timeAgo(n.event_time)}</div>
+            <div class="featured-title">${escapeHtml(title)}</div>
+            ${n.body ? `<div class="featured-body">${escapeHtml(n.body)}</div>` : ''}
+            <div class="news-footer">
+              ${(n.affected_assets || []).slice(0, 5).map(a => `<span class="news-asset-tag">${escapeHtml(a)}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCard(n) {
+      const title = cacheTitleEs(n.id, TR_CACHE_NEWS) || n.title;
+      const body = n.body || '';
+      const img = getNewsImage(n);
+      const heroBg = `background-image: url('${escapeHtml(img)}'); background-color: #050810;`;
+      const heroFallback = '';
+      const sourceName = (n.source || '').toUpperCase();
+      return `
+        <div class="news-card" data-news-id="${escapeHtml(n.id)}" ${n.url ? `onclick="window.open('${escapeHtml(n.url)}', '_blank')"` : ''}>
+          <div class="news-hero" style="${heroBg}">
+            ${heroFallback}
+            ${n.impact ? `<span class="news-impact-badge ${n.impact}">${n.impact === 'high' ? 'Alta' : n.impact === 'medium' ? 'Media' : 'Baja'}</span>` : ''}
+          </div>
+          <div class="news-content">
+            <div class="news-meta">
+              <span class="news-source">${escapeHtml(sourceName)}</span>
+              <span>·</span>
+              <span>${timeAgo(n.event_time)}</span>
+            </div>
+            <div class="news-title">${escapeHtml(title)}</div>
+            ${body ? `<div class="news-body">${escapeHtml(body)}</div>` : ''}
+            <div class="news-footer">
+              ${(n.affected_assets || []).slice(0, 4).map(a => `<span class="news-asset-tag">${escapeHtml(a)}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAlertas() {
+      const container = document.getElementById('feed-alertas');
+      const items = applyAlertFilters(state.alerts);
+      if (items.length === 0) {
+        container.innerHTML = '<div class="empty-state">Sin alertas que cumplan los filtros.</div>';
+        return;
+      }
+      container.innerHTML = items.map(renderAlertRow).join('');
+    }
+
+    function renderAlertRow(a) {
+      const narrative = cacheTitleEs(a.id, TR_CACHE_ALERTS) || a.narrative;
+      const level = (a.level || 'low').toLowerCase();
+      const symbol = a.asset_symbol || '';
+      const isStock = /^[A-Z]{1,5}$/.test(symbol);
+      const logoHtml = isStock
+        ? `<img class="alert-logo" src="https://assets.parqet.com/logos/symbol/${symbol}?format=png&size=64" onerror="this.outerHTML='<div class=&quot;alert-logo&quot; style=&quot;display:flex;align-items:center;justify-content:center;background:var(--bg-elev);color:var(--cyan);font-weight:800;font-size:11px;&quot;>${symbol.slice(0,4)}</div>';" />`
+        : (() => {
+            const a = ASSET_EMOJI[symbol] || { gradient: 'var(--bg-elev)', label: symbol.slice(0, 3) };
+            return `<div class="alert-logo" style="background: ${a.gradient}; color: #fff; display:flex; align-items:center; justify-content:center; font-weight: 800; padding: 0;">${a.label}</div>`;
+          })();
+
+      return `
+        <div class="alert-row">
+          ${logoHtml}
+          <div class="alert-info">
+            <div class="alert-asset">${escapeHtml(a.asset_symbol)}</div>
+            <div class="alert-narrative">${escapeHtml(narrative || '')}</div>
+          </div>
+          <span class="alert-level ${level}">${level}</span>
+          <span class="alert-time">${timeAgo(a.created_at)}</span>
+        </div>
+      `;
+    }
+
+    function render() {
+      if (state.tab === 'noticias') renderNoticias();
+      else renderAlertas();
+    }
+
+    /* ═════════ Wiring ═════════ */
+    document.querySelectorAll('.feed-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const t = tab.dataset.tab;
+        state.tab = t;
+        document.querySelectorAll('.feed-tab').forEach(x => x.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('feed-noticias').style.display = t === 'noticias' ? 'grid' : 'none';
+        document.getElementById('feed-alertas').style.display  = t === 'alertas'  ? 'flex' : 'none';
+        if (t === 'alertas' && state.alerts.length === 0) loadAlertas();
+        else render();
+      });
+    });
+
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const f = chip.dataset.filter;
+        const v = chip.dataset.value;
+        state[f === 'impact' ? 'impactFilter' : 'assetFilter'] = v;
+        document.querySelectorAll(`.filter-chip[data-filter="${f}"]`).forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        render();
+      });
+    });
+
+    document.getElementById('search-input').addEventListener('input', e => {
+      state.searchQ = e.target.value;
+      render();
+    });
+
+    document.getElementById('refresh-btn').addEventListener('click', e => {
+      e.currentTarget.classList.add('spinning');
+      const fn = state.tab === 'noticias' ? loadNoticias : loadAlertas;
+      fn().finally(() => e.currentTarget.classList.remove('spinning'));
+    });
+
+    /* Init */
+    loadNoticias();
+    // Cargar alertas en background para tener el badge
+    loadAlertas();
+  </script>
+</body>
+</html>
