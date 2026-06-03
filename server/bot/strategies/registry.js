@@ -1230,6 +1230,58 @@ const STRATEGIES = [
       idealFor: 'Trader EUR/USD que quiere mejor profit que B1 a costa de menos winrate. Mecanismo partial atractivo.',
     },
   },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BTC/USDT — SCALPING
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'C2-BTC-SCALP',
+    name: 'C2 partial · BTC scalp',
+    asset: 'BTCUSDT',
+    category: 'scalping',
+    badge: '⭐⭐⭐ Mejor scalp universal',
+    tagline: '76.8% wr OS · +26.8R OS · decay +3.8%. Mejor profit del scalping BTC y la 3ra confirmación universal de C2.',
+    config: {
+      S1_BAD_SESSIONS: 'NY_PM',
+      S1_BAD_HOURS: '10,15,18',
+      S1_BAD_DOWS: '1',
+      S1_SL_MULT: '1.0',
+      S1_TP_MULT: '0.7',
+      S1_PARTIAL_TP_MULT: '0.3',
+      S1_PARTIAL_FRACTION: '0.7',
+      S1_BE_AFTER_PARTIAL: '1',
+    },
+    metrics: {
+      winRate_IS: 76.6,
+      winRate_OS: 76.8,
+      avgR_IS: 0.026,
+      avgR_OS: 0.027,
+      totalR_5y: 75.0,
+      maxDD_R: 27.9,
+      maxStreakLosses: 7,
+      decay_pct: 3.8,
+      trades_5y: 2910,
+    },
+    robustness: 'alta',
+    explanation: {
+      summary: 'C2 confirma su universalidad como SCALPING genérica en el 3er activo. 76.8% wr OS prácticamente idéntico a XAU (76.7%) y EUR (76.1%). Mejor profit absoluto del scalping BTC y decay cuasi-zero (+3.8%).',
+      how: '70% del trade cierra en +0.3 ATR (alta probabilidad BTC), SL→BE, 30% restante corre a +0.7 ATR. SL inicial ×1.0 ATR. Duración trade: 5-20 min en BTC.',
+      pros: [
+        '⭐ 3ra confirmación universal de C2 (XAU/EUR/BTC)',
+        '76.8% winrate OOS (sube +0.2pp vs IS)',
+        '🥇 +26.8R OS - mejor profit del scalping BTC',
+        'Decay +3.8% (cuasi-zero, ultra robusta)',
+        'AvgR alto: +0.027R',
+        'Max streak losses 7',
+      ],
+      cons: [
+        'DD 27.9R (más alto que las scalp XAU/EUR — volatilidad BTC)',
+        'Requiere broker crypto con partial close',
+        'BTC opera 24/7 → trades quedan abiertos en fin de semana',
+      ],
+      idealFor: 'RECOMENDACIÓN PRINCIPAL para scalping BTC. Trader que ya opera C2 en XAU/EUR y quiere sumar crypto con la MISMA estrategia.',
+    },
+  },
 ];
 
 // ─────────────────────────────────────────
