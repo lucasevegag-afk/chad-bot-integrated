@@ -1508,6 +1508,134 @@ const STRATEGIES = [
       idealFor: 'Trader SPX scalping — reemplaza S8 con mejor performance.',
     },
   },
+
+  // ═══════════════════════════════════════════════════════════════
+  // USDCAD — SCALPING (3)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'C2-CAD-SCALP', name: 'C2 partial · CAD scalp', asset: 'USDCAD', category: 'scalping',
+    badge: '⭐ Decay -8% · mejor profit',
+    tagline: '77.3% wr · +19.5R · decay -8.1% (cuasi-zero).',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '1.0', S1_TP_MULT: '0.7', S1_PARTIAL_TP_MULT: '0.3', S1_PARTIAL_FRACTION: '0.7', S1_BE_AFTER_PARTIAL: '1' },
+    metrics: { winRate_IS: 77.2, winRate_OS: 77.3, avgR_IS: 0.037, avgR_OS: 0.034, totalR_5y: 51.0, maxDD_R: 16.4, maxStreakLosses: 7, decay_pct: -8.1, trades_5y: 1895 },
+    robustness: 'alta',
+    explanation: { summary: 'Partial 70%/30% scalp. Decay -8% (ultra robust), mejor profit del scalp CAD.', how: 'Filtros J3 + partial 0.3/70% + SL→BE + TP final 0.7. SL inicial ×1.0.', pros: ['77.3% wr OS', '+19.5R OS', 'Decay -8.1%', 'DD 16.4'], cons: ['AvgR +0.034R', 'Requiere partial'], idealFor: 'Scalper USDCAD balanceado.' },
+  },
+  {
+    id: 'B2-CAD-SCALP', name: 'B2 extremo · CAD scalp', asset: 'USDCAD', category: 'scalping',
+    badge: '🏆 89.5% wr',
+    tagline: '89.5% wr OS · DD 10.8 · decay +107%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '2.0', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 88.1, winRate_OS: 89.5, avgR_IS: 0.014, avgR_OS: 0.029, totalR_5y: 32.0, maxDD_R: 10.8, maxStreakLosses: 4, decay_pct: 107.1, trades_5y: 1895 },
+    robustness: 'alta',
+    explanation: { summary: 'B2 sniper en CAD. 89.5% wr OS, DD 10.8R, edge mejoró +107%.', how: 'SL×2.0 ATR (amplio), TP×0.3 ATR. Filtros J3.', pros: ['89.5% wr OS', 'DD 10.8R', 'Decay +107%'], cons: ['Profit +16.8R chico'], idealFor: 'Sniper CAD con spread bajo.' },
+  },
+  {
+    id: 'B1-CAD-SCALP', name: 'B1 estándar · CAD scalp', asset: 'USDCAD', category: 'scalping',
+    badge: '⭐ 85.3% wr',
+    tagline: '85.3% wr · +13.6R · DD 12.4.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '1.5', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 84.1, winRate_OS: 85.3, avgR_IS: 0.010, avgR_OS: 0.024, totalR_5y: 26.0, maxDD_R: 12.4, maxStreakLosses: 5, decay_pct: 140.0, trades_5y: 1895 },
+    robustness: 'alta',
+    explanation: { summary: 'S8 estándar aplicado a CAD. 85.3% wr OS, decay positivo grande.', how: 'SL×1.5, TP×0.3 ATR. Filtros J3.', pros: ['85.3% wr', '+13.6R', 'Decay +140%'], cons: ['DD 12.4'], idealFor: 'Sniper conservador CAD.' },
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // USDJPY — SCALPING (1)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'D2-JPY-SCALP', name: 'D2 killzone · JPY scalp', asset: 'USDJPY', category: 'scalping',
+    badge: '⭐ Decay -8.3% · mejor JPY',
+    tagline: '65.7% wr · +18.6R · decay -8.3% (la más robusta JPY).',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_DOWS: '1', S1_KILLZONES: '7,8,9,12,13,14', S1_SL_MULT: '0.7', S1_TP_MULT: '0.4' },
+    metrics: { winRate_IS: 65.9, winRate_OS: 65.7, avgR_IS: 0.036, avgR_OS: 0.033, totalR_5y: 55.0, maxDD_R: 24.1, maxStreakLosses: 8, decay_pct: -8.3, trades_5y: 1655 },
+    robustness: 'alta',
+    explanation: { summary: 'D2 (killzones + TP×0.4 SL×0.7) la única scalp robusta en USDJPY. Decay -8.3% cuasi-cero.', how: 'Killzones LON+NY, SL×0.7, TP×0.4.', pros: ['65.7% wr OS', '+18.6R OS (mejor profit JPY scalp)', 'Decay -8.3% ultra-robusta'], cons: ['DD 24.1R alto'], idealFor: 'Scalper JPY que prioriza robustez sobre winrate extremo.' },
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // GBPUSD — SCALPING (4) - el más limpio FX
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'B2-GBP-SCALP', name: 'B2 extremo · GBP scalp', asset: 'GBPUSD', category: 'scalping',
+    badge: '🏆 91.2% wr · DD 3.8',
+    tagline: 'RÉCORD match NAS100: 91.2% wr OS, DD 3.8R.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '2.0', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 89.1, winRate_OS: 91.2, avgR_IS: 0.025, avgR_OS: 0.048, totalR_5y: 64.0, maxDD_R: 3.8, maxStreakLosses: 3, decay_pct: 92.0, trades_5y: 2254 },
+    robustness: 'alta',
+    explanation: { summary: 'Match récord absoluto: 91.2% wr OS (igual NAS100). DD 3.8R increíblemente bajo.', how: 'SL×2.0 ATR, TP×0.3 ATR. Filtros J3.', pros: ['🏆 91.2% wr OS', 'DD 3.8R', 'Decay +92%', '+31.7R', 'Max streak 3'], cons: ['AvgR chico +0.048R'], idealFor: 'Sniper GBP con broker premium.' },
+  },
+  {
+    id: 'B1-GBP-SCALP', name: 'B1 estándar · GBP scalp', asset: 'GBPUSD', category: 'scalping',
+    badge: '🥇 +32.8R · DD 5.4',
+    tagline: '87.5% wr · +32.8R OS (mejor profit GBP scalp).',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '1.5', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 85.7, winRate_OS: 87.5, avgR_IS: 0.028, avgR_OS: 0.050, totalR_5y: 66.0, maxDD_R: 5.4, maxStreakLosses: 3, decay_pct: 78.6, trades_5y: 2254 },
+    robustness: 'alta',
+    explanation: { summary: 'B1 en GBP da mejor profit del scalp GBP (+32.8R) con DD 5.4R. Edge mejoró +79%.', how: 'SL×1.5, TP×0.3. Filtros J3.', pros: ['+32.8R OS (mejor profit GBP)', '87.5% wr', 'DD 5.4', 'Decay +79%'], cons: ['Margen breakeven ~3pp'], idealFor: 'Trader GBP que prioriza profit total.' },
+  },
+  {
+    id: 'C2-GBP-SCALP', name: 'C2 partial · GBP scalp', asset: 'GBPUSD', category: 'scalping',
+    badge: '⭐ Partial · +31.9R',
+    tagline: '78.7% wr · +31.9R · decay +40%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '1.0', S1_TP_MULT: '0.7', S1_PARTIAL_TP_MULT: '0.3', S1_PARTIAL_FRACTION: '0.7', S1_BE_AFTER_PARTIAL: '1' },
+    metrics: { winRate_IS: 77.8, winRate_OS: 78.7, avgR_IS: 0.035, avgR_OS: 0.049, totalR_5y: 87.0, maxDD_R: 7.4, maxStreakLosses: 5, decay_pct: 40.0, trades_5y: 2254 },
+    robustness: 'alta',
+    explanation: { summary: 'C2 confirmada en GBP: 78.7% wr, +31.9R OS, decay +40%. 5to activo de C2 universal.', how: 'Partial 0.3/70% + SL→BE + TP final 0.7. SL×1.0.', pros: ['78.7% wr OS', '+31.9R', 'DD 7.4', '5to activo C2'], cons: ['Requiere partial close'], idealFor: 'Scalper GBP con partial profit.' },
+  },
+  {
+    id: 'D3-GBP-SCALP', name: 'D3 KZ+B1 · GBP scalp', asset: 'GBPUSD', category: 'scalping',
+    badge: '🎯 88.4% wr (variant S8 con KZ)',
+    tagline: '88.4% wr · +30.6R · decay +150%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_DOWS: '1', S1_KILLZONES: '7,8,9,12,13,14', S1_SL_MULT: '1.5', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 85.3, winRate_OS: 88.4, avgR_IS: 0.024, avgR_OS: 0.060, totalR_5y: 60.0, maxDD_R: 6.8, maxStreakLosses: 3, decay_pct: 150.0, trades_5y: 1819 },
+    robustness: 'alta',
+    explanation: { summary: 'Variante B1 con killzones puras (sin BAD_HOURS, solo killzones). 88.4% wr OS.', how: 'SL×1.5, TP×0.3 + killzones explícitas 7-9, 12-14 UTC.', pros: ['88.4% wr', '+30.6R', 'DD 6.8'], cons: ['Decay +150% — IS conservador'], idealFor: 'Sniper GBP con foco institucional puro.' },
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // AUDUSD — SCALPING (1)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'B1-AUD-SCALP', name: 'B1 estándar · AUD scalp', asset: 'AUDUSD', category: 'scalping',
+    badge: '⭐ Única scalp AUD',
+    tagline: '84.8% wr · +11R · DD 6 · decay +50%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '1.5', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 84.3, winRate_OS: 84.8, avgR_IS: 0.012, avgR_OS: 0.018, totalR_5y: 19.0, maxDD_R: 6.0, maxStreakLosses: 4, decay_pct: 50.0, trades_5y: 1959 },
+    robustness: 'alta',
+    explanation: { summary: 'AUD es el activo más difícil. B1 es la única scalp robusta con OS positivo. C2/D2/etc todas fallaron.', how: 'SL×1.5, TP×0.3 ATR.', pros: ['Única scalp viable AUD', '84.8% wr OS', 'DD 6R', 'Decay +50%'], cons: ['Profit modesto +11R', 'AUD es regime-sensitive'], idealFor: 'Trader obligado a operar AUD/USD.' },
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // GBPAUD — SCALPING (3)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'C2-GBPAUD-SCALP', name: 'C2 partial · GBPAUD scalp', asset: 'GBPAUD', category: 'scalping',
+    badge: '🥇 +35R · mejor profit',
+    tagline: '81% wr · +35R · DD 9.4.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '1.0', S1_TP_MULT: '0.7', S1_PARTIAL_TP_MULT: '0.3', S1_PARTIAL_FRACTION: '0.7', S1_BE_AFTER_PARTIAL: '1' },
+    metrics: { winRate_IS: 77.7, winRate_OS: 81.0, avgR_IS: 0.029, avgR_OS: 0.073, totalR_5y: 90.0, maxDD_R: 9.4, maxStreakLosses: 5, decay_pct: 151.7, trades_5y: 1425 },
+    robustness: 'alta',
+    explanation: { summary: 'C2 en GBPAUD: 81% wr OS (sube +3pp), mejor profit +35R, decay +152%. 6to activo de C2 universal.', how: 'Partial 0.3/70% + SL→BE + TP final 0.7.', pros: ['81% wr OS', '+35R (mejor profit GBPAUD)', 'DD 9.4', 'Decay +152%'], cons: ['IS chico, decay grande positivo'], idealFor: 'Trader cruzado balanceado.' },
+  },
+  {
+    id: 'B2-GBPAUD-SCALP', name: 'B2 extremo · GBPAUD scalp', asset: 'GBPAUD', category: 'scalping',
+    badge: '🏆 90% wr',
+    tagline: '90% wr OS · DD 6.7 · decay +250%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '2.0', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 87.8, winRate_OS: 90.0, avgR_IS: 0.010, avgR_OS: 0.035, totalR_5y: 33.0, maxDD_R: 6.7, maxStreakLosses: 3, decay_pct: 250.0, trades_5y: 1425 },
+    robustness: 'alta',
+    explanation: { summary: 'B2 en GBPAUD: 90% wr OS, DD 6.7R, decay +250%.', how: 'SL×2.0, TP×0.3 ATR.', pros: ['90% wr OS', 'DD 6.7', '+16.6R'], cons: ['Decay grande +250%'], idealFor: 'Sniper GBPAUD.' },
+  },
+  {
+    id: 'B1-GBPAUD-SCALP', name: 'B1 estándar · GBPAUD scalp', asset: 'GBPAUD', category: 'scalping',
+    badge: '⭐ 86% wr · DD 5.6',
+    tagline: '86.2% wr · +16.6R · DD 5.6 · decay +40%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '1.5', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 85.4, winRate_OS: 86.2, avgR_IS: 0.025, avgR_OS: 0.035, totalR_5y: 36.0, maxDD_R: 5.6, maxStreakLosses: 3, decay_pct: 40.0, trades_5y: 1425 },
+    robustness: 'alta',
+    explanation: { summary: 'B1 en GBPAUD: 86.2% wr, DD 5.6R, decay +40% (mejor robustez del trio).', how: 'SL×1.5, TP×0.3.', pros: ['86.2% wr', 'DD 5.6R', 'Decay +40% (más robusta)'], cons: ['+16.6R profit modesto'], idealFor: 'Sniper GBPAUD conservador.' },
+  },
 ];
 
 // ─────────────────────────────────────────
