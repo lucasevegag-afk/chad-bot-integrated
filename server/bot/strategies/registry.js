@@ -1459,6 +1459,55 @@ const STRATEGIES = [
       idealFor: 'Sniper FX cruzados.',
     },
   },
+
+  // ═══════════════════════════════════════════════════════════════
+  // NAS100 + SPX500 — SCALPING (B2 extremo + C2 partial)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'B2-NAS-SCALP', name: 'B2 extremo · NAS scalp', asset: 'NAS100', category: 'scalping',
+    badge: '🏆 91% wr · DD 3.5R · récord absoluto',
+    tagline: 'EL WINRATE MÁS ALTO DEL REGISTRO ENTERO. DD ridículo 3.5R.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '2.0', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 87.8, winRate_OS: 91.1, avgR_IS: 0.010, avgR_OS: 0.048, totalR_5y: 36.0, maxDD_R: 3.5, maxStreakLosses: 3, decay_pct: 380.0, trades_5y: 1913 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'RÉCORD ABSOLUTO DEL REGISTRY: 91.1% winrate OOS en NAS100, DD 3.5R (el más bajo de todos). Edge mejoró +380% en data nueva.',
+      how: 'SL×2.0 ATR (muy amplio absorbe ruido), TP×0.3 ATR (se alcanza casi siempre). Filtros J3.',
+      pros: ['🏆 91.1% WR OS (RÉCORD)', '🥇 DD 3.5R (RÉCORD)', 'Decay +380%', 'Max streak 3', '+22.8R OS'],
+      cons: ['AvgR pequeño +0.048R', 'Breakeven 87% — margen 4pp', 'Spread crítico'],
+      idealFor: 'Sniper NAS100 con broker premium. Máxima winrate del registry.',
+    },
+  },
+  {
+    id: 'C2-NAS-SCALP', name: 'C2 partial · NAS scalp', asset: 'NAS100', category: 'scalping',
+    badge: '🥇 +29.8R · mejor profit scalp',
+    tagline: 'El mejor profit de TODA la scalping cross-asset. 79.5% wr OS.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '1.0', S1_TP_MULT: '0.7', S1_PARTIAL_TP_MULT: '0.3', S1_PARTIAL_FRACTION: '0.7', S1_BE_AFTER_PARTIAL: '1' },
+    metrics: { winRate_IS: 75.6, winRate_OS: 79.5, avgR_IS: 0.011, avgR_OS: 0.063, totalR_5y: 45.0, maxDD_R: 8.0, maxStreakLosses: 5, decay_pct: 472.7, trades_5y: 1913 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'Mejor profit absoluto del scalping: +29.8R OS en NAS100. 4ta confirmación de C2 universal scalp.',
+      how: 'Partial 70%/30% + SL→BE + TP final ×0.7.',
+      pros: ['🥇 +29.8R OS (mejor profit scalp)', '79.5% wr OS (sube +4pp vs IS)', 'DD 8R', 'Decay +472%', '4ta confirmación C2'],
+      cons: ['Requiere partial close', 'AvgR +0.063R'],
+      idealFor: 'Trader NAS scalping que prioriza profit con winrate alto.',
+    },
+  },
+  {
+    id: 'B2-SPX-SCALP', name: 'B2 extremo · SPX scalp', asset: 'SPX500', category: 'scalping',
+    badge: '🏆 89.9% wr · supera S8',
+    tagline: 'Mejora S8-SPX existente: 89.9% wr OS vs 85.6% de S8. Decay positivo.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '2.0', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 89.3, winRate_OS: 89.9, avgR_IS: 0.027, avgR_OS: 0.034, totalR_5y: 50.0, maxDD_R: 6.5, maxStreakLosses: 3, decay_pct: 25.9, trades_5y: 1858 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'B2 (SL×2 TP×0.3) supera el S8 actual de SPX (+4.3pp winrate) con decay positivo +26%. La nueva campeona de SPX500.',
+      how: 'SL×2.0 ATR, TP×0.3 ATR. Filtros J3.',
+      pros: ['89.9% WR OS (vs 85.6% S8-SPX)', 'DD 6.5R (vs 8R)', 'Decay +26%', 'Max streak 3', '+17R OS'],
+      cons: ['AvgR +0.034R chico', 'Breakeven ~87% margen 3pp'],
+      idealFor: 'Trader SPX scalping — reemplaza S8 con mejor performance.',
+    },
+  },
 ];
 
 // ─────────────────────────────────────────
