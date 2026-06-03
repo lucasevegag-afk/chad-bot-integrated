@@ -414,6 +414,39 @@
     .robust-pill.alta  { background: rgba(0, 245, 212, 0.18); color: var(--teal); }
     .robust-pill.media { background: rgba(255, 200, 87, 0.18); color: var(--gold); }
     .robust-pill.baja  { background: rgba(255, 77, 109, 0.18); color: var(--rose); }
+
+    /* ─── Section headers (main vs scalping) ─── */
+    .strat-section-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 18px;
+      margin: 22px 0 8px;
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(0, 184, 212, 0.02));
+      border: 1px solid rgba(0, 229, 255, 0.20);
+      border-left: 4px solid var(--cyan);
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--cyan);
+      text-transform: uppercase;
+    }
+    .strat-section-header:first-child { margin-top: 0; }
+    .strat-section-header.strat-scalp-header {
+      background: linear-gradient(135deg, rgba(255, 200, 87, 0.10), rgba(255, 200, 87, 0.02));
+      border-color: rgba(255, 200, 87, 0.25);
+      border-left-color: var(--gold);
+      color: var(--gold);
+    }
+    .strat-section-icon { font-size: 18px; }
+    .strat-section-sub {
+      margin-left: 12px;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+      color: var(--text-soft);
+      text-transform: none;
+      opacity: 0.85;
+    }
   </style>
 </head>
 <body>
@@ -1000,7 +1033,22 @@
           cnt.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--muted);">Sin estrategias todavía</div>';
           return;
         }
-        cnt.innerHTML = data.strategies.map(s => renderStratCard(s, s.id === data.active)).join('');
+
+        // Agrupar por categoría: main (default) y scalping
+        const main = data.strategies.filter(s => (s.category || 'main') === 'main');
+        const scalping = data.strategies.filter(s => s.category === 'scalping');
+
+        let html = '';
+        if (main.length > 0) {
+          html += '<div class="strat-section-header"><span class="strat-section-icon">📊</span> ESTRATEGIAS PRINCIPALES</div>';
+          html += main.map(s => renderStratCard(s, s.id === data.active)).join('');
+        }
+        if (scalping.length > 0) {
+          html += '<div class="strat-section-header strat-scalp-header"><span class="strat-section-icon">⚡</span> SCALPING <span class="strat-section-sub">trades de 3-15 min · TPs ajustados</span></div>';
+          html += scalping.map(s => renderStratCard(s, s.id === data.active)).join('');
+        }
+
+        cnt.innerHTML = html;
       } catch (e) {
         cnt.innerHTML = `<div style="padding: 40px; text-align: center; color: var(--rose);">⚠️ ${e.message}</div>`;
       }
