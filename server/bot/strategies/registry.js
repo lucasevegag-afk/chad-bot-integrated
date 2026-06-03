@@ -1282,6 +1282,183 @@ const STRATEGIES = [
       idealFor: 'RECOMENDACIÓN PRINCIPAL para scalping BTC. Trader que ya opera C2 en XAU/EUR y quiere sumar crypto con la MISMA estrategia.',
     },
   },
+
+  // ═══════════════════════════════════════════════════════════════
+  // GBPUSD strategies (5 — el activo FX más limpio)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'J3-GBP', name: 'J3 robusta · GBPUSD', asset: 'GBPUSD',
+    badge: '🥇 +168R · decay +259%',
+    tagline: '+167.6R OS · decay positivo extremo. J3 emergente en GBP.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '0.7', S1_TP_MULT: '2.5' },
+    metrics: { winRate_IS: 23.4, winRate_OS: 27.5, avgR_IS: 0.071, avgR_OS: 0.255, totalR_5y: 280.0, maxDD_R: 44.9, maxStreakLosses: 28, decay_pct: 259.2, trades_5y: 2330 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'J3 dispara +167R en OS de GBPUSD con AvgR +0.255R (el más alto de todos los J3). Decay +259% indica IS conservador.',
+      how: 'SL×0.7, TP×2.5 ATR. Filtros J3 estándar.',
+      pros: ['+167R OS profit alto', 'AvgR +0.255R (récord)', 'Decay positivo grande +259%'],
+      cons: ['WinRate 27.5% bajo', 'Max streak ~28', 'DD 44.9R'],
+      idealFor: 'Trader que opera J3 en XAU y quiere replicar en GBP.',
+    },
+  },
+  {
+    id: 'P1-GBP', name: 'P1 alto winrate · GBPUSD', asset: 'GBPUSD',
+    badge: '⭐ Decay +8% · DD 11.5R',
+    tagline: '70.2% wr OS · decay casi 0% · DD ridículo (11.5R).',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_DOWS: '1', S1_KILLZONES: '7,8,9,12,13,14', S1_SL_MULT: '1', S1_TP_MULT: '0.5' },
+    metrics: { winRate_IS: 69.9, winRate_OS: 70.2, avgR_IS: 0.048, avgR_OS: 0.052, totalR_5y: 86.0, maxDD_R: 11.5, maxStreakLosses: 7, decay_pct: 8.3, trades_5y: 1819 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'P1 en GBPUSD es la versión MÁS ROBUSTA: decay +8.3% (cuasi-zero), DD 11.5R (récord bajo para P1).',
+      how: 'Killzones LON+NY. SL×1, TP×0.5 ATR.',
+      pros: ['Decay +8.3% (la más robusta P1)', '70.2% wr OS', 'DD 11.5R'],
+      cons: ['Profit moderado +26R OS', 'Sensible al spread'],
+      idealFor: 'Scalper FX con GBPUSD. Mejor balance robust+wr.',
+    },
+  },
+  {
+    id: 'PA1-GBP', name: 'PA1 partial-profit · GBPUSD', asset: 'GBPUSD',
+    badge: '⭐ Universal (10 activos)',
+    tagline: '61.8% wr · +67R OS · decay +18%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '0.7', S1_TP_MULT: '2.5', S1_PARTIAL_TP_MULT: '0.5', S1_PARTIAL_FRACTION: '0.5', S1_BE_AFTER_PARTIAL: '1' },
+    metrics: { winRate_IS: 61.1, winRate_OS: 61.8, avgR_IS: 0.087, avgR_OS: 0.103, totalR_5y: 207.0, maxDD_R: 15.3, maxStreakLosses: 9, decay_pct: 18.4, trades_5y: 2330 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'PA1 confirma su universalidad en el 10º activo. 61.8% wr OS (record alto de PA1). Decay +18% positivo.',
+      how: 'Filtros J3 + partial 0.5/50% + SL→BE + TP final 2.5.',
+      pros: ['⭐ 10ma confirmación PA1 universal', '+67R OS', 'DD 15.3R', 'Decay +18%'],
+      cons: ['Trades duración variable', 'Broker con partial close'],
+      idealFor: 'Trader multi-asset que extiende PA1 a más pares FX.',
+    },
+  },
+  {
+    id: 'PA3-GBP', name: 'PA3 mid-balance · GBPUSD', asset: 'GBPUSD',
+    badge: '🥇 +82R · decay +15%',
+    tagline: 'Mayor profit GBPUSD: +82R OS, decay positivo +15%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '0.7', S1_TP_MULT: '2.5', S1_PARTIAL_TP_MULT: '1.0', S1_PARTIAL_FRACTION: '0.5', S1_BE_AFTER_PARTIAL: '1' },
+    metrics: { winRate_IS: 45.5, winRate_OS: 46.3, avgR_IS: 0.109, avgR_OS: 0.125, totalR_5y: 226.0, maxDD_R: 19.0, maxStreakLosses: 12, decay_pct: 14.7, trades_5y: 2330 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'PA3 da +82R OS en GBPUSD con decay positivo +14.7%. Profit más alto de partial-strategies en GBP.',
+      how: 'Filtros J3 + partial 1.0/50% + SL→BE + TP final 2.5.',
+      pros: ['+82R OS (récord PA3 cross-asset)', 'Decay +14.7%', 'DD 19R'],
+      cons: ['Max streak 12'],
+      idealFor: 'Trader que prioriza profit absoluto con robustez confirmada.',
+    },
+  },
+  {
+    id: 'S8-GBP', name: 'S8 sniper · GBPUSD', asset: 'GBPUSD',
+    badge: '🎯 88.4% wr · 5to activo',
+    tagline: 'S8 sigue funcionando: 88.4% wr OS en GBP (récord S8 cross-asset).',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_DOWS: '1', S1_KILLZONES: '7,8,9,12,13,14', S1_SL_MULT: '1.5', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 85.3, winRate_OS: 88.4, avgR_IS: 0.024, avgR_OS: 0.060, totalR_5y: 60.0, maxDD_R: 6.8, maxStreakLosses: 3, decay_pct: 150.0, trades_5y: 1819 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'S8 en GBP con record absoluto de winrate (88.4% OS) y DD 6.8R. 5to activo confirmado para S8.',
+      how: 'SL×1.5, TP×0.3 ATR. Killzones.',
+      pros: ['🏆 88.4% winrate OS', '🥇 DD 6.8R', 'Max streak 3', '5to activo de S8'],
+      cons: ['AvgR chico +0.060R', 'Breakeven 87.6%, margen 0.8pp'],
+      idealFor: 'Scalper FX paciente con GBPUSD y spread sub-pip.',
+    },
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // AUDUSD — solo S8 (resto falla)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'S8-AUD', name: 'S8 sniper · AUDUSD', asset: 'AUDUSD',
+    badge: '🎯 84.9% wr · única viable AUD',
+    tagline: 'Única estrategia robusta en AUDUSD. J3 y P1 fallaron en OOS.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_DOWS: '1', S1_KILLZONES: '7,8,9,12,13,14', S1_SL_MULT: '1.5', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 83.7, winRate_OS: 84.9, avgR_IS: 0.004, avgR_OS: 0.018, totalR_5y: 18.0, maxDD_R: 7.0, maxStreakLosses: 4, decay_pct: 350.0, trades_5y: 1561 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'AUDUSD es el activo MÁS DIFÍCIL del registry: J3 y P1 quedan negativos OOS. Solo S8 mantiene edge positivo (84.9% wr, decay +350%).',
+      how: 'SL×1.5, TP×0.3 ATR. Killzones LON+NY.',
+      pros: ['Única estrategia robusta en AUDUSD', '84.9% wr OS', 'DD 7R', 'Max streak 4'],
+      cons: ['TotalR modesto +9.4R OS', 'AvgR muy chico (+0.018)', 'AUD es difícil — no operar sin esta config'],
+      idealFor: 'Trader AUD/USD obligado a operar el par. Único setup viable.',
+    },
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // GBPAUD strategies (5 — todas con decay positivo alto)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'J3-GBPAUD', name: 'J3 robusta · GBPAUD', asset: 'GBPAUD',
+    badge: '🥇 +78R · decay +141%',
+    tagline: '+78.7R OS · AvgR +0.164R · decay positivo grande.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '0.7', S1_TP_MULT: '2.5' },
+    metrics: { winRate_IS: 23.4, winRate_OS: 25.5, avgR_IS: 0.068, avgR_OS: 0.164, totalR_5y: 144.0, maxDD_R: 70.4, maxStreakLosses: 25, decay_pct: 141.2, trades_5y: 1370 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'GBPAUD es par cruzado con rangos amplios. J3 captura +78R OS con decay positivo grande.',
+      how: 'SL×0.7, TP×2.5 ATR.',
+      pros: ['+78R OS', 'AvgR +0.164R', 'Decay +141%'],
+      cons: ['DD 70R (más alto del J3)', 'WR 25.5% bajo'],
+      idealFor: 'Trader experimentado con cruzado GBP/AUD.',
+    },
+  },
+  {
+    id: 'P1-GBPAUD', name: 'P1 alto winrate · GBPAUD', asset: 'GBPAUD',
+    badge: '🎯 73.5% wr · decay +203%',
+    tagline: '73.5% winrate OS (récord P1 cross-asset).',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_DOWS: '1', S1_KILLZONES: '7,8,9,12,13,14', S1_SL_MULT: '1', S1_TP_MULT: '0.5' },
+    metrics: { winRate_IS: 68.9, winRate_OS: 73.5, avgR_IS: 0.034, avgR_OS: 0.103, totalR_5y: 65.0, maxDD_R: 14.5, maxStreakLosses: 7, decay_pct: 202.9, trades_5y: 1058 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'P1 en GBPAUD con 73.5% wr OS (sube 4.6pp vs IS). Decay +203% positivo grande.',
+      how: 'Killzones, SL×1, TP×0.5.',
+      pros: ['🏆 73.5% wr OS (récord P1)', 'Decay +203%', 'DD 14.5R'],
+      cons: ['Spread GBPAUD más alto que majors'],
+      idealFor: 'Scalper FX cruzados con buen spread.',
+    },
+  },
+  {
+    id: 'PA1-GBPAUD', name: 'PA1 partial-profit · GBPAUD', asset: 'GBPAUD',
+    badge: '⭐ Universal (10 activos)',
+    tagline: '63.7% wr OS · +60R · decay +108%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '0.7', S1_TP_MULT: '2.5', S1_PARTIAL_TP_MULT: '0.5', S1_PARTIAL_FRACTION: '0.5', S1_BE_AFTER_PARTIAL: '1' },
+    metrics: { winRate_IS: 59.3, winRate_OS: 63.7, avgR_IS: 0.060, avgR_OS: 0.125, totalR_5y: 159.0, maxDD_R: 18.4, maxStreakLosses: 10, decay_pct: 108.3, trades_5y: 1370 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'PA1 con WR más alto de su cross-asset (63.7% OS). Decay +108% positivo.',
+      how: 'Filtros J3 + partial 0.5/50% + SL→BE + TP final 2.5.',
+      pros: ['⭐ Universal en 10 activos', '63.7% wr', '+59.9R OS', 'DD 18.4R'],
+      cons: ['Decay grande +108% — verificar muestra IS'],
+      idealFor: 'Multi-asset trader expandiendo PA1.',
+    },
+  },
+  {
+    id: 'PA3-GBPAUD', name: 'PA3 mid-balance · GBPAUD', asset: 'GBPAUD',
+    badge: '🥇 +76R OS',
+    tagline: '+76.1R OS · 47.8% wr · decay +148%.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_HOURS: '10,15,18', S1_BAD_DOWS: '1', S1_SL_MULT: '0.7', S1_TP_MULT: '2.5', S1_PARTIAL_TP_MULT: '1.0', S1_PARTIAL_FRACTION: '0.5', S1_BE_AFTER_PARTIAL: '1' },
+    metrics: { winRate_IS: 43.2, winRate_OS: 47.8, avgR_IS: 0.064, avgR_OS: 0.159, totalR_5y: 142.0, maxDD_R: 28.9, maxStreakLosses: 14, decay_pct: 148.4, trades_5y: 1370 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'PA3 con AvgR +0.159R OS (alto). Decay +148% positivo.',
+      how: 'Filtros J3 + partial 1.0/50% + SL→BE + TP final 2.5.',
+      pros: ['+76R OS', 'AvgR +0.159R', 'Decay +148%'],
+      cons: ['DD 28.9R'],
+      idealFor: 'Trader cruzados balanceado.',
+    },
+  },
+  {
+    id: 'S8-GBPAUD', name: 'S8 sniper · GBPAUD', asset: 'GBPAUD',
+    badge: '🎯 85.7% wr · DD 7.2R',
+    tagline: '85.7% wr OS · DD 7.2R. 6to activo de S8.',
+    config: { S1_BAD_SESSIONS: 'NY_PM', S1_BAD_DOWS: '1', S1_KILLZONES: '7,8,9,12,13,14', S1_SL_MULT: '1.5', S1_TP_MULT: '0.3' },
+    metrics: { winRate_IS: 84.9, winRate_OS: 85.7, avgR_IS: 0.018, avgR_OS: 0.029, totalR_5y: 31.0, maxDD_R: 7.2, maxStreakLosses: 4, decay_pct: 61.1, trades_5y: 1058 },
+    robustness: 'alta',
+    explanation: {
+      summary: 'S8 en GBPAUD: 85.7% wr OS, DD 7.2R, decay +61%. Confirmación cruzada # 6 de S8.',
+      how: 'SL×1.5, TP×0.3 ATR. Killzones.',
+      pros: ['85.7% wr OS', 'DD 7.2R', '6to activo de S8'],
+      cons: ['Spread GBPAUD afecta más'],
+      idealFor: 'Sniper FX cruzados.',
+    },
+  },
 ];
 
 // ─────────────────────────────────────────
