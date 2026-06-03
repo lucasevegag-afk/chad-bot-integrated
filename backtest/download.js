@@ -25,13 +25,18 @@ const { getHistoricalRates } = require('dukascopy-node');
 // Mapeo de símbolos del bot → instrumentos Dukascopy
 // ─────────────────────────────────────────
 const SYMBOL_MAP = {
-  XAUUSD: 'xauusd',
-  EURUSD: 'eurusd',
-  GBPUSD: 'gbpusd',
-  USDJPY: 'usdjpy',
-  USOIL:  'lightcmdusd',  // WTI light crude
-  // Crypto Dukascopy también tiene BTC pero menos profundo que Binance
+  XAUUSD:  'xauusd',
+  EURUSD:  'eurusd',
+  GBPUSD:  'gbpusd',
+  USDJPY:  'usdjpy',
+  USDCAD:  'usdcad',
+  AUDUSD:  'audusd',
+  GBPAUD:  'gbpaud',
+  USOIL:   'lightcmdusd',     // WTI light sweet crude
   BTCUSDT: 'btcusd',
+  NAS100:  'usatechidxusd',   // NASDAQ-100 index
+  SPX500:  'usa500idxusd',    // S&P 500 index
+  US30:    'usa30idxusd',     // Dow Jones 30
 };
 
 // Timeframes que queremos. Dukascopy usa nombres propios:
