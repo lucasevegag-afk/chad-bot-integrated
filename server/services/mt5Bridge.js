@@ -28,13 +28,24 @@ const URL          = process.env.MT5_BRIDGE_URL || '';
 const TOKEN        = process.env.MT5_BRIDGE_TOKEN || '';
 const ENABLED      = process.env.MT5_BRIDGE_ENABLED === '1';
 
-const SYMBOL       = process.env.MT5_SYMBOL || 'XAUUSD';
-const LOT          = Number(process.env.MT5_LOT || 0.01);
-const SL_MULT      = Number(process.env.MT5_SL_MULT || 0.7);    // mismo que J3
-const TP_MULT      = Number(process.env.MT5_TP_MULT || 2.5);    // mismo que J3
+const SYMBOL       = process.env.MT5_SYMBOL || 'XAUUSDm';
 const ALLOWED_HOURS = new Set((process.env.MT5_ALLOWED_HOURS || '11,12,13,14,16').split(',').map(Number));
 const ALLOWED_STRATS = new Set((process.env.MT5_ALLOWED_STRATS || 'S1').split(','));
 const ALLOWED_ASSETS = new Set((process.env.MT5_ALLOWED_ASSETS || 'XAUUSD').split(','));
+
+// ⭐ Estrategias activas: cada signal abre una posición por entry de este array
+// PA1 y PA3 tienen partial → se simulan como 2 posiciones split (legA cierra rápido, legB corre)
+// Nota: BE-after-partial NO implementado todavía — cada leg corre con SL fijo.
+const STRATEGIES = [
+  // J3 · 1 posición, TP amplio
+  { id: 'J3',    lot: 0.01,  sl: 0.7, tp: 2.5, magic: 20250603 },
+  // PA3 · 2 legs (partial 50% @ +1.0 ATR + runner @ +2.5 ATR)
+  { id: 'PA3-A', lot: 0.005, sl: 0.7, tp: 1.0, magic: 20250604 },
+  { id: 'PA3-B', lot: 0.005, sl: 0.7, tp: 2.5, magic: 20250605 },
+  // PA1 · 2 legs (partial 50% @ +0.5 ATR + runner @ +2.5 ATR)
+  { id: 'PA1-A', lot: 0.005, sl: 0.7, tp: 0.5, magic: 20250606 },
+  { id: 'PA1-B', lot: 0.005, sl: 0.7, tp: 2.5, magic: 20250607 },
+];
 
 let _started = false;
 let _executedCount = 0;
@@ -82,7 +93,12 @@ function start() {
 
   log.info(`🟢 MT5 bridge activo`);
   log.info(`   URL: ${URL}`);
-  log.info(`   Symbol: ${SYMBOL} · Lot: ${LOT}`);
+  log.info(`   Symbol: ${SYMBOL}`);
+  log.info(`   Strategies activas (${STRATEGIES.length} legs/posiciones por señal):`);
+  for (const s of STRATEGIES) {
+    log.info(`     - ${s.id.padEnd(8)} lot ${s.lot} · SL×${s.sl} · TP×${s.tp} · magic ${s.magic}`);
+  }
+  log.info(`   Total lot por señal: ${STRATEGIES.reduce((acc, s) => acc + s.lot, 0).toFixed(3)}`);
   log.info(`   Allowed hours UTC: ${[...ALLOWED_HOURS].sort((a,b)=>a-b).join(',')}`);
   log.info(`   Allowed strategies: ${[...ALLOWED_STRATS].join(',')}`);
   log.info(`   Allowed assets: ${[...ALLOWED_ASSETS].join(',')}`);
@@ -120,30 +136,41 @@ function start() {
     }
 
     // ATR estimado: usar M5 último candle range × 14 (proxy)
-    // En producción, mejor pasar ATR explícito desde la estrategia
     const atr = state.atr_m5 || (price * 0.001); // fallback 0.1% si no hay ATR
-    const sl = sig.direction === 'long' ? price - SL_MULT * atr : price + SL_MULT * atr;
-    const tp = sig.direction === 'long' ? price + TP_MULT * atr : price - TP_MULT * atr;
 
-    const body = {
-      symbol: SYMBOL,
-      direction: sig.direction,
-      lot: LOT,
-      sl: Number(sl.toFixed(2)),
-      tp: Number(tp.toFixed(2)),
-      comment: `${sig.type}-${sig.direction}`,
-      magic: 20250603,
-    };
+    log.info(`🎯 Señal ${sig.type} ${sig.direction} ${sig.asset} @ ${price.toFixed(2)} · ATR ${atr.toFixed(2)}`);
+    log.info(`   Fanout a ${STRATEGIES.length} estrategias en paralelo...`);
 
-    log.info(`📤 Enviando a MT5: ${JSON.stringify(body)}`);
-    const result = await postToBridge(body);
-    if (result.ok) {
-      _executedCount++;
-      log.info(`✅ Trade ejecutado · ticket ${result.data.ticket}`);
-    } else {
-      _failedCount++;
-      log.error(`❌ Falló envío: ${JSON.stringify(result)}`);
+    // Fanout: iterar las estrategias activas, abrir 1 posición por cada una
+    let successCount = 0;
+    let failedCount = 0;
+    for (const strat of STRATEGIES) {
+      const sl = sig.direction === 'long' ? price - strat.sl * atr : price + strat.sl * atr;
+      const tp = sig.direction === 'long' ? price + strat.tp * atr : price - strat.tp * atr;
+
+      const body = {
+        symbol: SYMBOL,
+        direction: sig.direction,
+        lot: strat.lot,
+        sl: Number(sl.toFixed(2)),
+        tp: Number(tp.toFixed(2)),
+        comment: `${strat.id}-${sig.direction}`.slice(0, 30),
+        magic: strat.magic,
+      };
+
+      const result = await postToBridge(body);
+      if (result.ok) {
+        successCount++;
+        log.info(`   ✅ ${strat.id.padEnd(8)} ticket ${result.data.ticket} · SL ${body.sl} TP ${body.tp}`);
+      } else {
+        failedCount++;
+        log.error(`   ❌ ${strat.id.padEnd(8)} FALLO: ${result.error || JSON.stringify(result.data)}`);
+      }
     }
+
+    _executedCount += successCount;
+    _failedCount += failedCount;
+    log.info(`📊 Fanout completo: ${successCount}/${STRATEGIES.length} ejecutados, ${failedCount} fallaron`);
   });
 
   log.info(`📊 Bridge listo. Esperando señales...`);
