@@ -32,6 +32,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "dukascopy-node": "^1.46.4"
+    "dukascopy-node": "^1.46.4",
+    "exceljs": "^4.4.0"
   }
 }

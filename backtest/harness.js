@@ -28,6 +28,10 @@ const ATR_PERIOD     = 14;
 // Configurable vía env para experimentos rápidos
 const ATR_SL_MULT    = Number(process.env.S1_SL_MULT || 1);
 const ATR_TP_MULT    = Number(process.env.S1_TP_MULT || 2);
+// ⭐ Spread real del broker (en unidades de precio del activo).
+// Aplica 1× por round-trip (entrada + salida). Restará al TP, sumará al SL.
+// Para XAU = USD por oz · BTC = USD · FX = unidad (ej 0.00007 para 0.7 pip EUR)
+const SPREAD_COST = Number(process.env.S1_SPREAD || 0);
 // ⭐ Partial profit taking: TP1 cierra fracción del trade, después SL → BE
 const PARTIAL_TP_MULT  = Number(process.env.S1_PARTIAL_TP_MULT  || 0); // 0 = desactivado
 const PARTIAL_FRACTION = Number(process.env.S1_PARTIAL_FRACTION || 0.5);
@@ -261,10 +265,11 @@ function runBacktest({ symbol, m5, m15, h1, h4, onProgress }) {
       const finalDelta = signal.direction === 'long'
         ? sim.exitPrice - entry
         : entry - sim.exitPrice;
-      // Weighted: PARTIAL_FRACTION del trade salió en TP1, (1-PARTIAL_FRACTION) en exit final
-      rMultiple = (PARTIAL_FRACTION * partialDelta + (1 - PARTIAL_FRACTION) * finalDelta) / riskPerTrade;
+      // Aplicar spread: cada exit cuesta el spread. Con partial son 2 exits.
+      const partialDeltaAdj = partialDelta - SPREAD_COST;
+      const finalDeltaAdj = finalDelta - SPREAD_COST;
+      rMultiple = (PARTIAL_FRACTION * partialDeltaAdj + (1 - PARTIAL_FRACTION) * finalDeltaAdj) / riskPerTrade;
 
-      // Reclasificar como "win" si el resultado neto fue positivo
       if (rMultiple > 0.001) resultLabel = 'win';
       else if (rMultiple < -0.001) resultLabel = 'loss';
       else resultLabel = 'flat';
@@ -272,7 +277,8 @@ function runBacktest({ symbol, m5, m15, h1, h4, onProgress }) {
       const priceDelta = signal.direction === 'long'
         ? sim.exitPrice - entry
         : entry - sim.exitPrice;
-      rMultiple = priceDelta / riskPerTrade;
+      // Aplicar spread: trade tiene 1 entrada + 1 salida = 1 round-trip
+      rMultiple = (priceDelta - SPREAD_COST) / riskPerTrade;
     }
 
     const sweep = signal.context.sweep;

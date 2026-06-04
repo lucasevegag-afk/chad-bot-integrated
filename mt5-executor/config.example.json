@@ -1,0 +1,33 @@
+{
+  "account":  12345678,
+  "password": "TU_PASSWORD_DEMO_AQUI",
+  "server":   "Exness-MT5Trial9",
+
+  "symbol":         "XAUUSD",
+  "lot_size":       0.01,
+  "max_positions":  1,
+  "magic_number":   20250603,
+
+  "allow_live":     false,
+  "api_token":      "GENERA-UN-TOKEN-LARGO-RANDOM-AQUI-1234567890",
+
+  "allowed_hours_utc": [11, 12, 13, 14, 16],
+  "allowed_dows":      [1, 2, 3, 4],
+
+  "port": 5000,
+
+  "_comentarios": {
+    "account":            "Tu login number demo de Exness (8 dígitos)",
+    "password":           "La password de la cuenta DEMO (no la real)",
+    "server":             "El servidor que te dio Exness al crear demo (ej Exness-MT5Trial7, 8, 9, etc.)",
+    "symbol":             "Símbolo exacto en tu MT5. Puede ser XAUUSD, XAUUSDm, etc. Mirá en Market Watch",
+    "lot_size":           "0.01 = $1/punto en XAU. Empezá con esto en demo",
+    "max_positions":      "Cuántas posiciones J3 simultáneas. 1 es lo recomendado",
+    "magic_number":       "Identificador único del bot. No lo cambies",
+    "allow_live":         "FALSE para demo. Si pasás a live, cambiar a true CON CUIDADO",
+    "api_token":          "Token para que el bot Fly te autentique. Generá uno largo y random",
+    "allowed_hours_utc":  "11-16 UTC = 8AM-1PM ART (tu ventana). J3 evita 10/15/18",
+    "allowed_dows":       "Python: 0=Lunes, 4=Viernes. [1,2,3,4]=Mar,Mié,Jue,Vie (J3 evita lunes)",
+    "port":               "Puerto local del Python server. 5000 default"
+  }
+}

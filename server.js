@@ -31,6 +31,7 @@ const { assetScanner } = require('./server/bot/scanner/assetScanner');
 const { wsServer } = require('./server/websocket/websocketServer');
 const newsFetcher = require('./server/services/news/news-fetcher');
 const signalAlertBridge = require('./server/services/signalAlertBridge');
+const mt5Bridge = require('./server/services/mt5Bridge');
 
 const log = createLogger('boot');
 const app = express();
@@ -117,6 +118,10 @@ async function main() {
   // 3.1) Bridge: replica señales internas del bot a Supabase (tabla alerts)
   //      para que aparezcan en el feed de Alertas Trading del dashboard.
   signalAlertBridge.start();
+
+  // 3.2) Bridge MT5: envía señales filtradas (J3 XAUUSD en horario válido)
+  //      al servidor Python local del usuario (vía ngrok) para que ejecute en MT5.
+  mt5Bridge.start();
 
   // 3.5) Arranca el fetcher de noticias + calendario macro.
   newsFetcher.start();
