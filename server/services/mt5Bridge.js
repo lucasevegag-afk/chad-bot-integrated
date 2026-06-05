@@ -122,21 +122,46 @@ function start() {
       return;
     }
 
-    // Calcular SL/TP basado en el precio del último candle M5 + ATR
-    // Como no tenemos ATR en la señal del signalManager directamente, lo pedimos al botStateStore
-    // o lo calculamos con un fallback razonable.
-    const { botStateStore } = require('../bot/botStateStore');
-    const state = botStateStore.ensure(sig.asset);
-    const price = state.price;
+    // Obtener precio actual desde la última vela M5 (más robusto que botStateStore.price
+    // que solo se llena con ticks Binance — XAU usa polling Twelve Data).
+    const { timeframeStore } = require('../candles/timeframeStore');
+    const m5 = timeframeStore.getCandles(sig.asset, '5m');
 
-    if (!price) {
-      log.warn(`⚠️ Sin precio para ${sig.asset}, skipping`);
+    if (!m5 || m5.length < 14) {
+      log.warn(`⚠️ Sin velas M5 suficientes para ${sig.asset} (${m5?.length || 0}), skipping`);
       _failedCount++;
       return;
     }
 
-    // ATR estimado: usar M5 último candle range × 14 (proxy)
-    const atr = state.atr_m5 || (price * 0.001); // fallback 0.1% si no hay ATR
+    const lastCandle = m5[m5.length - 1];
+    const price = lastCandle.close;
+
+    if (!price || price <= 0) {
+      log.warn(`⚠️ Precio inválido para ${sig.asset}: ${price}, skipping`);
+      _failedCount++;
+      return;
+    }
+
+    // ATR(14) de las últimas 14 velas M5 — cálculo real
+    let trSum = 0;
+    for (let i = m5.length - 14; i < m5.length; i++) {
+      const c = m5[i];
+      const p = m5[i - 1];
+      if (!p) continue;
+      const tr = Math.max(
+        c.high - c.low,
+        Math.abs(c.high - p.close),
+        Math.abs(c.low - p.close)
+      );
+      trSum += tr;
+    }
+    const atr = trSum / 14;
+
+    if (!atr || atr <= 0) {
+      log.warn(`⚠️ ATR inválido para ${sig.asset}: ${atr}, skipping`);
+      _failedCount++;
+      return;
+    }
 
     log.info(`🎯 Señal ${sig.type} ${sig.direction} ${sig.asset} @ ${price.toFixed(2)} · ATR ${atr.toFixed(2)}`);
     log.info(`   Fanout a ${STRATEGIES.length} estrategias en paralelo...`);
