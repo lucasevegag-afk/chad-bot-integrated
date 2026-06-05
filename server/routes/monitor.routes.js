@@ -54,4 +54,75 @@ router.get('/monitor', async (req, res) => {
   res.json(result);
 });
 
+// ─────────────────────────────────────────
+// GET /api/bot-live/state?asset=XAUUSD
+// ─────────────────────────────────────────
+// Devuelve velas M5 + señales + estado bot + posiciones MT5
+// para el chart en vivo /bot-live.html
+router.get('/bot-live/state', async (req, res) => {
+  const asset = (req.query.asset || 'XAUUSD').toUpperCase();
+  const limit = Math.min(500, Math.max(50, Number(req.query.limit) || 200));
+
+  // Velas M5
+  let candles = [];
+  try {
+    const { timeframeStore } = require('../candles/timeframeStore');
+    const m5 = timeframeStore.getCandles(asset, '5m') || [];
+    candles = m5.slice(-limit).map(c => ({
+      time: Math.floor(c.timestamp / 1000),
+      open: c.open, high: c.high, low: c.low, close: c.close,
+    }));
+  } catch (e) { /* sin candles */ }
+
+  // Bot state
+  let botState = null;
+  try {
+    const { botStateStore } = require('../bot/botStateStore');
+    const s = botStateStore.ensure(asset);
+    botState = {
+      htfBias: s.htfBias,
+      tacticalBias: s.tacticalBias,
+      sessionState: s.sessionState,
+      isLateralizing: s.isLateralizing,
+      manipulationDetected: s.manipulationDetected,
+      expansionPhase: s.expansionPhase,
+    };
+  } catch (e) { /* sin state */ }
+
+  // Señales recientes filtradas por asset
+  const allSignals = monitorService.getSignals(50);
+  const signals = allSignals.filter(s => s.asset === asset);
+
+  // Posiciones MT5 (vía bridge)
+  let positions = [];
+  if (MT5_URL && MT5_TOKEN) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 5000);
+      const r = await fetch(`${MT5_URL}/status`, {
+        headers: {
+          'Authorization': `Bearer ${MT5_TOKEN}`,
+          'ngrok-skip-browser-warning': 'true',
+          'user-agent': 'chad-bot-live/1.0',
+        },
+        signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      if (r.ok) {
+        const data = await r.json();
+        positions = data.open_positions || [];
+      }
+    } catch (e) { /* sin posiciones */ }
+  }
+
+  res.json({
+    ts: Date.now(),
+    asset,
+    candles,
+    signals,
+    botState,
+    positions,
+  });
+});
+
 module.exports = router;

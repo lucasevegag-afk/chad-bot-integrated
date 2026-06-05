@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHAD BOT · Vista en Vivo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    :root {
+      --bg-deep: #020711;
+      --bg-navy: #07111f;
+      --bg-card: #0d1a2e;
+      --bg-elev: #11203b;
+      --cyan: #00e5ff;
+      --teal: #00f5d4;
+      --rose: #ff4d6d;
+      --gold: #ffc857;
+      --violet: #a78bfa;
+      --text: #e8edf5;
+      --text-soft: #b8c4d9;
+      --muted: #6b7891;
+      --line: rgba(255,255,255,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at top, #07111f 0%, #020711 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      font-size: 14px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    /* Header */
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .title {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px; font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .title-sub { font-size: 12px; color: var(--muted); margin-top: 2px;
+      font-family: 'JetBrains Mono', monospace; }
+
+    /* Status bar */
+    .status-bar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-navy));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.6px; text-transform: uppercase;
+      background: var(--bg-elev);
+      color: var(--text-soft);
+      border: 1px solid var(--line);
+    }
+    .status-pill .lbl { color: var(--muted); }
+    .status-pill .val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+    .pill-bias-long  .val { color: var(--teal); }
+    .pill-bias-short .val { color: var(--rose); }
+    .pill-bias-neutral .val { color: var(--gold); }
+    .pill-kz-active  { border-color: rgba(0, 229, 255, 0.40); background: rgba(0, 229, 255, 0.08); }
+    .pill-kz-active .val { color: var(--cyan); }
+
+    /* Layout · chart + sidebar */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 16px;
+    }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+    /* Chart container */
+    .chart-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      position: relative;
+    }
+    .chart-toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 4px 8px 12px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 8px;
+    }
+    .chart-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .chart-info {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .chart-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px; font-weight: 700;
+      color: var(--cyan);
+    }
+    #chart { width: 100%; height: 560px; }
+
+    /* Sidebar */
+    .sidebar {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .panel-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    /* Signal items */
+    .signal-item {
+      padding: 10px 12px;
+      background: var(--bg-elev);
+      border-left: 3px solid var(--cyan);
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    .signal-item.long  { border-left-color: var(--teal); }
+    .signal-item.short { border-left-color: var(--rose); }
+    .signal-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 4px;
+    }
+    .signal-dir {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px; font-weight: 800;
+      padding: 2px 8px; border-radius: 6px;
+    }
+    .signal-dir.long  { background: rgba(0, 245, 212, 0.18); color: var(--teal); }
+    .signal-dir.short { background: rgba(255, 77, 109, 0.18); color: var(--rose); }
+    .signal-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--muted);
+    }
+
+    /* Position items */
+    .position-item {
+      padding: 8px 10px;
+      background: var(--bg-elev);
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 11px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .position-item .ticket {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+    }
+    .position-item .profit {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+    .position-item .profit.up { color: var(--teal); }
+    .position-item .profit.down { color: var(--rose); }
+
+    .empty {
+      padding: 20px; text-align: center; color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer {
+      text-align: center; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      margin-top: 20px;
+      padding: 12px;
+    }
+
+    .badge-live {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 10px; color: var(--teal);
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.6px; text-transform: uppercase;
+    }
+    .badge-live::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 10px var(--teal);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div>
+        <div class="title">🤖 CHAD BOT · Vista en Vivo</div>
+        <div class="title-sub">XAU/USD · M5 · sweep+reclaim detection</div>
+      </div>
+      <span class="badge-live">en vivo</span>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar" id="statusBar">
+      <div class="status-pill"><span class="lbl">HTF Bias:</span> <span class="val" id="bsHtf">—</span></div>
+      <div class="status-pill"><span class="lbl">Tactical:</span> <span class="val" id="bsTactical">—</span></div>
+      <div class="status-pill" id="pillSession"><span class="lbl">Sesión:</span> <span class="val" id="bsSession">—</span></div>
+      <div class="status-pill"><span class="lbl">Lateral:</span> <span class="val" id="bsLat">—</span></div>
+      <div class="status-pill"><span class="lbl">NY Manip:</span> <span class="val" id="bsManip">—</span></div>
+      <div class="status-pill"><span class="lbl">Última señal:</span> <span class="val" id="bsLast">—</span></div>
+    </div>
+
+    <!-- Layout · chart + sidebar -->
+    <div class="layout">
+      <div class="chart-wrap">
+        <div class="chart-toolbar">
+          <div>
+            <div class="chart-title">XAU/USD · 5 min</div>
+          </div>
+          <div>
+            <span class="chart-info">Precio: </span>
+            <span class="chart-price" id="lastPrice">—</span>
+          </div>
+        </div>
+        <div id="chart"></div>
+      </div>
+
+      <div class="sidebar">
+        <div class="panel">
+          <div class="panel-title">🎯 Últimas Señales</div>
+          <div id="signalsList">
+            <div class="empty">Esperando señales del bot...</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">📊 Posiciones MT5</div>
+          <div id="positionsList">
+            <div class="empty">Sin posiciones abiertas</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">⏰ Killzones (UTC)</div>
+          <div style="font-size: 12px; color: var(--text-soft); line-height: 1.7;">
+            <div>🌍 <strong>London KZ:</strong> 07-09 UTC</div>
+            <div>🗽 <strong>NY KZ:</strong> 12-14 UTC</div>
+            <div style="margin-top:8px; color: var(--muted); font-size: 11px;">
+              Hora UTC actual: <span id="utcNow" style="font-family:'JetBrains Mono',monospace; color:var(--cyan)">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Auto-refresh cada 10s · datos M5 XAU/USD desde Twelve Data
+    </div>
+  </div>
+
+<script>
+const REFRESH_MS = 10000;
+const ASSET = 'XAUUSD';
+
+let chart, candleSeries;
+let markersList = [];   // markers para señales
+let slLines = [];        // líneas SL/TP de posiciones
+let initialized = false;
+
+function initChart() {
+  if (initialized) return;
+  initialized = true;
+
+  chart = LightweightCharts.createChart(document.getElementById('chart'), {
+    width: document.getElementById('chart').offsetWidth,
+    height: 560,
+    layout: {
+      background: { color: '#07111f' },
+      textColor: '#b8c4d9',
+      fontFamily: 'Inter, sans-serif',
+    },
+    grid: {
+      vertLines: { color: 'rgba(255,255,255,0.04)' },
+      horzLines: { color: 'rgba(255,255,255,0.04)' },
+    },
+    timeScale: {
+      borderColor: 'rgba(255,255,255,0.10)',
+      timeVisible: true,
+      secondsVisible: false,
+    },
+    rightPriceScale: {
+      borderColor: 'rgba(255,255,255,0.10)',
+    },
+    crosshair: {
+      mode: LightweightCharts.CrosshairMode.Normal,
+      vertLine: { color: 'rgba(0, 229, 255, 0.4)', labelBackgroundColor: '#00e5ff' },
+      horzLine: { color: 'rgba(0, 229, 255, 0.4)', labelBackgroundColor: '#00e5ff' },
+    },
+  });
+
+  candleSeries = chart.addCandlestickSeries({
+    upColor:        '#00f5d4',
+    downColor:      '#ff4d6d',
+    borderUpColor:  '#00f5d4',
+    borderDownColor:'#ff4d6d',
+    wickUpColor:    '#00f5d4',
+    wickDownColor:  '#ff4d6d',
+  });
+
+  // Resize handler
+  window.addEventListener('resize', () => {
+    chart.applyOptions({ width: document.getElementById('chart').offsetWidth });
+  });
+}
+
+function fmtTime(ts) {
+  const d = new Date(ts);
+  return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+}
+function fmtAgo(ts) {
+  const diff = (Date.now() - ts) / 1000;
+  if (diff < 60) return Math.floor(diff) + 's';
+  if (diff < 3600) return Math.floor(diff/60) + 'm';
+  return Math.floor(diff/3600) + 'h';
+}
+function fmtNum(n, d = 2) {
+  return n != null ? Number(n).toFixed(d) : '—';
+}
+
+function renderBiasPill(elemId, value) {
+  const el = document.getElementById(elemId);
+  if (!el) return;
+  el.textContent = value || '—';
+  const parent = el.closest('.status-pill');
+  parent.classList.remove('pill-bias-long', 'pill-bias-short', 'pill-bias-neutral');
+  if (value === 'LONG')   parent.classList.add('pill-bias-long');
+  if (value === 'SHORT')  parent.classList.add('pill-bias-short');
+  if (value === 'NEUTRAL') parent.classList.add('pill-bias-neutral');
+}
+
+function renderSession(value) {
+  const el = document.getElementById('bsSession');
+  const pill = document.getElementById('pillSession');
+  if (!el) return;
+  el.textContent = value || '—';
+  // Marcar como "activo" si estamos en killzone tradeable
+  if (value && ['LONDON_OPEN', 'LONDON', 'NY_OPEN', 'NY_AM'].includes(value)) {
+    pill.classList.add('pill-kz-active');
+  } else {
+    pill.classList.remove('pill-kz-active');
+  }
+}
+
+function renderUtcNow() {
+  const now = new Date();
+  const utcStr = String(now.getUTCHours()).padStart(2,'0') + ':' +
+                 String(now.getUTCMinutes()).padStart(2,'0');
+  document.getElementById('utcNow').textContent = utcStr;
+}
+
+async function fetchAndRender() {
+  try {
+    const r = await fetch('/api/bot-live/state?asset=' + ASSET);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    render(data);
+  } catch (e) {
+    console.error('Fetch error:', e);
+  }
+}
+
+function render(data) {
+  initChart();
+
+  // Velas
+  if (data.candles && data.candles.length > 0) {
+    candleSeries.setData(data.candles);
+
+    // Last price label
+    const last = data.candles[data.candles.length - 1];
+    document.getElementById('lastPrice').textContent = '$' + last.close.toFixed(2);
+  }
+
+  // Bias + state
+  if (data.botState) {
+    renderBiasPill('bsHtf', data.botState.htfBias);
+    renderBiasPill('bsTactical', data.botState.tacticalBias);
+    renderSession(data.botState.sessionState);
+    document.getElementById('bsLat').textContent = data.botState.isLateralizing ? 'SÍ' : 'NO';
+    document.getElementById('bsManip').textContent = data.botState.manipulationDetected ? 'SÍ' : 'NO';
+  }
+
+  // Markers de señales en el chart
+  const signals = (data.signals || []).filter(s => s.candleTime && s.price);
+  const markers = signals.map(s => ({
+    time: Math.floor(s.candleTime / 1000),
+    position: s.direction === 'long' ? 'belowBar' : 'aboveBar',
+    color:    s.direction === 'long' ? '#00f5d4' : '#ff4d6d',
+    shape:    s.direction === 'long' ? 'arrowUp' : 'arrowDown',
+    text:     s.type + ' ' + s.direction.toUpperCase(),
+  }));
+  candleSeries.setMarkers(markers);
+
+  // SL/TP price lines (de posiciones abiertas)
+  slLines.forEach(l => candleSeries.removePriceLine(l));
+  slLines = [];
+  (data.positions || []).forEach(pos => {
+    if (pos.sl && pos.sl > 0) {
+      slLines.push(candleSeries.createPriceLine({
+        price: pos.sl,
+        color: '#ff4d6d',
+        lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed,
+        title: 'SL ' + pos.ticket,
+      }));
+    }
+    if (pos.tp && pos.tp > 0) {
+      slLines.push(candleSeries.createPriceLine({
+        price: pos.tp,
+        color: '#00f5d4',
+        lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed,
+        title: 'TP ' + pos.ticket,
+      }));
+    }
+  });
+
+  // Sidebar · señales
+  const listEl = document.getElementById('signalsList');
+  if (data.signals && data.signals.length > 0) {
+    listEl.innerHTML = data.signals.slice(0, 8).map(s => `
+      <div class="signal-item ${s.direction}">
+        <div class="signal-row">
+          <span class="signal-dir ${s.direction}">${s.direction}</span>
+          <span class="signal-meta">${fmtTime(s.ts)} · ${fmtAgo(s.ts)} atrás</span>
+        </div>
+        <div style="color: var(--text-soft); font-size: 11px; margin-top: 4px;">
+          ${s.type} · score ${s.score} · $${fmtNum(s.price)}
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('bsLast').textContent =
+      data.signals[0].direction.toUpperCase() + ' · ' + fmtAgo(data.signals[0].ts) + ' atrás';
+  } else {
+    listEl.innerHTML = '<div class="empty">Esperando señales del bot...</div>';
+  }
+
+  // Sidebar · posiciones
+  const posEl = document.getElementById('positionsList');
+  if (data.positions && data.positions.length > 0) {
+    posEl.innerHTML = data.positions.map(p => `
+      <div class="position-item">
+        <div>
+          <div><span class="signal-dir ${p.type}">${p.type}</span> ${fmtNum(p.volume, 3)}</div>
+          <div class="ticket">${p.ticket}</div>
+        </div>
+        <div class="profit ${p.profit >= 0 ? 'up' : 'down'}">
+          ${p.profit >= 0 ? '+' : ''}${fmtNum(p.profit)}
+        </div>
+      </div>
+    `).join('');
+  } else {
+    posEl.innerHTML = '<div class="empty">Sin posiciones abiertas</div>';
+  }
+}
+
+// Tick clock
+setInterval(renderUtcNow, 1000);
+renderUtcNow();
+
+// Initial + refresh
+fetchAndRender();
+setInterval(fetchAndRender, REFRESH_MS);
+</script>
+</body>
+</html>

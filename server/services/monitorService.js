@@ -22,6 +22,19 @@ function _push(arr, item) {
 
 function start() {
   signalManager.on('signal_detected', (sig) => {
+    // Capturar precio de la última vela M5 para poder dibujar en el chart
+    let price = null;
+    let candleTime = null;
+    try {
+      const { timeframeStore } = require('../candles/timeframeStore');
+      const m5 = timeframeStore.getCandles(sig.asset, '5m');
+      if (m5 && m5.length > 0) {
+        const last = m5[m5.length - 1];
+        price = last.close;
+        candleTime = last.timestamp;
+      }
+    } catch (e) { /* opcional */ }
+
     _push(_recentSignals, {
       ts: Date.now(),
       asset: sig.asset,
@@ -31,6 +44,8 @@ function start() {
       score: sig.score,
       level: sig.level,
       notes: sig.notes,
+      price,
+      candleTime,
     });
   });
   log.info('📊 Monitor service activo (tracking signals + executions in-memory)');
