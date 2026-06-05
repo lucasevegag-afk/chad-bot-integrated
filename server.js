@@ -32,6 +32,8 @@ const { wsServer } = require('./server/websocket/websocketServer');
 const newsFetcher = require('./server/services/news/news-fetcher');
 const signalAlertBridge = require('./server/services/signalAlertBridge');
 const mt5Bridge = require('./server/services/mt5Bridge');
+const monitorService = require('./server/services/monitorService');
+const monitorRoutes = require('./server/routes/monitor.routes');
 
 const log = createLogger('boot');
 const app = express();
@@ -68,6 +70,7 @@ app.use('/api', usersRoutes);
 app.use('/api', alertsRoutes); // ⭐ Push de alertas a Supabase / chad-alerts-mobile
 app.use('/api', photoRoutes);  // 📸 Proxy a Pexels para imágenes finanzas
 app.use('/api', backtestRoutes); // 🧪 Stats de dataset + correr backtest desde la UI
+app.use('/api', monitorRoutes);  // 📊 Monitor en vivo (signals + ejecuciones + MT5)
 
 // ============= Rutas limpias de páginas =============
 app.use('/', pagesRoutes);
@@ -122,6 +125,10 @@ async function main() {
   // 3.2) Bridge MT5: envía señales filtradas (J3 XAUUSD en horario válido)
   //      al servidor Python local del usuario (vía ngrok) para que ejecute en MT5.
   mt5Bridge.start();
+
+  // 3.3) Monitor service: trackea señales y ejecuciones en memoria
+  //      para la página /monitor.html (auto-refresh dashboard).
+  monitorService.start();
 
   // 3.5) Arranca el fetcher de noticias + calendario macro.
   newsFetcher.start();

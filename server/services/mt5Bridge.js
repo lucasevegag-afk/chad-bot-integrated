@@ -169,6 +169,8 @@ function start() {
     // Fanout: iterar las estrategias activas, abrir 1 posición por cada una
     let successCount = 0;
     let failedCount = 0;
+    const execResults = [];
+
     for (const strat of STRATEGIES) {
       const sl = sig.direction === 'long' ? price - strat.sl * atr : price + strat.sl * atr;
       const tp = sig.direction === 'long' ? price + strat.tp * atr : price - strat.tp * atr;
@@ -187,15 +189,23 @@ function start() {
       if (result.ok) {
         successCount++;
         log.info(`   ✅ ${strat.id.padEnd(8)} ticket ${result.data.ticket} · SL ${body.sl} TP ${body.tp}`);
+        execResults.push({ stratId: strat.id, ok: true, ticket: result.data.ticket, sl: body.sl, tp: body.tp });
       } else {
         failedCount++;
         log.error(`   ❌ ${strat.id.padEnd(8)} FALLO: ${result.error || JSON.stringify(result.data)}`);
+        execResults.push({ stratId: strat.id, ok: false, error: result.error || JSON.stringify(result.data) });
       }
     }
 
     _executedCount += successCount;
     _failedCount += failedCount;
     log.info(`📊 Fanout completo: ${successCount}/${STRATEGIES.length} ejecutados, ${failedCount} fallaron`);
+
+    // Registrar en monitor para el dashboard
+    try {
+      const monitorService = require('./monitorService');
+      monitorService.recordExecution(sig, execResults);
+    } catch (e) { /* monitor optional */ }
   });
 
   log.info(`📊 Bridge listo. Esperando señales...`);

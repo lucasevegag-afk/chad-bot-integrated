@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHAD BOT · Monitor en vivo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #020711;
+      --bg-navy: #07111f;
+      --bg-card: #0d1a2e;
+      --bg-elev: #11203b;
+      --cyan: #00e5ff;
+      --teal: #00f5d4;
+      --rose: #ff4d6d;
+      --gold: #ffc857;
+      --violet: #a78bfa;
+      --text: #e8edf5;
+      --text-soft: #b8c4d9;
+      --muted: #6b7891;
+      --line: rgba(255,255,255,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at top, #07111f 0%, #020711 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+      font-size: 14px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    /* Header */
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .title {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .title-sub {
+      font-size: 12px; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 2px;
+    }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .status-pill.online {
+      background: rgba(0, 245, 212, 0.15);
+      color: var(--teal);
+      border: 1px solid rgba(0, 245, 212, 0.4);
+    }
+    .status-pill.offline {
+      background: rgba(255, 77, 109, 0.15);
+      color: var(--rose);
+      border: 1px solid rgba(255, 77, 109, 0.4);
+    }
+    .pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .pulse.offline { background: var(--rose); animation: none; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Grid layout */
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      margin-bottom: 16px;
+    }
+
+    /* Cards */
+    .card {
+      background: linear-gradient(160deg, var(--bg-card) 0%, var(--bg-navy) 100%);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.3px; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .big-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 32px; font-weight: 800;
+      letter-spacing: -1.5px;
+    }
+    .big-num.good { color: var(--teal); }
+    .big-num.bad { color: var(--rose); }
+    .small-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--muted);
+      margin-top: 4px;
+    }
+    .label-value {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 6px 0; border-bottom: 1px dashed var(--line);
+    }
+    .label-value:last-child { border-bottom: none; }
+    .lv-label { color: var(--muted); font-size: 12px; }
+    .lv-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; font-weight: 600;
+    }
+
+    /* Section header */
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+    }
+    .section-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .section-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--muted);
+    }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--line); }
+    th {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--muted);
+    }
+    td {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-soft);
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* Direction pills */
+    .pill {
+      display: inline-block; padding: 2px 8px; border-radius: 6px;
+      font-family: 'Sora', sans-serif;
+      font-size: 9px; font-weight: 800;
+      letter-spacing: 0.6px; text-transform: uppercase;
+    }
+    .pill.long { background: rgba(0, 245, 212, 0.18); color: var(--teal); }
+    .pill.short { background: rgba(255, 77, 109, 0.18); color: var(--rose); }
+    .pill.ok { background: rgba(0, 245, 212, 0.18); color: var(--teal); }
+    .pill.fail { background: rgba(255, 77, 109, 0.18); color: var(--rose); }
+
+    /* Loading state */
+    .loading {
+      text-align: center; padding: 40px; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+    .loading::after { content: '...'; animation: ellipsis 1.5s steps(4) infinite; }
+    @keyframes ellipsis { 0%, 33% { content: '.'; } 33%, 66% { content: '..'; } 66%, 100% { content: '...'; } }
+
+    /* Footer */
+    .footer {
+      text-align: center; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      margin-top: 30px;
+      padding: 16px;
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      body { padding: 12px; font-size: 13px; }
+      .title { font-size: 18px; }
+      .big-num { font-size: 26px; }
+      th, td { padding: 6px 4px; font-size: 11px; }
+      .grid { gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div>
+        <div class="title">🤖 CHAD BOT · Monitor</div>
+        <div class="title-sub" id="lastUpdate">Conectando...</div>
+      </div>
+      <div id="statusPill" class="status-pill offline">
+        <span class="pulse offline"></span> Cargando
+      </div>
+    </div>
+
+    <!-- KPIs principales -->
+    <div class="grid" id="kpis">
+      <div class="loading">Cargando datos del bot</div>
+    </div>
+
+    <!-- Posiciones abiertas -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">📊 Posiciones Abiertas</span>
+        <span class="section-count" id="positionsCount">—</span>
+      </div>
+      <div id="positionsTable">
+        <div class="loading">...</div>
+      </div>
+    </div>
+
+    <!-- Últimas señales -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">🎯 Últimas Señales</span>
+        <span class="section-count" id="signalsCount">—</span>
+      </div>
+      <div id="signalsTable">
+        <div class="loading">...</div>
+      </div>
+    </div>
+
+    <!-- Últimas ejecuciones -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">⚡ Ejecuciones MT5</span>
+        <span class="section-count" id="executionsCount">—</span>
+      </div>
+      <div id="executionsTable">
+        <div class="loading">...</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Auto-refresh cada 15s · CHAD INVERSOR
+    </div>
+  </div>
+
+<script>
+const REFRESH_MS = 15000;
+
+function fmtTime(ts) {
+  const d = new Date(ts);
+  return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function fmtAgo(ts) {
+  const diff = (Date.now() - new Date(ts).getTime()) / 1000;
+  if (diff < 60) return Math.floor(diff) + 's atrás';
+  if (diff < 3600) return Math.floor(diff/60) + 'm atrás';
+  return Math.floor(diff/3600) + 'h atrás';
+}
+
+function fmtMoney(n) {
+  if (n == null) return '—';
+  return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+async function refresh() {
+  try {
+    const r = await fetch('/api/monitor', { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    render(data);
+    document.getElementById('lastUpdate').textContent =
+      'Última actualización: ' + fmtTime(data.ts);
+  } catch (e) {
+    console.error(e);
+    document.getElementById('statusPill').className = 'status-pill offline';
+    document.getElementById('statusPill').innerHTML = '<span class="pulse offline"></span> Error fetch';
+  }
+}
+
+function render(d) {
+  // Status pill
+  const mt5 = d.mt5 || {};
+  const ok = mt5.ok === true;
+  const pill = document.getElementById('statusPill');
+  if (ok) {
+    pill.className = 'status-pill online';
+    pill.innerHTML = '<span class="pulse"></span> ' + (mt5.trade_mode || 'ONLINE');
+  } else {
+    pill.className = 'status-pill offline';
+    pill.innerHTML = '<span class="pulse offline"></span> ' + (mt5.error || 'OFFLINE');
+  }
+
+  // KPIs
+  const positions = mt5.open_positions || [];
+  const totalProfit = positions.reduce((s, p) => s + (p.profit || 0), 0);
+  const kpis = document.getElementById('kpis');
+  kpis.innerHTML = `
+    <div class="card">
+      <div class="card-title">Balance</div>
+      <div class="big-num">${fmtMoney(mt5.balance)}</div>
+      <div class="small-num">${mt5.currency || '—'} · ${mt5.trade_mode || '—'}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Equity</div>
+      <div class="big-num ${(mt5.equity || 0) >= (mt5.balance || 0) ? 'good' : 'bad'}">${fmtMoney(mt5.equity)}</div>
+      <div class="small-num">${totalProfit >= 0 ? '+' : ''}${fmtMoney(totalProfit)} pendiente</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Posiciones</div>
+      <div class="big-num">${positions.length}</div>
+      <div class="small-num">${mt5.account ? 'cta ' + mt5.account : '—'}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Señales / 24h</div>
+      <div class="big-num">${d.summary?.signals_24h || 0}</div>
+      <div class="small-num">${d.summary?.executions_24h || 0} ejecuciones</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Bridge Stats</div>
+      <div class="label-value">
+        <span class="lv-label">Ejecutados</span>
+        <span class="lv-value" style="color:var(--teal)">${d.bridge_stats?.executed || 0}</span>
+      </div>
+      <div class="label-value">
+        <span class="lv-label">Filtrados</span>
+        <span class="lv-value" style="color:var(--gold)">${d.bridge_stats?.rejected || 0}</span>
+      </div>
+      <div class="label-value">
+        <span class="lv-label">Fallaron</span>
+        <span class="lv-value" style="color:var(--rose)">${d.bridge_stats?.failed || 0}</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Última señal</div>
+      ${d.summary?.last_signal ? `
+        <div class="big-num">
+          <span class="pill ${d.summary.last_signal.direction}">${d.summary.last_signal.direction}</span>
+          ${d.summary.last_signal.asset}
+        </div>
+        <div class="small-num">${fmtAgo(d.summary.last_signal.ts)}</div>
+      ` : `<div class="big-num" style="color:var(--muted);font-size:18px">Sin señales aún</div>`}
+    </div>
+  `;
+
+  // Posiciones
+  document.getElementById('positionsCount').textContent = positions.length + ' abiertas';
+  if (positions.length === 0) {
+    document.getElementById('positionsTable').innerHTML =
+      '<div class="loading" style="padding:20px">Sin posiciones abiertas</div>';
+  } else {
+    document.getElementById('positionsTable').innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Ticket</th><th>Symbol</th><th>Type</th><th>Vol</th>
+            <th>Entry</th><th>SL</th><th>TP</th><th>P&L</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${positions.map(p => `
+            <tr>
+              <td>${p.ticket}</td>
+              <td>${p.symbol}</td>
+              <td><span class="pill ${p.type}">${p.type}</span></td>
+              <td>${p.volume}</td>
+              <td>${p.price_open}</td>
+              <td>${p.sl || '—'}</td>
+              <td>${p.tp || '—'}</td>
+              <td style="color: ${p.profit >= 0 ? 'var(--teal)' : 'var(--rose)'}">${p.profit >= 0 ? '+' : ''}${p.profit?.toFixed(2)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  // Señales
+  const signals = d.signals || [];
+  document.getElementById('signalsCount').textContent = signals.length + ' recientes';
+  if (signals.length === 0) {
+    document.getElementById('signalsTable').innerHTML =
+      '<div class="loading" style="padding:20px">Sin señales aún hoy</div>';
+  } else {
+    document.getElementById('signalsTable').innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Hora</th><th>Asset</th><th>Dir</th><th>Tipo</th>
+            <th>Score</th><th>Notas</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${signals.slice(0,15).map(s => `
+            <tr>
+              <td>${fmtTime(s.ts)}</td>
+              <td>${s.asset}</td>
+              <td><span class="pill ${s.direction}">${s.direction}</span></td>
+              <td>${s.type}/${s.timeframe || ''}</td>
+              <td>${s.score}</td>
+              <td style="color:var(--muted);font-size:11px">${s.notes || ''}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  // Ejecuciones
+  const execs = d.executions || [];
+  document.getElementById('executionsCount').textContent = execs.length + ' recientes';
+  if (execs.length === 0) {
+    document.getElementById('executionsTable').innerHTML =
+      '<div class="loading" style="padding:20px">Sin ejecuciones aún</div>';
+  } else {
+    document.getElementById('executionsTable').innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Hora</th><th>Asset</th><th>Dir</th>
+            <th>Strats</th><th>OK</th><th>Fail</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${execs.slice(0,15).map(e => {
+            const okCount = (e.results || []).filter(r => r.ok).length;
+            const failCount = (e.results || []).length - okCount;
+            return `
+              <tr>
+                <td>${fmtTime(e.ts)}</td>
+                <td>${e.signal?.asset || '—'}</td>
+                <td><span class="pill ${e.signal?.direction}">${e.signal?.direction}</span></td>
+                <td>${e.results?.length || 0}</td>
+                <td style="color:var(--teal)">${okCount}</td>
+                <td style="color:var(--rose)">${failCount}</td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+}
+
+refresh();
+setInterval(refresh, REFRESH_MS);
+</script>
+</body>
+</html>
