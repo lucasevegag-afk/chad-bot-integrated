@@ -12,11 +12,10 @@
  *   MT5_BRIDGE_ENABLED  → '1' para activar
  *
  * Configurables vía env:
- *   MT5_SYMBOL          → símbolo MT5 (default XAUUSD)
- *   MT5_LOT             → lot size (default 0.01)
+ *   MT5_SYMBOL_SUFFIX   → sufijo del broker (default 'm', cuentas Exness standard)
  *   MT5_ALLOWED_HOURS   → horas UTC permitidas (default 11,12,13,14,16)
  *   MT5_ALLOWED_STRATS  → tipos de señal permitidos (default S1)
- *   MT5_ALLOWED_ASSETS  → activos permitidos (default XAUUSD)
+ *   MT5_ALLOWED_ASSETS  → activos permitidos (default XAUUSD,BTCUSDT,EURUSD,GBPUSD,USDCAD,AUDUSD,GBPAUD)
  */
 
 const { signalManager } = require('../bot/signalManager');
@@ -28,10 +27,22 @@ const URL          = process.env.MT5_BRIDGE_URL || '';
 const TOKEN        = process.env.MT5_BRIDGE_TOKEN || '';
 const ENABLED      = process.env.MT5_BRIDGE_ENABLED === '1';
 
-const SYMBOL       = process.env.MT5_SYMBOL || 'XAUUSDm';
+const SYMBOL_SUFFIX = process.env.MT5_SYMBOL_SUFFIX ?? 'm';
 const ALLOWED_HOURS = new Set((process.env.MT5_ALLOWED_HOURS || '11,12,13,14,16').split(',').map(Number));
 const ALLOWED_STRATS = new Set((process.env.MT5_ALLOWED_STRATS || 'S1').split(','));
-const ALLOWED_ASSETS = new Set((process.env.MT5_ALLOWED_ASSETS || 'XAUUSD').split(','));
+const ALLOWED_ASSETS = new Set((process.env.MT5_ALLOWED_ASSETS || 'XAUUSD,BTCUSDT,EURUSD,GBPUSD,USDCAD,AUDUSD,GBPAUD').split(','));
+
+/** Asset del bot → símbolo MT5 del broker (BTCUSDT → BTCUSD, + sufijo Exness). */
+function mt5Symbol(asset) {
+  return asset.replace(/USDT$/, 'USD') + SYMBOL_SUFFIX;
+}
+
+/** Decimales para SL/TP según el activo (JPY 3 · metales/crypto 2 · forex 5). */
+function priceDigits(asset) {
+  if (asset.includes('JPY')) return 3;
+  if (asset.startsWith('XAU') || asset.startsWith('BTC')) return 2;
+  return 5;
+}
 
 // ⭐ Estrategias activas: cada signal abre una posición por entry de este array
 // PA1 y PA3 tienen partial → se simulan como 2 posiciones split (legA cierra rápido, legB corre)
@@ -95,7 +106,7 @@ function start() {
 
   log.info(`🟢 MT5 bridge activo`);
   log.info(`   URL: ${URL}`);
-  log.info(`   Symbol: ${SYMBOL}`);
+  log.info(`   Symbol map: ${[...ALLOWED_ASSETS].map((a) => `${a}→${mt5Symbol(a)}`).join(' · ')}`);
   log.info(`   Strategies activas (${STRATEGIES.length} legs/posiciones por señal):`);
   for (const s of STRATEGIES) {
     log.info(`     - ${s.id.padEnd(8)} lot ${s.lot} · SL×${s.sl} · TP×${s.tp} · magic ${s.magic}`);
@@ -165,7 +176,10 @@ function start() {
       return;
     }
 
-    log.info(`🎯 Señal ${sig.type} ${sig.direction} ${sig.asset} @ ${price.toFixed(2)} · ATR ${atr.toFixed(2)}`);
+    const symbol = mt5Symbol(sig.asset);
+    const digits = priceDigits(sig.asset);
+
+    log.info(`🎯 Señal ${sig.type} ${sig.direction} ${sig.asset} → ${symbol} @ ${price.toFixed(digits)} · ATR ${atr.toFixed(digits)}`);
     log.info(`   Fanout a ${STRATEGIES.length} estrategias en paralelo...`);
 
     // Fanout: iterar las estrategias activas, abrir 1 posición por cada una
@@ -178,11 +192,11 @@ function start() {
       const tp = sig.direction === 'long' ? price + strat.tp * atr : price - strat.tp * atr;
 
       const body = {
-        symbol: SYMBOL,
+        symbol,
         direction: sig.direction,
         lot: strat.lot,
-        sl: Number(sl.toFixed(2)),
-        tp: Number(tp.toFixed(2)),
+        sl: Number(sl.toFixed(digits)),
+        tp: Number(tp.toFixed(digits)),
         comment: `${strat.id}-${sig.direction}`.slice(0, 30),
         magic: strat.magic,
       };

@@ -56,6 +56,8 @@ ACCOUNT       = CFG['account']
 PASSWORD      = CFG.get('password') or os.environ.get('MT5_PASSWORD', '')
 SERVER        = CFG['server']
 SYMBOL        = CFG.get('symbol', 'XAUUSD')
+# Símbolos adicionales habilitados (multi-asset). El primario siempre está incluido.
+SYMBOLS       = set(CFG.get('symbols', [])) | {SYMBOL}
 LOT_SIZE      = float(CFG.get('lot_size', 0.01))
 MAX_POSITIONS = int(CFG.get('max_positions', 1))
 MAGIC_NUMBER  = int(CFG.get('magic_number', 20250603))
@@ -88,14 +90,15 @@ def mt5_connect():
 
     log.info(f'✅ Conectado a MT5 · Account: {info.login} · Server: {SERVER} · Balance: {info.balance} {info.currency}')
     log.info(f'   Trade mode: {"DEMO" if info.trade_mode == 0 else "REAL" if info.trade_mode == 2 else "CONTEST"}')
-    log.info(f'   Symbol target: {SYMBOL} · Lot: {LOT_SIZE} · Max positions: {MAX_POSITIONS}')
+    log.info(f'   Symbols: {sorted(SYMBOLS)} · Lot: {LOT_SIZE} · Max positions: {MAX_POSITIONS}')
     log.info(f'   Allowed hours UTC: {sorted(ALLOWED_HOURS)} · Allowed dows: {sorted(ALLOWED_DOWS)}')
     log.info(f'   ALLOW_LIVE: {ALLOW_LIVE} · Magic: {MAGIC_NUMBER}')
 
-    # Verificar que el símbolo existe y está visible
-    if not mt5.symbol_select(SYMBOL, True):
-        log.error(f'❌ Símbolo {SYMBOL} no disponible en este broker')
-        return False
+    # Verificar que los símbolos existen y están visibles
+    for sym in sorted(SYMBOLS):
+        if not mt5.symbol_select(sym, True):
+            log.error(f'❌ Símbolo {sym} no disponible en este broker')
+            return False
 
     return True
 
@@ -121,8 +124,8 @@ def safety_checks(symbol, lot):
         return f'Hora UTC {now.hour} no permitida (allowed: {sorted(ALLOWED_HOURS)})'
     if now.weekday() not in ALLOWED_DOWS:
         return f'Día {now.weekday()} no permitido (allowed: {sorted(ALLOWED_DOWS)})'
-    if symbol != SYMBOL:
-        return f'Símbolo {symbol} no permitido (only {SYMBOL})'
+    if symbol not in SYMBOLS:
+        return f'Símbolo {symbol} no permitido (allowed: {sorted(SYMBOLS)})'
     if lot > LOT_SIZE * 5:
         return f'Lot {lot} > max permitido {LOT_SIZE*5}'
 
@@ -244,6 +247,20 @@ def execute():
     if err:
         log.warning(f'⛔ Safety: {err}')
         return jsonify({'ok': False, 'error': err}), 400
+
+    # Info del símbolo: digits para SL/TP y límites de volumen del broker
+    sym_info = mt5.symbol_info(symbol)
+    if sym_info is None:
+        return jsonify({'ok': False, 'error': f'No symbol info for {symbol}'}), 500
+
+    # Normalizar volumen al mínimo/step del broker (evita retcode 10014 invalid volume)
+    step = sym_info.volume_step or 0.01
+    lot = max(sym_info.volume_min, round(round(lot / step) * step, 8))
+    # Redondear SL/TP a los decimales reales del símbolo
+    if sl:
+        sl = round(sl, sym_info.digits)
+    if tp:
+        tp = round(tp, sym_info.digits)
 
     # Obtener precio actual
     tick = mt5.symbol_info_tick(symbol)

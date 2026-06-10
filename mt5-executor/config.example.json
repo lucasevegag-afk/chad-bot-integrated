@@ -4,6 +4,7 @@
   "server":   "Exness-MT5Trial9",
 
   "symbol":         "XAUUSD",
+  "symbols":        ["XAUUSDm", "BTCUSDm", "EURUSDm", "GBPUSDm", "USDCADm", "AUDUSDm", "GBPAUDm"],
   "lot_size":       0.01,
   "max_positions":  1,
   "magic_number":   20250603,
@@ -21,6 +22,7 @@
     "password":           "La password de la cuenta DEMO (no la real)",
     "server":             "El servidor que te dio Exness al crear demo (ej Exness-MT5Trial7, 8, 9, etc.)",
     "symbol":             "Símbolo exacto en tu MT5. Puede ser XAUUSD, XAUUSDm, etc. Mirá en Market Watch",
+    "symbols":            "Lista de símbolos habilitados para multi-asset. El de 'symbol' se incluye solo. Verificá los nombres exactos en Market Watch",
     "lot_size":           "0.01 = $1/punto en XAU. Empezá con esto en demo",
     "max_positions":      "Cuántas posiciones J3 simultáneas. 1 es lo recomendado",
     "magic_number":       "Identificador único del bot. No lo cambies",
