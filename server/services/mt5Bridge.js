@@ -36,15 +36,17 @@ const ALLOWED_ASSETS = new Set((process.env.MT5_ALLOWED_ASSETS || 'XAUUSD').spli
 // ⭐ Estrategias activas: cada signal abre una posición por entry de este array
 // PA1 y PA3 tienen partial → se simulan como 2 posiciones split (legA cierra rápido, legB corre)
 // Nota: BE-after-partial NO implementado todavía — cada leg corre con SL fijo.
+// Lots: Exness XAUUSDm tiene volumen mínimo 0.01 (0.005 era rechazado con "invalid volume"),
+// por eso cada leg usa el mínimo 0.01 — total 0.05 por señal.
 const STRATEGIES = [
   // J3 · 1 posición, TP amplio
-  { id: 'J3',    lot: 0.01,  sl: 0.7, tp: 2.5, magic: 20250603 },
+  { id: 'J3',    lot: 0.01, sl: 0.7, tp: 2.5, magic: 20250603 },
   // PA3 · 2 legs (partial 50% @ +1.0 ATR + runner @ +2.5 ATR)
-  { id: 'PA3-A', lot: 0.005, sl: 0.7, tp: 1.0, magic: 20250604 },
-  { id: 'PA3-B', lot: 0.005, sl: 0.7, tp: 2.5, magic: 20250605 },
+  { id: 'PA3-A', lot: 0.01, sl: 0.7, tp: 1.0, magic: 20250604 },
+  { id: 'PA3-B', lot: 0.01, sl: 0.7, tp: 2.5, magic: 20250605 },
   // PA1 · 2 legs (partial 50% @ +0.5 ATR + runner @ +2.5 ATR)
-  { id: 'PA1-A', lot: 0.005, sl: 0.7, tp: 0.5, magic: 20250606 },
-  { id: 'PA1-B', lot: 0.005, sl: 0.7, tp: 2.5, magic: 20250607 },
+  { id: 'PA1-A', lot: 0.01, sl: 0.7, tp: 0.5, magic: 20250606 },
+  { id: 'PA1-B', lot: 0.01, sl: 0.7, tp: 2.5, magic: 20250607 },
 ];
 
 let _started = false;
