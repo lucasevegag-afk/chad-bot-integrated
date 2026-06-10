@@ -16,6 +16,7 @@
  *   MT5_ALLOWED_HOURS   → horas UTC permitidas (default 11,12,13,14,16)
  *   MT5_ALLOWED_STRATS  → tipos de señal permitidos (default S1)
  *   MT5_ALLOWED_ASSETS  → activos permitidos (default XAUUSD,BTCUSDT,EURUSD,GBPUSD,USDCAD,AUDUSD,GBPAUD)
+ *   MT5_EXEC_COOLDOWN_MIN → minutos entre ejecuciones del mismo asset+dirección (default 60)
  */
 
 const { signalManager } = require('../bot/signalManager');
@@ -59,6 +60,12 @@ const STRATEGIES = [
   { id: 'PA1-A', lot: 0.01, sl: 0.7, tp: 0.5, magic: 20250606 },
   { id: 'PA1-B', lot: 0.01, sl: 0.7, tp: 2.5, magic: 20250607 },
 ];
+
+// Cooldown de ejecución: el signalManager re-emite el mismo setup cada 5 min
+// mientras persisten las condiciones — sin esto el bridge piramida entradas
+// sobre el mismo trade. Los backtests asumen 1 entrada por setup.
+const EXEC_COOLDOWN_MS = Number(process.env.MT5_EXEC_COOLDOWN_MIN || 60) * 60 * 1000;
+const _lastExecAt = new Map(); // 'asset|direction' → timestamp del último fanout
 
 let _started = false;
 let _executedCount = 0;
@@ -115,6 +122,7 @@ function start() {
   log.info(`   Allowed hours UTC: ${[...ALLOWED_HOURS].sort((a,b)=>a-b).join(',')}`);
   log.info(`   Allowed strategies: ${[...ALLOWED_STRATS].join(',')}`);
   log.info(`   Allowed assets: ${[...ALLOWED_ASSETS].join(',')}`);
+  log.info(`   Exec cooldown: ${EXEC_COOLDOWN_MS / 60000} min por asset+dirección`);
 
   signalManager.on('signal_detected', async (sig) => {
     // Filtros
@@ -132,6 +140,15 @@ function start() {
     if (!ALLOWED_ASSETS.has(sig.asset)) {
       _rejectedCount++;
       log.debug(`⏭️ Skip ${sig.asset}: activo no permitido (allowed: ${[...ALLOWED_ASSETS]})`);
+      return;
+    }
+
+    const execKey = `${sig.asset}|${sig.direction}`;
+    const sinceLastExec = Date.now() - (_lastExecAt.get(execKey) || 0);
+    if (sinceLastExec < EXEC_COOLDOWN_MS) {
+      _rejectedCount++;
+      const waitMin = Math.ceil((EXEC_COOLDOWN_MS - sinceLastExec) / 60000);
+      log.info(`⏭️ Skip ${sig.type} ${sig.direction} ${sig.asset}: ya ejecutado hace ${Math.round(sinceLastExec / 60000)} min (cooldown ${EXEC_COOLDOWN_MS / 60000} min, faltan ~${waitMin})`);
       return;
     }
 
@@ -178,6 +195,8 @@ function start() {
 
     const symbol = mt5Symbol(sig.asset);
     const digits = priceDigits(sig.asset);
+
+    _lastExecAt.set(execKey, Date.now());
 
     log.info(`🎯 Señal ${sig.type} ${sig.direction} ${sig.asset} → ${symbol} @ ${price.toFixed(digits)} · ATR ${atr.toFixed(digits)}`);
     log.info(`   Fanout a ${STRATEGIES.length} estrategias en paralelo...`);
