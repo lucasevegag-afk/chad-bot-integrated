@@ -122,6 +122,33 @@ Con MT5 abierto y Python corriendo, esperá la próxima señal J3 en horario 11-
 
 ---
 
+## ☁️ Correrlo 24/7 en un VPS Windows
+
+El executor necesita Windows (la librería `MetaTrader5` de Python no corre en Linux).
+Para no depender de tu PC, móntalo en un VPS Windows (Contabo, Kamatera, FXVM, etc. — 2 vCPU / 4 GB RAM alcanza).
+
+### Setup inicial (una sola vez, por RDP)
+
+1. Conéctate por **Escritorio Remoto** al VPS.
+2. Instala: MT5 de Exness (loguea la cuenta), Python 3.x, y ngrok (`ngrok config add-authtoken ...`).
+3. Copia la carpeta `C:\bot-mt5` completa (executor + `config.json`).
+4. `pip install MetaTrader5 flask`
+5. Prueba a mano: `run-forever.bat` y `run-ngrok-forever.bat` — deben quedar corriendo y reiniciarse solos si los matas.
+
+### Auto-arranque al bootear (Task Scheduler)
+
+1. **Auto-logon de Windows** (MT5 es app gráfica, necesita sesión iniciada):
+   `Win+R` → `netplwiz` → destildar "Los usuarios deben escribir su nombre y contraseña" → poner la contraseña.
+2. Abrir **Programador de tareas** → Crear tarea (no básica) ×3:
+   - **MT5**: Desencadenador *Al iniciar sesión* · Acción: ruta a `terminal64.exe` de Exness.
+   - **Executor**: Desencadenador *Al iniciar sesión* (retraso 1 min para que MT5 cargue) · Acción: `C:\bot-mt5\run-forever.bat`.
+   - **ngrok**: Desencadenador *Al iniciar sesión* · Acción: `C:\bot-mt5\run-ngrok-forever.bat`.
+   En las 3: pestaña Configuración → destildar "Detener la tarea si se ejecuta durante más de..." .
+3. Reinicia el VPS y verifica sin tocar nada: `https://TU-DOMINIO.ngrok-free.dev/health` debe responder `{"ok":true}`.
+
+Con eso el VPS aguanta reinicios, crashes del Python y caídas de ngrok sin intervención.
+El dominio estático de ngrok hace que `MT5_BRIDGE_URL` en Fly nunca cambie.
+
 ## 🛑 Para detener
 
 `Ctrl+C` en la terminal donde corre Python.
